@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/carousel";
 
 const slides = [
-  { src: "/ACG.jpg", alt: "ACG collection" },
-  { src: "/DN2.avif", alt: "DN collection — second look" },
+  { src: "/Adious.avif", alt: " Adidas" },
+  { src: "/Bunny.webp", alt: "Bad Bunny Collection" },
   { src: "/LIQUID.webp", alt: "Liquid collection" },
-  { src: "/MET10.jpeg", alt: "MET10 collection" },
+  { src: "/PUMA.webp", alt: "Puma " },
 ];
 
 export default function Home() {
