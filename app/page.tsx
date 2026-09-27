@@ -52,10 +52,9 @@ export default function Home() {
             </CarouselItem>
           ))}
         </CarouselContent>
+        <CarouselPrevious className="left-3 z-10 size-14 border-0 bg-transparent text-white shadow-none hover:bg-transparent hover:text-white [&_svg]:size-12! [&_svg]:stroke-[1.3] sm:left-5" />
 
-        <CarouselPrevious className="left-3 z-10 size-10 rounded-full border-0 bg-gray-500 opacity-70 text-white shadow-lg hover:bg-red-700 hover:text-white focus-visible:ring-2 focus-visible:ring-white sm:left-5 sm:size-12" />
-
-        <CarouselNext className="right-3 z-10 size-10 rounded-full border-0 bg-gray-500 opacity-70 text-white shadow-lg hover:bg-gray-700 hover:text-white focus-visible:ring-2 focus-visible:ring-white sm:right-5 sm:size-12" />
+        <CarouselNext className="right-3 z-10 size-14 border-0 bg-transparent text-white shadow-none hover:bg-transparent hover:text-white [&_svg]:size-12! [&_svg]:stroke-[1.3] sm:right-5" />
       </Carousel>
     </main>
   );
