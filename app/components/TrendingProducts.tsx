@@ -1,43 +1,47 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { mockProducts, sortByColor } from "@/data/mockProducts";
 
-type Product = {
-  id: string;
-  image: string;
-  name: string;
-  category: string;
-  price: number | null;
-  href: string;
-};
-
-const men: Product[] = Array.from({ length: 20 }, (_, index) => ({
-  id: `m${index + 1}`,
-  image: `/Products/m${index + 1}.webp`,
-  name: `Men's sneaker ${index + 1}`,
-  category: "Men Shoes",
-  price: null,
-  href: `/products/m${index + 1}`,
-}));
-
-const women: Product[] = Array.from({ length: 20 }, (_, index) => ({
-  id: `w${index + 1}`,
-  image: `/Products/w${index + 1}.avif`,
-  name: `Women's sneaker ${index + 1}`,
-  category: "Women Shoes",
-  price: null,
-  href: `/products/w${index + 1}`,
-}));
+const men = sortByColor(mockProducts.filter((p) => p.gender === "men"));
+const women = sortByColor(mockProducts.filter((p) => p.gender === "women"));
 
 const collections = [
   { value: "men", label: "Men", products: men },
   { value: "women", label: "Women", products: women },
 ];
 
-const currency = new Intl.NumberFormat("en-GB", {
+const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "GBP",
+  currency: "USD",
 });
+
+// Image layer: fades out first, scales down and blurs slightly.
+// Base classes = leaving hover (quick), group-hover classes = entering hover (slower).
+const imageLayer = `
+  relative size-36 max-w-full lg:size-40
+  transition-[opacity,scale,filter]
+  duration-500 delay-100 ease-out
+  lg:group-hover:delay-0 lg:group-hover:duration-700
+  lg:group-hover:ease-[cubic-bezier(0.22,1,0.36,1)]
+  lg:group-hover:scale-90 lg:group-hover:opacity-0 lg:group-hover:blur-sm
+  lg:group-focus-visible:scale-90 lg:group-focus-visible:opacity-0 lg:group-focus-visible:blur-sm
+  motion-reduce:transition-none
+  motion-reduce:scale-100! motion-reduce:blur-none!
+`;
+
+// Text lines: each one rises and fades in, staggered via a per-line delay.
+const revealLine = `
+  lg:translate-y-5 lg:opacity-0
+  lg:transition-[opacity,translate]
+  lg:duration-350 lg:ease-out
+  lg:group-hover:translate-y-0 lg:group-hover:opacity-100
+  lg:group-hover:duration-700
+  lg:group-hover:ease-[cubic-bezier(0.22,1,0.36,1)]
+  lg:group-focus-visible:translate-y-0 lg:group-focus-visible:opacity-100
+  motion-reduce:transition-none
+  motion-reduce:translate-y-0!
+`;
 
 export default function TrendingProducts() {
   return (
@@ -76,23 +80,10 @@ export default function TrendingProducts() {
               {products.map((product) => (
                 <li key={product.id} className="min-w-0">
                   <Link
-                    href={product.href}
+                    href={`/products/${product.id}`}
                     className="group relative flex min-h-[184px] flex-col items-center justify-center rounded-sm py-3 focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-4"
                   >
-                    <div
-                      className="
-                        relative size-36 max-w-full lg:size-40
-                        transition-[opacity,transform]
-                        duration-[1200ms] ease-in-out
-                        lg:group-hover:delay-150
-                        lg:group-hover:scale-95
-                        lg:group-hover:opacity-0
-                        lg:group-focus-visible:scale-95
-                        lg:group-focus-visible:opacity-0
-                        motion-reduce:transform-none
-                        motion-reduce:transition-none
-                      "
-                    >
+                    <div className={imageLayer}>
                       <Image
                         src={product.image}
                         alt={product.name}
@@ -102,34 +93,24 @@ export default function TrendingProducts() {
                       />
                     </div>
 
-                    <div
-                      className="
-                        flex flex-col items-center justify-center
-                        gap-1 px-2 text-center
-                        transition-[opacity,transform]
-                        duration-[1200ms] ease-in-out
-                        lg:absolute lg:inset-0
-                        lg:translate-y-3 lg:opacity-0
-                        lg:group-hover:delay-150
-                        lg:group-hover:translate-y-0
-                        lg:group-hover:opacity-100
-                        lg:group-focus-visible:translate-y-0
-                        lg:group-focus-visible:opacity-100
-                        motion-reduce:transform-none
-                        motion-reduce:transition-none
-                      "
-                    >
-                      <h3 className="text-sm font-semibold">{product.name}</h3>
+                    <div className="flex flex-col items-center justify-center gap-1 px-2 text-center lg:absolute lg:inset-0">
+                      <h3
+                        className={`${revealLine} text-sm font-semibold lg:group-hover:delay-200`}
+                      >
+                        {product.name}
+                      </h3>
 
-                      <p className="text-sm text-neutral-600">
-                        {product.category}
+                      <p
+                        className={`${revealLine} text-sm text-neutral-600 lg:group-hover:delay-300`}
+                      >
+                        {product.brand}
                       </p>
 
-                      {product.price !== null && (
-                        <p className="text-sm">
-                          {currency.format(product.price)}
-                        </p>
-                      )}
+                      <p
+                        className={`${revealLine} text-sm lg:group-hover:delay-[400ms]`}
+                      >
+                        {currency.format(product.price)}
+                      </p>
                     </div>
                   </Link>
                 </li>
