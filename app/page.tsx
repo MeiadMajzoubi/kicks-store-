@@ -4,6 +4,7 @@ import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { useState } from "react";
 import TrendingProducts from "./components/TrendingProducts";
+import ShopByBrands from "./components/ShopByBrands";
 
 import {
   Carousel,
@@ -57,7 +58,11 @@ export default function Home() {
 
         <CarouselNext className="right-3 z-10 size-14 border-0 bg-transparent text-white shadow-none hover:bg-transparent hover:text-white [&_svg]:size-12! [&_svg]:stroke-[1.3] sm:right-5" />
       </Carousel>
-      <TrendingProducts />
+      <div className="pt-12">
+        <TrendingProducts />
+      </div>
+      <ShopByBrands />
+      
     </main>
   );
 }
