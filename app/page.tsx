@@ -6,6 +6,7 @@ import { useState } from "react";
 import TrendingProducts from "./components/TrendingProducts";
 import ShopByBrands from "./components/ShopByBrands";
 import ShopByCategory from "./components/ShopByCategory";
+import Advantages from "./components/Advantages";
 
 import {
   Carousel,
@@ -64,6 +65,7 @@ export default function Home() {
       </div>
       <ShopByBrands />
       <ShopByCategory />
+      <Advantages />
     </main>
   );
 }

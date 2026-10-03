@@ -76,10 +76,12 @@ export default function ShopByCategory() {
           ))}
         </div>
 
-        <div className="relative h-[360px] overflow-hidden bg-neutral-100 sm:h-[500px] lg:h-[660px]">
+        <div className="relative aspect-[4/3] overflow-hidden sm:aspect-[2/1]">
           {slides.map((category, index) => {
             const isActive = index === active;
             const isNext = index === active + 1;
+            const isPrev = index < active;
+            const isFront = isActive || isPrev; // کاغذ جلو (فعال یا رفته به چپ)
             const isVisible = isActive || isNext;
 
             return (
@@ -88,19 +90,22 @@ export default function ShopByCategory() {
                 href={category.href}
                 tabIndex={isVisible ? 0 : -1}
                 aria-hidden={isVisible ? undefined : true}
-                className="absolute inset-y-0 overflow-hidden transition-[left,width,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                className="absolute overflow-hidden bg-neutral-100 transition-[left,width,top,bottom,opacity,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
                 style={{
-                  left:
-                    index < active
-                      ? "-70%"
-                      : isActive
-                        ? "0%"
-                        : isNext
-                          ? "70%"
-                          : "100%",
-                  width: isActive || index < active ? "70%" : "30%",
+                  left: isActive
+                    ? "0%"
+                    : isNext
+                      ? "42%"
+                      : isPrev
+                        ? "-80%"
+                        : "100%",
+                  width: isFront ? "72%" : "58%",
+                  // کاغذ جلو پایین‌تره، کاغذ پشت بالاتر
+                  top: isFront ? "8%" : "0%",
+                  bottom: isFront ? "0%" : "12%",
                   opacity: isVisible ? 1 : 0,
-                  zIndex: isActive ? 2 : isNext ? 1 : 0,
+                  zIndex: isActive ? 30 : isNext ? 20 : 10,
+                  boxShadow: isActive ? "0 10px 40px rgba(0,0,0,0.3)" : "none",
                   pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
@@ -108,7 +113,9 @@ export default function ShopByCategory() {
                   src={category.image}
                   alt={`${category.name} footwear`}
                   fill
-                  sizes="(min-width: 1024px) 50vw, 70vw"
+                  quality={100}
+                  priority={index === 0}
+                  sizes="(min-width: 1024px) 50vw, 80vw"
                   className="object-cover"
                 />
               </Link>
