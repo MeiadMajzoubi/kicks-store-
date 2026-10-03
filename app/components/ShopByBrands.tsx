@@ -19,8 +19,11 @@ const brands = [
   { name: "ASICS", image: "/brands/Asics.jpeg", href: "/brands/asics" },
   { name: "On", image: "/brands/On.jpeg", href: "/brands/on" },
   { name: "New Balance", image: "/brands/NB.jpeg", href: "/brands/new-balance" },
-  { name: "Birkenstock", image: "/brands/Birkenstock.jpeg", href: "/brands/Birkenstock" },
-
+  {
+    name: "Birkenstock",
+    image: "/brands/Birkenstock.jpeg",
+    href: "/brands/Birkenstock",
+  },
 ];
 
 export default function ShopByBrands() {
@@ -70,14 +73,14 @@ export default function ShopByBrands() {
               key={brand.name}
               className="basis-[78%] pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
             >
-              <Link href={brand.href} className="group block">
-                <div className="relative aspect-[4/5] overflow-hidden bg-neutral-100">
+              <Link href={brand.href} className="block">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100">
                   <Image
                     src={brand.image}
                     alt={`${brand.name} collection`}
                     fill
                     sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 78vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+                    className="object-cover"
                   />
                 </div>
 
@@ -89,12 +92,8 @@ export default function ShopByBrands() {
           ))}
         </CarouselContent>
 
-        <CarouselPrevious
-          className="left-2 z-10 size-11 border-0 bg-white text-black shadow-lg hover:bg-white hover:text-black disabled:opacity-0 [&_svg]:size-5! sm:left-4"
-        />
-        <CarouselNext
-          className="right-2 z-10 size-11 border-0 bg-white text-black shadow-lg hover:bg-white hover:text-black disabled:opacity-0 [&_svg]:size-5! sm:right-4"
-        />
+        <CarouselPrevious className="left-2 z-10 size-11 border-0 bg-white text-black shadow-lg hover:bg-white hover:text-black disabled:opacity-0 [&_svg]:size-5! sm:left-4" />
+        <CarouselNext className="right-2 z-10 size-11 border-0 bg-white text-black shadow-lg hover:bg-white hover:text-black disabled:opacity-0 [&_svg]:size-5! sm:right-4" />
       </Carousel>
 
       {count > 1 && (
