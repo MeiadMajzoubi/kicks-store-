@@ -18,7 +18,11 @@ const brands = [
   { name: "Adidas", image: "/brands/Adidas.jpeg", href: "/brands/adidas" },
   { name: "ASICS", image: "/brands/Asics.jpeg", href: "/brands/asics" },
   { name: "On", image: "/brands/On.jpeg", href: "/brands/on" },
-  { name: "New Balance", image: "/brands/NB.jpeg", href: "/brands/new-balance" },
+  {
+    name: "New Balance",
+    image: "/brands/NB.jpeg",
+    href: "/brands/new-balance",
+  },
   {
     name: "Birkenstock",
     image: "/brands/Birkenstock.jpeg",

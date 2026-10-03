@@ -5,6 +5,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { useState } from "react";
 import TrendingProducts from "./components/TrendingProducts";
 import ShopByBrands from "./components/ShopByBrands";
+import ShopByCategory from "./components/ShopByCategory";
 
 import {
   Carousel,
@@ -62,7 +63,7 @@ export default function Home() {
         <TrendingProducts />
       </div>
       <ShopByBrands />
-      
+      <ShopByCategory />
     </main>
   );
 }
