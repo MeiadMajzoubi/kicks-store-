@@ -102,27 +102,28 @@ export default function Advantages() {
   return (
     <section
       aria-labelledby="advantages-title"
-      className="mx-auto max-w-[1920px] px-4 py-12 text-black sm:px-8"
+      className="content-shell section-space border-t border-border"
     >
-      <h2
-        id="advantages-title"
-        className="mb-8 text-center text-2xl font-bold sm:text-3xl"
-      >
-        Why Choose Us
-      </h2>
+      <div className="mb-8 sm:mb-10">
+        <p className="eyebrow mb-3">The Red Kicks experience</p>
+        <h2 id="advantages-title" className="section-title">Why choose us</h2>
+      </div>
 
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {advantages.map(({ title, icon: Icon, href }) => (
           <li key={title}>
             <Link
               href={href}
-              className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-600"
+              className="group block h-full rounded-2xl"
             >
-              <div className="flex aspect-[6/5] flex-col items-center justify-center gap-8 bg-neutral-100 px-6 transition-colors duration-300 group-hover:bg-neutral-200">
-                <Icon className="size-24 sm:size-28" />
-                <h3 className="text-center text-xl font-extrabold uppercase leading-tight tracking-tight sm:text-2xl">
-                  {title}
-                </h3>
+              <div className="flex h-full min-h-48 flex-col items-start justify-between gap-7 rounded-2xl border border-transparent bg-surface p-5 transition-colors duration-300 group-hover:border-border sm:min-h-56 sm:p-7">
+                <Icon className="size-12 sm:size-14" />
+                <div className="flex w-full items-center justify-between gap-2">
+                  <h3 className="max-w-48 text-sm font-semibold leading-snug tracking-tight sm:text-base">
+                    {title}
+                  </h3>
+                  <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-brand" />
+                </div>
               </div>
             </Link>
           </li>

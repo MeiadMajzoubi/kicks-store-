@@ -18,19 +18,19 @@ const ACTIONS = [
 
 export default function Navbar() {
   return (
-    <header className="w-full border-b border-neutral-300 bg-white text-black">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 pt-5 pb-1 lg:px-12 lg:pt-7 lg:pb-1">
+    <header className="w-full border-b border-border bg-background">
+      <div className="content-shell grid grid-cols-[auto_1fr] items-center gap-x-2 pt-5 lg:min-h-24 lg:grid-cols-[1fr_auto_1fr] lg:gap-x-6 lg:py-5">
         <nav
           aria-label="Main navigation"
-          className="col-span-3 row-start-2 justify-self-center lg:col-span-1 lg:col-start-1 lg:row-start-1 lg:justify-self-start"
+          className="col-span-2 row-start-2 mt-2 w-full lg:col-span-1 lg:col-start-1 lg:row-start-1 lg:mt-0"
         >
-          <ul className="flex items-center gap-6 text-sm font-semibold lg:gap-8">
+          <ul className="flex items-center justify-center gap-7 text-sm font-semibold lg:justify-start lg:gap-8">
             {NAV_LINKS.map(({ label, href }) => (
               <li key={href}>
                 <Link
                   href={href}
-                  className={`relative inline-block py-3 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-200 hover:after:scale-x-100 focus-visible:after:scale-x-100 motion-reduce:after:transition-none ${
-                    label === "Sale" ? "text-red-600" : "text-black"
+                  className={`relative inline-flex min-h-11 items-center after:absolute after:bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 focus-visible:after:scale-x-100 ${
+                    label === "Sale" ? "text-brand" : "text-foreground"
                   }`}
                 >
                   {label}
@@ -43,27 +43,27 @@ export default function Navbar() {
         <Link
           href="/"
           aria-label="Red Kicks home"
-          className="col-start-1 row-start-1 justify-self-center -translate-y-4 lg:col-start-2"
+          className="col-start-1 row-start-1 w-fit rounded-sm lg:col-start-2 lg:justify-self-center"
         >
           <Image
             src="/text_kicks_black.svg"
             alt="Red Kicks"
-            width={180}
-            height={48}
-            className="h-9 w-auto lg:h-9"
-            priority
+            width={152}
+            height={36}
+            className="h-6 w-auto min-[360px]:h-7 sm:h-8 lg:h-9"
+            preload
           />
         </Link>
 
-        <div className="col-span-2 col-start-2 row-start-1 flex items-center justify-end gap-1 sm:gap-3 lg:col-span-1 lg:col-start-3 lg:gap-2">
+        <div className="col-start-2 row-start-1 flex items-center justify-end gap-0 sm:gap-1 lg:col-start-3">
           {ACTIONS.map(({ label, icon: Icon }) => (
             <button
               key={label}
               type="button"
               aria-label={label}
-              className="flex size-10 items-center hover:text-red-600 justify-center rounded-full transition-colors  focus-visible:outline-2 focus-visible:outline-red-600"
+              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
             >
-              <Icon aria-hidden="true" className="size-5" strokeWidth={2} />
+              <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
           ))}
         </div>

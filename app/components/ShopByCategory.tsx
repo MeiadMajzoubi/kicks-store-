@@ -8,80 +8,121 @@ import { ArrowRight } from "lucide-react";
 const categories = [
   {
     name: "Running",
-    image: "/brands/running.webp",
+    image: "/category/running.webp",
+    width: 1400,
+    height: 933,
     href: "/categories/running",
   },
   {
     name: "Training",
-    image: "/brands/train.png",
+    image: "/category/train.png",
+    width: 1920,
+    height: 1066,
     href: "/categories/training",
   },
   {
     name: "Lifestyle",
-    image: "/brands/lifestyle.png",
+    image: "/category/lifestyle.png",
+    width: 1824,
+    height: 900,
     href: "/categories/lifestyle",
   },
   {
     name: "Outdoor",
-    image: "/brands/outdoor.webp",
+    image: "/category/outdoor.webp",
+    width: 2540,
+    height: 1693,
     href: "/categories/outdoor",
   },
   {
     name: "Sandals",
-    image: "/brands/sandals.png",
+    image: "/category/sandals.png",
+    width: 1367,
+    height: 476,
     href: "/categories/sandals",
   },
 ];
 
+const slides = [...categories, categories[0]];
+
+// Calculated once: enough space for every photo without cropping.
+const galleryHeight = Math.max(
+  ...categories.map(({ width, height }) => (0.72 * height) / (width * 0.92)),
+);
+
 export default function ShopByCategory() {
   const [active, setActive] = useState(0);
-  const slides = [...categories, categories[0]];
 
   return (
     <section
+      id="shop-categories"
       aria-labelledby="shop-category-title"
-      className="mx-auto max-w-[1920px] px-4 py-12 text-black sm:px-8"
+      className="content-shell section-space border-t border-border"
     >
-      <h2
-        id="shop-category-title"
-        className="mb-8 text-center text-2xl font-bold sm:text-3xl"
-      >
-        Shop by Category
-      </h2>
+      <div className="mb-8 sm:mb-10">
+        <p className="eyebrow mb-3">Made for your move</p>
+
+        <h2 id="shop-category-title" className="section-title">
+          Shop by category
+        </h2>
+
+        <p className="mt-3 max-w-lg text-sm text-muted-foreground sm:text-base">
+          From city streets to the trail. Find your fit.
+        </p>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[34%_66%] lg:gap-0">
-        <div className="flex flex-wrap gap-x-5 gap-y-3 lg:flex-col lg:items-start lg:justify-between lg:gap-0 lg:py-3 lg:pr-6">
+        <div className="flex flex-wrap gap-2 lg:flex-col lg:items-start lg:justify-center lg:gap-5 lg:pr-8">
           {categories.map((category, index) => (
-            <Link
-              key={category.name}
-              href={category.href}
-              onMouseEnter={() => setActive(index)}
-              onFocus={() => setActive(index)}
-              className={`group inline-flex items-center gap-2 font-bold leading-tight transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-600 lg:text-[clamp(2rem,3.2vw,3.5rem)] ${
-                active === index
-                  ? "text-red-600"
-                  : "text-black hover:text-red-600"
-              }`}
-            >
-              <span>{category.name}</span>
-              <ArrowRight
-                aria-hidden="true"
-                className={`size-5 transition-opacity duration-300 lg:size-10 ${
+            <div key={category.name}>
+              <button
+                type="button"
+                onClick={() => setActive(index)}
+                aria-pressed={active === index}
+                aria-controls="category-images"
+                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-sm font-semibold lg:hidden ${
                   active === index
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                    ? "border-foreground bg-foreground text-white"
+                    : "border-border bg-background"
                 }`}
-              />
-            </Link>
+              >
+                {category.name}
+              </button>
+
+              <Link
+                href={category.href}
+                onMouseEnter={() => setActive(index)}
+                onFocus={() => setActive(index)}
+                className={`hidden items-center gap-3 rounded-sm font-semibold leading-tight tracking-[-0.04em] transition-colors duration-300 lg:inline-flex lg:text-[clamp(2rem,3.2vw,3.5rem)] ${
+                  active === index
+                    ? "text-brand"
+                    : "text-foreground hover:text-brand"
+                }`}
+              >
+                <span>{category.name}</span>
+
+                <ArrowRight
+                  aria-hidden="true"
+                  strokeWidth={1.5}
+                  className={`size-8 shrink-0 transition-opacity duration-300 xl:size-10 ${
+                    active === index ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              </Link>
+            </div>
           ))}
         </div>
 
-        <div className="relative aspect-[4/3] overflow-hidden sm:aspect-[2/1]">
+        <div
+          id="category-images"
+          className="relative min-w-0 overflow-hidden rounded-2xl"
+          style={{ paddingTop: `${galleryHeight * 100}%` }}
+        >
           {slides.map((category, index) => {
             const isActive = index === active;
             const isNext = index === active + 1;
-            const isPrev = index < active;
-            const isFront = isActive || isPrev; // کاغذ جلو (فعال یا رفته به چپ)
+            const isPrevious = index < active;
+            const isFront = isActive || isPrevious;
             const isVisible = isActive || isNext;
 
             return (
@@ -90,38 +131,48 @@ export default function ShopByCategory() {
                 href={category.href}
                 tabIndex={isVisible ? 0 : -1}
                 aria-hidden={isVisible ? undefined : true}
-                className="absolute overflow-hidden bg-neutral-100 transition-[left,width,top,bottom,opacity,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                className="absolute overflow-hidden rounded-2xl bg-surface transition-[left,width,top,opacity,box-shadow] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none focus-visible:outline-offset-[-6px]"
                 style={{
                   left: isActive
                     ? "0%"
                     : isNext
                       ? "42%"
-                      : isPrev
+                      : isPrevious
                         ? "-80%"
                         : "100%",
                   width: isFront ? "72%" : "58%",
-                  // کاغذ جلو پایین‌تره، کاغذ پشت بالاتر
                   top: isFront ? "8%" : "0%",
-                  bottom: isFront ? "0%" : "12%",
                   opacity: isVisible ? 1 : 0,
                   zIndex: isActive ? 30 : isNext ? 20 : 10,
-                  boxShadow: isActive ? "0 10px 40px rgba(0,0,0,0.3)" : "none",
+                  boxShadow: isActive
+                    ? "8px 8px 32px rgba(0,0,0,0.16)"
+                    : "none",
                   pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
                 <Image
                   src={category.image}
-                  alt={`${category.name} footwear`}
-                  fill
-                  quality={100}
-                  priority={index === 0}
-                  sizes="(min-width: 1024px) 50vw, 80vw"
-                  className="object-cover"
+                  width={category.width}
+                  height={category.height}
+                  alt={`${category.name} footwear in action`}
+                  sizes="(min-width: 1664px) 760px, (min-width: 1024px) 50vw, 80vw"
+                  className="block h-auto w-full"
                 />
               </Link>
             );
           })}
         </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-end gap-5">
+        <span className="text-xs tabular-nums text-muted-foreground">
+          0{active + 1} / 0{categories.length}
+        </span>
+
+        <Link href={categories[active].href} className="text-link">
+          Shop {categories[active].name.toLowerCase()}
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
       </div>
     </section>
   );
