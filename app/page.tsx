@@ -94,11 +94,8 @@ export default function Home() {
         </Carousel>
 
         <div className="content-shell border-b border-border py-8 sm:py-10 lg:py-12">
-          <div>
-            <p className="eyebrow mb-3">Red Kicks / Your next rotation</p>
-            <h1 className="text-[clamp(2.5rem,5.5vw,5rem)] font-bold leading-[1.02] tracking-[-0.06em]">Find your next <span className="text-brand">pair.</span></h1>
-            <p className="mt-4 max-w-md text-sm text-muted-foreground sm:text-base">For the everyday. For the extra mile. Make your next move.</p>
-          </div>
+          <h1 className="page-title">Find your next pair<span className="title-mark">.</span></h1>
+          <p className="section-intro">For the everyday. For the extra mile. Make your next move.</p>
         </div>
       </section>
       <div className="pt-6 sm:pt-10 lg:pt-14">

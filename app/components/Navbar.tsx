@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
   Heart,
   ShoppingBag,
   User,
@@ -167,11 +166,11 @@ export default function Navbar() {
                           ?.focus();
                       });
                     }}
-                    className={`relative inline-flex min-h-11 items-center rounded-sm transition-colors duration-200 after:absolute after:bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-red-600 after:transition-transform after:duration-200 motion-reduce:transition-none ${
+                    className={`relative inline-flex min-h-11 items-center rounded-sm transition-colors duration-200 after:absolute after:bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-brand after:transition-transform after:duration-200 motion-reduce:transition-none ${
                       isOpen
-                        ? "text-red-600 after:scale-x-100"
-                        : "after:scale-x-0 hover:text-red-600 hover:after:scale-x-100"
-                    } ${panel === "sale" ? "text-red-600" : ""}`}
+                        ? "text-brand after:scale-x-100"
+                        : "after:scale-x-0 hover:text-brand hover:after:scale-x-100"
+                    } ${panel === "sale" ? "text-brand" : ""}`}
                   >
                     {PANEL_LABELS[panel]}
                   </button>
@@ -205,7 +204,7 @@ export default function Navbar() {
               type="button"
               aria-label={label}
               onClick={closePanel}
-              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-red-600"
+              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
             >
               <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
@@ -220,19 +219,15 @@ export default function Navbar() {
           activePanel ? `navbar-${activePanel}-trigger` : undefined
         }
         hidden={!activePanel}
-        className={`absolute top-full max-h-[calc(100dvh-8rem)] overflow-y-auto border-b border-neutral-200 bg-white text-neutral-950 shadow-[0_20px_40px_-24px_rgba(0,0,0,0.25)] ${
-          activePanel === "women" || activePanel === "men"
-            ? "left-1/2 w-[calc(100%_-_2rem)] max-w-[1320px] -translate-x-1/2 border-x"
-            : "inset-x-0"
-        }`}
+        className="absolute inset-x-0 top-full max-h-[calc(100dvh-8rem)] overflow-y-auto border-b border-border bg-background text-foreground shadow-[0_20px_40px_-24px_rgba(0,0,0,0.25)]"
       >
         {(activePanel === "women" || activePanel === "men") && (
-          <div className="px-6 py-7 sm:px-10 sm:py-9">
-            <div className="mx-auto grid max-w-[1200px] gap-x-10 gap-y-9 md:grid-cols-2 lg:grid-cols-[minmax(180px,0.9fr)_220px_minmax(0,1.8fr)]">
+          <div className="content-shell py-7 sm:py-9">
+            <div className="grid gap-x-10 gap-y-9 md:grid-cols-2 lg:grid-cols-[minmax(180px,0.9fr)_220px_minmax(0,1.8fr)]">
               <section aria-labelledby={`navbar-${activePanel}-shoes`}>
                 <h2
                   id={`navbar-${activePanel}-shoes`}
-                  className="mb-5 text-xl font-semibold leading-7 tracking-tight"
+                  className="panel-title"
                 >
                   Shoes
                 </h2>
@@ -243,7 +238,7 @@ export default function Navbar() {
                       href={`/${activePanel}`}
                       prefetch={false}
                       onClick={closePanel}
-                      className="inline-flex min-h-12 items-center rounded-sm text-[17px] font-medium text-neutral-950 underline-offset-4 hover:underline"
+                      className="inline-flex min-h-11 items-center text-[15px] font-medium transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
                     >
                       All Shoes
                     </Link>
@@ -254,7 +249,7 @@ export default function Navbar() {
                         href={`/categories/${category.slug}?gender=${activePanel}`}
                         prefetch={false}
                         onClick={closePanel}
-                        className="inline-flex min-h-12 items-center rounded-sm text-[17px] leading-snug text-neutral-600 transition-colors duration-150 hover:text-red-600 focus-visible:text-red-600 motion-reduce:transition-none"
+                        className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
                       >
                         {category.name}
                       </Link>
@@ -266,12 +261,12 @@ export default function Navbar() {
               <section aria-labelledby={`navbar-${activePanel}-sizes`}>
                 <h2
                   id={`navbar-${activePanel}-sizes`}
-                  className="mb-5 text-xl font-semibold leading-7 tracking-tight"
+                  className="panel-title"
                 >
                   Shoes by Size
                 </h2>
 
-                <ul className="grid w-full max-w-[220px] grid-cols-3 gap-2.5">
+                <ul className="grid w-full max-w-[220px] grid-cols-3 gap-2">
                   {SHOE_SIZES[activePanel].map((size) => (
                     <li key={size}>
                       <Link
@@ -279,7 +274,7 @@ export default function Navbar() {
                         prefetch={false}
                         aria-label={`Browse ${PANEL_LABELS[activePanel].toLowerCase()}'s shoes in size ${size}`}
                         onClick={closePanel}
-                        className="flex min-h-[60px] items-center justify-center border border-neutral-200 bg-white px-2 text-sm font-semibold transition-colors duration-150 hover:border-neutral-950 hover:bg-neutral-950 hover:text-white focus-visible:border-neutral-950 focus-visible:bg-neutral-950 focus-visible:text-white motion-reduce:transition-none"
+                        className="flex min-h-12 items-center justify-center rounded-lg border border-border bg-background px-2 text-sm font-semibold transition-colors duration-150 hover:border-foreground hover:bg-foreground hover:text-white focus-visible:border-foreground focus-visible:bg-foreground focus-visible:text-white motion-reduce:transition-none"
                       >
                         {size}
                       </Link>
@@ -290,11 +285,11 @@ export default function Navbar() {
 
               <section
                 aria-labelledby={`navbar-${activePanel}-brands`}
-                className="md:col-span-2 lg:col-span-1 lg:border-l lg:border-neutral-200 lg:pl-8"
+                className="md:col-span-2 lg:col-span-1 lg:border-l lg:border-border lg:pl-8"
               >
                 <h2
                   id={`navbar-${activePanel}-brands`}
-                  className="mb-5 text-xl font-semibold leading-7 tracking-tight"
+                  className="panel-title"
                 >
                   Brands
                 </h2>
@@ -306,7 +301,7 @@ export default function Navbar() {
                         href={`/brands/${brand.slug}?gender=${activePanel}`}
                         prefetch={false}
                         onClick={closePanel}
-                        className="group flex min-h-12 items-center gap-3 border-b border-neutral-200/70 text-neutral-700 transition-colors duration-150 hover:text-red-600 focus-visible:text-red-600 motion-reduce:transition-none"
+                        className="group flex min-h-12 items-center gap-3 border-b border-border text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
                       >
                         <Image
                           src={brand.logo}
@@ -326,16 +321,10 @@ export default function Navbar() {
                     <Link
                       href="/brands"
                       onClick={closePanel}
-                      className="inline-flex min-h-12 items-center gap-3 text-[15px] font-semibold text-red-600 transition-colors duration-150 hover:text-red-700 motion-reduce:transition-none"
+                      className="text-link"
                     >
-                      <span className="underline underline-offset-4">
-                        See all brands
-                      </span>
-                      <ArrowUpRight
-                        aria-hidden="true"
-                        className="size-4 shrink-0"
-                        strokeWidth={1.75}
-                      />
+                      See all brands
+                      <ArrowRight aria-hidden="true" className="size-4" />
                     </Link>
                   </li>
                 </ul>
@@ -346,24 +335,18 @@ export default function Navbar() {
 
         {activePanel === "brands" && (
           <div className="content-shell py-7 sm:py-9">
-            <div className="mx-auto max-w-[1320px]">
+            <div>
               <div className="mb-6 flex items-center justify-between gap-5">
-                <h2 className="text-2xl font-semibold tracking-tight">
+                <h2 className="panel-title mb-0">
                   Brands
                 </h2>
                 <Link
                   href="/brands"
                   onClick={closePanel}
-                  className="inline-flex min-h-11 items-center gap-3 text-[15px] font-semibold text-red-600 transition-colors duration-150 hover:text-red-700 motion-reduce:transition-none"
-                >
-                  <span className="underline underline-offset-4">
-                    See all brands
-                  </span>
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    className="size-4 shrink-0"
-                    strokeWidth={1.75}
-                  />
+                  className="text-link"
+                    >
+                      See all brands
+                      <ArrowRight aria-hidden="true" className="size-4" />
                 </Link>
               </div>
 
@@ -374,7 +357,7 @@ export default function Navbar() {
                       href={`/brands/${brand.slug}`}
                       prefetch={false}
                       onClick={closePanel}
-                      className="flex min-h-20 items-center gap-4 border-b border-neutral-200 text-neutral-700 transition-colors duration-150 hover:text-red-600 focus-visible:text-red-600 motion-reduce:transition-none"
+                      className="flex min-h-20 items-center gap-4 border-b border-border text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
                     >
                       <Image
                         src={brand.logo}
@@ -396,7 +379,7 @@ export default function Navbar() {
 
         {activePanel === "sale" && (
           <div className="content-shell py-7 sm:py-9">
-            <div className="mx-auto max-w-[1320px]">
+            <div>
               <div className="grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-[160px_160px_minmax(0,1fr)] lg:gap-x-12">
                 {SALE_COLLECTIONS.map((collection) => (
                   <section
@@ -405,7 +388,7 @@ export default function Navbar() {
                   >
                     <h2
                       id={`sale-${collection.name.toLowerCase()}`}
-                      className="mb-3 text-lg font-semibold tracking-tight text-neutral-950"
+                      className="panel-title"
                     >
                       {collection.name}
                     </h2>
@@ -414,7 +397,7 @@ export default function Navbar() {
                       href={collection.href}
                       prefetch={false}
                       onClick={closePanel}
-                      className="inline-flex min-h-11 items-center rounded-sm text-[15px] text-neutral-600 decoration-red-600 underline-offset-4 transition-colors duration-150 hover:text-neutral-950 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-600 motion-reduce:transition-none"
+                      className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
                     >
                       Shoes
                     </Link>
@@ -423,11 +406,11 @@ export default function Navbar() {
 
                 <section
                   aria-labelledby="sale-brands-heading"
-                  className="col-span-2 border-t border-neutral-200 pt-6 lg:col-span-1 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0"
+                  className="col-span-2 border-t border-border pt-6 lg:col-span-1 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0"
                 >
                   <h2
                     id="sale-brands-heading"
-                    className="mb-3 text-lg font-semibold tracking-tight text-neutral-950"
+                    className="panel-title"
                   >
                     Brands
                   </h2>
@@ -439,7 +422,7 @@ export default function Navbar() {
                           href={`/sale?brand=${encodeURIComponent(brand.slug)}`}
                           prefetch={false}
                           onClick={closePanel}
-                          className="inline-flex min-h-11 items-center rounded-sm py-2 text-[15px] leading-snug text-neutral-600 decoration-red-600 underline-offset-4 transition-colors duration-150 hover:text-neutral-950 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-600 motion-reduce:transition-none"
+                          className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
                         >
                           {brand.name}
                         </Link>
@@ -449,18 +432,14 @@ export default function Navbar() {
                 </section>
               </div>
 
-              <div className="mt-7 border-t border-neutral-200 pt-3">
+              <div className="mt-7 border-t border-border pt-3">
                 <Link
                   href="/sale"
                   onClick={closePanel}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-sm text-sm font-medium text-red-600 underline-offset-4 hover:underline"
+                  className="text-link"
                 >
                   View all sale
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="size-4"
-                    strokeWidth={1.5}
-                  />
+                  <ArrowRight aria-hidden="true" className="size-4" />
                 </Link>
               </div>
             </div>

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search, X } from "lucide-react";
 import { mockProducts } from "@/data/mockProducts";
+import Price from "./Price";
 
 type SearchBarProps = {
   // Lets the navbar close any open mega panel when search opens.
@@ -24,11 +25,6 @@ const POPULAR_SEARCHES = [
 ];
 
 const MAX_RESULTS = 6;
-
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 function searchProducts(query: string) {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -128,7 +124,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={openSearch}
-        className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-red-600"
+        className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
       >
         <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />
       </button>
@@ -143,7 +139,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
             <div
               aria-hidden="true"
               onClick={closeSearch}
-              className="absolute inset-0 bg-neutral-950/40 animate-in fade-in duration-200 motion-reduce:animate-none"
+              className="absolute inset-0 bg-foreground/40 animate-in fade-in duration-200 motion-reduce:animate-none"
             />
 
             <div
@@ -151,7 +147,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
               role="dialog"
               aria-modal="true"
               aria-label="Search"
-              className="relative flex h-dvh flex-col bg-white text-neutral-950 animate-in fade-in slide-in-from-top-4 duration-200 motion-reduce:animate-none lg:h-auto lg:max-h-[85dvh]"
+              className="relative flex h-dvh flex-col bg-background text-foreground animate-in fade-in slide-in-from-top-4 duration-200 motion-reduce:animate-none lg:h-auto lg:max-h-[85dvh]"
             >
               {/* Top bar: mirrors the header grid so the logo stays in place. */}
               <div className="content-shell grid grid-cols-[1fr_auto] items-center gap-x-3 py-4 lg:min-h-24 lg:grid-cols-[1fr_minmax(0,640px)_1fr] lg:gap-x-6 lg:py-5">
@@ -171,10 +167,10 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                 </Link>
 
                 <form role="search" onSubmit={handleSubmit} className="min-w-0">
-                  <div className="flex h-12 items-center rounded-full bg-neutral-100 transition-colors duration-150 hover:bg-neutral-200/70 focus-within:bg-neutral-200/70 motion-reduce:transition-none">
+                  <div className="flex h-12 items-center rounded-full bg-surface transition-colors duration-150 hover:bg-surface-hover focus-within:bg-surface-hover motion-reduce:transition-none">
                     <Search
                       aria-hidden="true"
-                      className="ml-4 size-5 shrink-0 text-neutral-950"
+                      className="ml-4 size-5 shrink-0 text-foreground"
                       strokeWidth={1.75}
                     />
 
@@ -189,7 +185,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                       placeholder="Search sneakers, brands, styles"
                       aria-label="Search sneakers, brands, styles"
                       autoComplete="off"
-                      className="h-full min-w-0 flex-1 bg-transparent px-3 text-base font-medium outline-none placeholder:font-normal placeholder:text-neutral-500"
+                      className="h-full min-w-0 flex-1 bg-transparent px-3 text-base font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground"
                     />
 
                     {query && (
@@ -200,7 +196,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                           setQuery("");
                           inputRef.current?.focus();
                         }}
-                        className="mr-1 flex size-10 shrink-0 items-center justify-center rounded-full text-neutral-500 transition-colors duration-150 hover:bg-neutral-300/60 hover:text-neutral-950"
+                        className="mr-1 flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors duration-150 hover:bg-surface-hover hover:text-foreground"
                       >
                         <X aria-hidden="true" className="size-4" strokeWidth={2} />
                       </button>
@@ -211,21 +207,21 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                 <button
                   type="button"
                   onClick={closeSearch}
-                  className="inline-flex min-h-11 items-center justify-self-end text-sm font-semibold transition-colors duration-150 hover:text-red-600"
+                  className="inline-flex min-h-11 items-center justify-self-end text-sm font-semibold transition-colors duration-150 hover:text-brand"
                 >
                   Cancel
                 </button>
               </div>
 
               {/* Body */}
-              <div className="flex-1 overflow-y-auto border-t border-neutral-200">
+              <div className="flex-1 overflow-y-auto border-t border-border">
                 <div className="content-shell py-7 lg:py-9">
                   <div className="mx-auto max-w-[640px] lg:max-w-[1040px]">
                     {!trimmed && (
                       <section aria-labelledby="search-popular">
                         <h2
                           id="search-popular"
-                          className="mb-4 text-sm font-medium text-neutral-500"
+                          className="mb-4 text-sm font-medium text-muted-foreground"
                         >
                           Popular Searches
                         </h2>
@@ -239,7 +235,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                                   setQuery(term);
                                   inputRef.current?.focus();
                                 }}
-                                className="flex min-h-11 items-center rounded-full bg-neutral-100 px-5 text-base font-medium transition-colors duration-150 hover:bg-neutral-200 focus-visible:bg-neutral-200 motion-reduce:transition-none"
+                                className="flex min-h-11 items-center rounded-full bg-surface px-5 text-base font-medium transition-colors duration-150 hover:bg-surface-hover focus-visible:bg-surface-hover motion-reduce:transition-none"
                               >
                                 {term}
                               </button>
@@ -254,7 +250,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                         <div className="mb-5 flex items-center justify-between gap-4">
                           <h2
                             id="search-results"
-                            className="text-sm font-semibold text-neutral-500"
+                            className="text-sm font-semibold text-muted-foreground"
                           >
                             {matches.length} {matches.length === 1 ? "result" : "results"}
                           </h2>
@@ -262,10 +258,10 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                           <Link
                             href={searchHref}
                             onClick={closeAfterNavigate}
-                            className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-red-600 underline-offset-4 hover:underline"
+                            className="text-link"
                           >
                             View all
-                            <ArrowRight aria-hidden="true" className="size-4" strokeWidth={1.75} />
+                            <ArrowRight aria-hidden="true" className="size-4" />
                           </Link>
                         </div>
 
@@ -278,7 +274,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                                 onClick={closeAfterNavigate}
                                 className="group block"
                               >
-                                <div className="relative aspect-square overflow-hidden bg-neutral-100">
+                                <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
                                   <Image
                                     src={product.image}
                                     alt=""
@@ -288,26 +284,13 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                                   />
                                 </div>
 
-                                <p className="mt-3 text-xs font-medium text-neutral-500">
+                                <p className="mt-3 text-xs font-medium text-muted-foreground">
                                   {product.brand}
                                 </p>
-                                <p className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-red-600">
+                                <p className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-brand">
                                   {product.name}
                                 </p>
-                                <p className="mt-1 text-sm font-medium tabular-nums">
-                                  {product.salePrice ? (
-                                    <>
-                                      <span className="text-red-600">
-                                        {currency.format(product.salePrice)}
-                                      </span>{" "}
-                                      <span className="text-neutral-500 line-through">
-                                        {currency.format(product.price)}
-                                      </span>
-                                    </>
-                                  ) : (
-                                    currency.format(product.price)
-                                  )}
-                                </p>
+                                <Price product={product} className="mt-1" />
                               </Link>
                             </li>
                           ))}
@@ -319,7 +302,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                       <p className="text-base">
                         No results for{" "}
                         <span className="font-semibold">&ldquo;{trimmed}&rdquo;</span>.
-                        <span className="mt-1 block text-sm text-neutral-500">
+                        <span className="mt-1 block text-sm text-muted-foreground">
                           Check the spelling or try a brand name.
                         </span>
                       </p>

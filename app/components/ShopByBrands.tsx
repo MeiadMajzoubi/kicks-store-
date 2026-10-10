@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import {
   Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi,
 } from "@/components/ui/carousel";
@@ -11,11 +12,11 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const brands = [
   { name: "Nike", image: "/brands/Nike.jpeg", href: "/brands/nike" },
-  { name: "Adidas", image: "/brands/Adidas.jpeg", href: "/brands/adidas" },
+  { name: "adidas", image: "/brands/Adidas.jpeg", href: "/brands/adidas" },
   { name: "ASICS", image: "/brands/Asics.jpeg", href: "/brands/asics" },
   { name: "On", image: "/brands/On.jpeg", href: "/brands/on" },
   { name: "New Balance", image: "/brands/NB.jpeg", href: "/brands/new-balance" },
-  { name: "Birkenstock", image: "/brands/Birkenstock.jpeg", href: "/brands/Birkenstock" },
+  { name: "Birkenstock", image: "/brands/Birkenstock.jpeg", href: "/brands/birkenstock" },
 ];
 
 export default function ShopByBrands() {
@@ -25,9 +26,11 @@ export default function ShopByBrands() {
 
   return (
     <section id="shop-brands" aria-labelledby="shop-brands-title" className="content-shell section-space">
-      <div className="mb-8 sm:mb-10">
-        <p className="eyebrow mb-3">The names you know</p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 sm:mb-10">
         <h2 id="shop-brands-title" className="section-title">Shop top brands</h2>
+        <Link href="/brands" className="text-link">
+          All brands <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
       </div>
       <Carousel setApi={setApi} opts={{ align: "start", duration: reducedMotion ? 0 : 30 }} aria-label="Shop top brands" className="w-full">
         <CarouselContent className="-ml-4 sm:-ml-5">

@@ -60,13 +60,11 @@ export default function ShopByCategory() {
       className="content-shell section-space border-t border-border"
     >
       <div className="mb-8 sm:mb-10">
-        <p className="eyebrow mb-3">Made for your move</p>
-
         <h2 id="shop-category-title" className="section-title">
           Shop by category
         </h2>
 
-        <p className="mt-3 max-w-lg text-sm text-muted-foreground sm:text-base">
+        <p className="section-intro">
           From city streets to the trail. Find your fit.
         </p>
       </div>

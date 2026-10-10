@@ -3,17 +3,16 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ImageOff } from "lucide-react";
+import { ArrowRight, ImageOff } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockProducts, sortByColor } from "@/data/mockProducts";
 import type { MockProduct } from "@/data/mockProducts";
+import Price from "./Price";
 
 const collections = [
   { value: "men", label: "Men", products: sortByColor(mockProducts.filter((product) => product.gender === "men")) },
   { value: "women", label: "Women", products: sortByColor(mockProducts.filter((product) => product.gender === "women")) },
 ];
-
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
 function ProductCard({ product }: { product: MockProduct }) {
   const [imageMissing, setImageMissing] = useState(false);
@@ -42,9 +41,9 @@ function ProductCard({ product }: { product: MockProduct }) {
         )}
       </div>
       <div className="product-details">
-        <p className="text-[11px] text-muted-foreground">{product.brand}</p>
+        <p className="text-xs text-muted-foreground">{product.brand}</p>
         <h3 className="text-sm font-semibold leading-snug tracking-tight">{product.name}</h3>
-        <p className="mt-1 text-sm font-medium tabular-nums">{currency.format(product.price)}</p>
+        <Price product={product} className="mt-1" />
       </div>
     </Link>
   );
@@ -52,14 +51,11 @@ function ProductCard({ product }: { product: MockProduct }) {
 
 export default function TrendingProducts() {
   return (
-    <section id="trending" aria-labelledby="trending-title" className="content-shell mb-4 rounded-[1.5rem] bg-surface px-4 py-7 sm:rounded-[2rem] sm:p-8 lg:px-10 lg:py-10">
+    <section id="trending" aria-labelledby="trending-title" className="content-shell mb-4 rounded-3xl bg-surface px-4 py-7 sm:p-8 lg:px-10 lg:py-10">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
-        <div>
-          <p className="eyebrow mb-3">In the rotation</p>
-          <h2 id="trending-title" className="section-title">Trending now</h2>
-        </div>
+        <h2 id="trending-title" className="section-title">Trending now</h2>
         <Link href="/shop" className="text-link">
-          Shop all <ArrowUpRight aria-hidden="true" className="size-4" />
+          Shop all <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
       </div>
 

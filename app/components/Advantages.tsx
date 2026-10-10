@@ -104,10 +104,7 @@ export default function Advantages() {
       aria-labelledby="advantages-title"
       className="content-shell section-space border-t border-border"
     >
-      <div className="mb-8 sm:mb-10">
-        <p className="eyebrow mb-3">The Red Kicks experience</p>
-        <h2 id="advantages-title" className="section-title">Why choose us</h2>
-      </div>
+      <h2 id="advantages-title" className="section-title mb-8 sm:mb-10">Why choose us</h2>
 
       <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {advantages.map(({ title, icon: Icon, href }) => (
