@@ -7,11 +7,11 @@ import {
   ArrowRight,
   ArrowUpRight,
   Heart,
-  Search,
   ShoppingBag,
   User,
 } from "lucide-react";
 import { alphabeticalBrands } from "@/data/brands";
+import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
 type Panel = Gender | "brands" | "sale";
@@ -34,8 +34,21 @@ const SHOE_CATEGORIES = [
 // Reference size filters, not verified stock or a confirmed UK/US size system.
 // Replace each department's values with its real catalogue sizes when available.
 const REFERENCE_SIZES = [
-  "6", "6.5", "7", "7.5", "8", "8.5", "9", "9.5",
-  "10", "10.5", "11", "11.5", "12", "12.5", "13",
+  "6",
+  "6.5",
+  "7",
+  "7.5",
+  "8",
+  "8.5",
+  "9",
+  "9.5",
+  "10",
+  "10.5",
+  "11",
+  "11.5",
+  "12",
+  "12.5",
+  "13",
 ];
 
 const SHOE_SIZES: Record<Gender, readonly string[]> = {
@@ -44,7 +57,6 @@ const SHOE_SIZES: Record<Gender, readonly string[]> = {
 };
 
 const ACTIONS = [
-  { label: "Search", icon: Search },
   { label: "Wishlist", icon: Heart },
   { label: "Cart", icon: ShoppingBag },
   { label: "Account", icon: User },
@@ -98,9 +110,7 @@ export default function Navbar() {
         if (event.pointerType === "mouse") closePanel();
       }}
       onBlur={(event) => {
-        if (
-          !event.currentTarget.contains(event.relatedTarget as Node | null)
-        ) {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
           closePanel();
         }
       }}
@@ -188,6 +198,7 @@ export default function Navbar() {
         </Link>
 
         <div className="col-start-2 row-start-1 flex items-center justify-end gap-0 sm:gap-1 lg:col-start-3">
+          <SearchBar onOpen={closePanel} />
           {ACTIONS.map(({ label, icon: Icon }) => (
             <button
               key={label}
@@ -196,11 +207,7 @@ export default function Navbar() {
               onClick={closePanel}
               className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-red-600"
             >
-              <Icon
-                aria-hidden="true"
-                className="size-5"
-                strokeWidth={1.75}
-              />
+              <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
           ))}
         </div>
@@ -324,7 +331,11 @@ export default function Navbar() {
                       <span className="underline underline-offset-4">
                         See all brands
                       </span>
-                      <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.75} />
+                      <ArrowUpRight
+                        aria-hidden="true"
+                        className="size-4 shrink-0"
+                        strokeWidth={1.75}
+                      />
                     </Link>
                   </li>
                 </ul>
@@ -348,7 +359,11 @@ export default function Navbar() {
                   <span className="underline underline-offset-4">
                     See all brands
                   </span>
-                  <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.75} />
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    className="size-4 shrink-0"
+                    strokeWidth={1.75}
+                  />
                 </Link>
               </div>
 
