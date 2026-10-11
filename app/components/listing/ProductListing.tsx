@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { Check, ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import type { Gender, Product } from "@/data/mockProducts";
 import {
   CATEGORY_OPTIONS,
@@ -16,9 +16,22 @@ import {
   type CatalogFilters,
   type SortKey,
 } from "@/lib/catalog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ListingCard from "./ListingCard";
 
-type Facets = { sizes: number[]; colors: CatalogFilters["colors"]; brands: string[] };
+type Facets = {
+  sizes: number[];
+  colors: CatalogFilters["colors"];
+  brands: string[];
+  newCount: number;
+  saleCount: number;
+};
 
 type ProductListingProps = {
   gender: Gender;
@@ -49,61 +62,81 @@ export default function ProductListing({ gender, basePath, filters, results, fac
   };
 
   const clearFilters = () =>
-    update({ sizes: [], colors: [], brands: [], prices: [], sale: false });
+    update({ sizes: [], colors: [], brands: [], prices: [], isNew: false, sale: false });
 
-  const panel = (
-    <FilterPanel
-      basePath={basePath}
-      filters={filters}
-      facets={facets}
-      onChange={update}
-    />
-  );
+  const panel = <FilterPanel filters={filters} facets={facets} onChange={update} />;
 
   return (
     <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
-      {/* Toolbar: stays visible while the grid scrolls. */}
-      <div className="sticky top-0 z-30 border-b border-border bg-background">
-        <div className="content-shell flex min-h-16 items-center justify-between gap-4 py-3">
-          <h1 className="text-xl font-semibold tracking-[-0.03em] sm:text-2xl">
-            {title}{" "}
-            <span className="font-normal text-muted-foreground tabular-nums">({results.length})</span>
-          </h1>
+      <header className="content-shell pt-8 sm:pt-10">
+        <h1 className="section-title">
+          {title}{" "}
+          <span className="font-normal text-muted-foreground tabular-nums">({results.length})</span>
+        </h1>
 
-          <div className="flex items-center gap-1 sm:gap-4">
-            <button
-              type="button"
-              onClick={() => setShowFilters((value) => !value)}
-              aria-expanded={showFilters}
-              aria-controls="listing-filters"
-              className="hidden min-h-11 items-center gap-2 text-[15px] font-medium transition-colors duration-150 hover:text-brand lg:inline-flex"
-            >
-              {showFilters ? "Hide Filters" : "Show Filters"}
-              <SlidersHorizontal aria-hidden="true" className="size-5" strokeWidth={1.75} />
-            </button>
+        <div className="mt-4 border-b border-border">
+          <nav aria-label="Categories" className="-mb-px min-w-0 overflow-x-auto [scrollbar-width:none]">
+            <ul className="flex gap-6 sm:gap-8">
+              {[{ value: undefined, label: "All" }, ...CATEGORY_OPTIONS].map((option) => {
+                const isActive = filters.category === option.value;
+                return (
+                  <li key={option.label} className="shrink-0">
+                    <Link
+                      href={`${basePath}${filtersToQuery({ ...filters, category: option.value })}`}
+                      scroll={false}
+                      aria-current={isActive ? "page" : undefined}
+                      className={`flex min-h-12 items-center border-b-2 text-[15px] font-medium transition-colors duration-150 ${
+                        isActive
+                          ? "border-foreground text-foreground"
+                          : "border-transparent text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {option.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
+      </header>
 
-            <button
-              type="button"
-              onClick={() => setSheetOpen(true)}
-              aria-haspopup="dialog"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-4 text-sm font-medium lg:hidden"
-            >
-              Filter
-              {activeCount > 0 && <span className="tabular-nums text-muted-foreground">({activeCount})</span>}
-              <SlidersHorizontal aria-hidden="true" className="size-4" strokeWidth={1.75} />
-            </button>
+      {/* Toolbar: a translucent layer the grid scrolls under. */}
+      <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
+        <div className="content-shell flex min-h-14 items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => setShowFilters((value) => !value)}
+            aria-expanded={showFilters}
+            aria-controls="listing-filters"
+            className="hidden min-h-11 items-center gap-2 text-[15px] font-medium transition-colors duration-150 hover:text-brand lg:inline-flex"
+          >
+            <SlidersHorizontal aria-hidden="true" className="size-[18px]" strokeWidth={1.75} />
+            {showFilters ? "Hide filters" : "Show filters"}
+            {activeCount > 0 && <span className="tabular-nums text-muted-foreground">({activeCount})</span>}
+          </button>
 
-            <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} />
-          </div>
+          <button
+            type="button"
+            onClick={() => setSheetOpen(true)}
+            aria-haspopup="dialog"
+            className="inline-flex min-h-11 items-center gap-2 text-[15px] font-medium lg:hidden"
+          >
+            <SlidersHorizontal aria-hidden="true" className="size-[18px]" strokeWidth={1.75} />
+            Filter
+            {activeCount > 0 && <span className="tabular-nums text-muted-foreground">({activeCount})</span>}
+          </button>
+
+          <SortMenu value={filters.sort} onChange={(sort) => update({ sort })} />
         </div>
       </div>
 
-      <div className="content-shell flex gap-10 pt-6 pb-16">
+      <div className="content-shell flex gap-10 pt-4 pb-20 xl:gap-12">
         {showFilters && (
           <aside
             id="listing-filters"
             aria-label="Filters"
-            className="sticky top-24 hidden max-h-[calc(100dvh-7rem)] w-60 shrink-0 self-start overflow-y-auto pr-3 [scrollbar-width:thin] lg:block"
+            className="sticky top-16 hidden max-h-[calc(100dvh-5rem)] w-60 shrink-0 self-start overflow-y-auto pr-3 [scrollbar-width:thin] lg:block"
           >
             {panel}
             {activeCount > 0 && (
@@ -114,12 +147,12 @@ export default function ProductListing({ gender, basePath, filters, results, fac
           </aside>
         )}
 
-        <section aria-label="Products" aria-busy={isPending} className="min-w-0 flex-1">
+        <section aria-label="Products" aria-busy={isPending} className="grid-reveal min-w-0 flex-1">
           {results.length > 0 ? (
             <ul
-              className={`grid grid-cols-2 gap-x-2 gap-y-2 transition-opacity duration-200 sm:gap-x-4 lg:grid-cols-3 ${
-                isPending ? "opacity-50" : ""
-              }`}
+              className={`grid grid-cols-2 gap-x-3 gap-y-10 transition-opacity duration-200 sm:gap-x-4 lg:grid-cols-3 ${
+                showFilters ? "" : "xl:grid-cols-4"
+              } ${isPending ? "opacity-50" : ""}`}
             >
               {results.map((product, index) => (
                 <li key={product.id}>
@@ -128,7 +161,7 @@ export default function ProductListing({ gender, basePath, filters, results, fac
               ))}
             </ul>
           ) : (
-            <div className="rounded-2xl bg-surface px-6 py-16 text-center">
+            <div className="rounded-lg bg-surface px-6 py-20 text-center">
               <p className="text-lg font-semibold">No shoes match these filters</p>
               <p className="mt-1 text-sm text-muted-foreground">Remove a filter to see more styles.</p>
               {activeCount > 0 && (
@@ -152,23 +185,6 @@ export default function ProductListing({ gender, basePath, filters, results, fac
           onClear={clearFilters}
           onClose={() => setSheetOpen(false)}
         >
-          <div className="mb-6 border-b border-border pb-6">
-            <h2 className="panel-title">Sort By</h2>
-            <div className="space-y-1">
-              {SORT_OPTIONS.map((option) => (
-                <label key={option.value} className="flex min-h-11 cursor-pointer items-center gap-3 text-[15px]">
-                  <input
-                    type="radio"
-                    name="sort-mobile"
-                    checked={filters.sort === option.value}
-                    onChange={() => update({ sort: option.value })}
-                    className="size-4 accent-foreground"
-                  />
-                  {option.label}
-                </label>
-              ))}
-            </div>
-          </div>
           {panel}
         </FilterSheet>
       )}
@@ -176,61 +192,72 @@ export default function ProductListing({ gender, basePath, filters, results, fac
   );
 }
 
-function SortSelect({ value, onChange }: { value: SortKey; onChange: (value: SortKey) => void }) {
+/** Opens from its trigger (transform-origin follows the button), quick and without bounce. */
+function SortMenu({ value, onChange }: { value: SortKey; onChange: (value: SortKey) => void }) {
+  const current = SORT_OPTIONS.find((option) => option.value === value)?.label;
+
   return (
-    <label className="relative hidden min-h-11 items-center gap-1 text-[15px] font-medium sm:inline-flex">
-      <span className="text-muted-foreground">Sort By</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value as SortKey)}
-        className="cursor-pointer appearance-none bg-transparent py-2 pr-6 pl-1 font-medium outline-none"
+    <DropdownMenu>
+      <DropdownMenuTrigger className="group/sort inline-flex min-h-11 items-center gap-1.5 text-[15px] font-medium">
+        <span className="hidden text-muted-foreground sm:inline">Sort by</span>
+        <span>{current}</span>
+        <ChevronDown
+          aria-hidden="true"
+          className="size-4 transition-transform duration-200 group-data-[popup-open]/sort:rotate-180 motion-reduce:transition-none"
+          strokeWidth={1.75}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={6}
+        className="w-60 rounded-xl p-1.5 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.22)] ring-border duration-150"
       >
-        {SORT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-0 size-4" strokeWidth={1.75} />
-    </label>
+        <DropdownMenuRadioGroup value={value} onValueChange={(next) => onChange(next as SortKey)}>
+          {SORT_OPTIONS.map((option) => (
+            <DropdownMenuRadioItem
+              key={option.value}
+              value={option.value}
+              closeOnClick
+              className="min-h-11 rounded-lg px-3 text-[15px] focus:bg-surface data-checked:font-semibold"
+            >
+              {option.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
 type FilterPanelProps = {
-  basePath: string;
   filters: CatalogFilters;
   facets: Facets;
   onChange: (next: Partial<CatalogFilters>) => void;
 };
 
-function FilterPanel({ basePath, filters, facets, onChange }: FilterPanelProps) {
+function FilterPanel({ filters, facets, onChange }: FilterPanelProps) {
   return (
     <div>
-      <nav aria-label="Categories" className="border-b border-border pb-5">
-        <ul>
-          {[{ value: undefined, label: "All Shoes" }, ...CATEGORY_OPTIONS].map((option) => {
-            const isActive = filters.category === option.value;
-            return (
-              <li key={option.label}>
-                <Link
-                  href={`${basePath}${filtersToQuery({ ...filters, category: option.value })}`}
-                  scroll={false}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`inline-flex min-h-10 items-center text-[15px] transition-colors duration-150 hover:text-brand ${
-                    isActive ? "font-semibold text-foreground" : "font-medium"
-                  }`}
-                >
-                  {option.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
 
-      <FilterGroup title="Sale & Offers" count={filters.sale ? 1 : 0}>
-        <Checkbox label="Sale" checked={filters.sale} onChange={() => onChange({ sale: !filters.sale })} />
-      </FilterGroup>
+      {/* Quick filters: top-level rows, no group to open. */}
+      <div className="border-b border-border">
+        <Checkbox
+          label="New Arrivals"
+          count={facets.newCount}
+          checked={filters.isNew}
+          onChange={() => onChange({ isNew: !filters.isNew })}
+          prominent
+        />
+      </div>
+      <div className="border-b border-border">
+        <Checkbox
+          label="Sale"
+          count={facets.saleCount}
+          checked={filters.sale}
+          onChange={() => onChange({ sale: !filters.sale })}
+          prominent
+        />
+      </div>
 
       <FilterGroup title="Size (UK)" count={filters.sizes.length}>
         <ul className="grid grid-cols-3 gap-2">
@@ -328,11 +355,46 @@ function FilterGroup({ title, count, children }: { title: string; count: number;
   );
 }
 
-function Checkbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
+type CheckboxProps = {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+  count?: number;
+  /** Larger row used for the quick filters at the top. */
+  prominent?: boolean;
+};
+
+function Checkbox({ label, checked, onChange, count, prominent = false }: CheckboxProps) {
+  const empty = count === 0 && !checked;
+
   return (
-    <label className="flex min-h-10 cursor-pointer items-center gap-3 text-[15px]">
-      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 shrink-0 accent-foreground" />
-      {label}
+    <label
+      className={`flex cursor-pointer items-center gap-3 text-[15px] ${
+        prominent ? "min-h-14" : "min-h-10"
+      } ${empty ? "cursor-not-allowed text-muted-foreground" : ""}`}
+    >
+      <span className="relative flex shrink-0">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          disabled={empty}
+          className={`peer appearance-none rounded-[4px] border border-foreground/35 bg-background transition-colors duration-150 checked:border-foreground checked:bg-foreground hover:border-foreground disabled:border-border ${
+            prominent ? "size-6" : "size-5"
+          }`}
+        />
+        <Check
+          aria-hidden="true"
+          strokeWidth={2.5}
+          className="pointer-events-none absolute inset-0 m-auto hidden size-3.5 text-background peer-checked:block"
+        />
+      </span>
+      <span className={prominent ? "font-semibold" : ""}>
+        {label}
+        {count !== undefined && (
+          <span className="ml-1 font-normal text-muted-foreground tabular-nums">({count})</span>
+        )}
+      </span>
     </label>
   );
 }

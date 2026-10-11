@@ -15,6 +15,9 @@ type ListingCardProps = {
 };
 
 export default function ListingCard({ product, priority = false }: ListingCardProps) {
+  const percentOff = product.salePrice
+    ? Math.round((1 - product.salePrice / product.price) * 100)
+    : 0;
   const [activeVariant, setActiveVariant] = useState(0);
   const [imageMissing, setImageMissing] = useState(false);
 
@@ -27,7 +30,13 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
     <article className="group relative">
       {/* Duplicate of the title link for pointer users; the title link carries the name. */}
       <Link href={href} tabIndex={-1} aria-hidden="true" className="block">
-        <div className="relative aspect-square overflow-hidden bg-surface">
+        {/* Photos are 500×500; the grid keeps tiles near that width so they stay sharp. */}
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-surface">
+          {percentOff > 0 && (
+            <span className="absolute top-3 left-3 z-10 rounded-[4px] bg-brand px-2 py-1 text-[13px] leading-none font-semibold text-white tabular-nums">
+              <span className="sr-only">On sale, </span>−{percentOff}%
+            </span>
+          )}
           {imageMissing ? (
             <div className="product-unavailable">
               <ImageOff aria-hidden="true" className="size-6" strokeWidth={1} />
@@ -40,15 +49,16 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
               alt=""
               fill
               preload={priority}
-              sizes="(min-width: 1280px) 30vw, (min-width: 1024px) 28vw, 50vw"
-              className="object-contain p-[6%]"
+              quality={100}
+              sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 30vw, 50vw"
+              className="object-contain p-[5%]"
               onError={() => setImageMissing(true)}
             />
           )}
         </div>
       </Link>
 
-      <div className="relative pt-3 pb-6">
+      <div className="relative pt-4">
         {hasColourways && (
           <ul
             aria-label={`${product.name} colours`}
@@ -63,18 +73,18 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
                   onMouseEnter={() => setActiveVariant(index)}
                   onFocus={() => setActiveVariant(index)}
                   onClick={() => setActiveVariant(index)}
-                  className={`relative z-10 block size-12 overflow-hidden bg-surface ring-offset-2 ${
+                  className={`relative z-10 block size-12 overflow-hidden rounded-lg bg-surface ring-offset-2 ${
                     index === activeVariant ? "ring-1 ring-foreground" : ""
                   }`}
                 >
-                  <Image src={option.image} alt="" fill sizes="48px" className="object-contain p-1" />
+                  <Image src={option.image} alt="" fill sizes="48px" quality={100} className="object-contain p-1" />
                 </button>
               </li>
             ))}
           </ul>
         )}
 
-        <h3 className="text-[15px] font-medium leading-snug">
+        <h3 className="text-base font-medium leading-snug">
           <Link href={href} className="after:absolute after:inset-0 hover:underline hover:underline-offset-4">
             {product.name}
           </Link>
@@ -83,7 +93,7 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
         <p className={`text-[15px] text-muted-foreground ${hasColourways ? "group-hover:hidden group-focus-within:hidden" : ""}`}>
           {colourCount} {colourCount === 1 ? "Colour" : "Colours"}
         </p>
-        <Price product={product} className="mt-2 text-[15px]" />
+        <Price product={product} className="mt-2 text-base" />
       </div>
     </article>
   );

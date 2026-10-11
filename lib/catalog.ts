@@ -19,6 +19,7 @@ export type CatalogFilters = {
   colors: ProductColor[];
   brands: string[];
   prices: PriceRange[];
+  isNew: boolean;
   sale: boolean;
   sort: SortKey;
 };
@@ -101,6 +102,7 @@ export function parseFilters(params: SearchParams): CatalogFilters {
     prices: list(params.price).filter((price): price is PriceRange =>
       PRICE_OPTIONS.some((option) => option.value === price),
     ),
+    isNew: params.new === "1",
     sale: params.sale === "1",
     sort,
   };
@@ -114,6 +116,7 @@ export function filtersToQuery(filters: CatalogFilters) {
   filters.colors.forEach((color) => query.append("color", color));
   filters.brands.forEach((brand) => query.append("brand", brand));
   filters.prices.forEach((price) => query.append("price", price));
+  if (filters.isNew) query.set("new", "1");
   if (filters.sale) query.set("sale", "1");
   if (filters.sort !== "featured") query.set("sort", filters.sort);
   const result = query.toString();
@@ -126,6 +129,7 @@ export function countActiveFilters(filters: CatalogFilters) {
     filters.colors.length +
     filters.brands.length +
     filters.prices.length +
+    (filters.isNew ? 1 : 0) +
     (filters.sale ? 1 : 0)
   );
 }
@@ -140,6 +144,7 @@ function inStockInSize(product: Product, sizes: number[]) {
 export function applyFilters(products: readonly Product[], filters: CatalogFilters) {
   const result = products.filter((product) => {
     if (filters.category && product.category !== filters.category) return false;
+    if (filters.isNew && !product.isNew) return false;
     if (filters.sale && !product.salePrice) return false;
     if (filters.sizes.length && !inStockInSize(product, filters.sizes)) return false;
     if (filters.colors.length && !filters.colors.some((color) => hasColor(product, color))) return false;
@@ -176,5 +181,8 @@ export function facetOptions(products: readonly Product[]) {
     a.localeCompare(b, "en", { sensitivity: "base" }),
   );
 
-  return { sizes, colors, brands };
+  const newCount = products.filter((product) => product.isNew).length;
+  const saleCount = products.filter((product) => product.salePrice).length;
+
+  return { sizes, colors, brands, newCount, saleCount };
 }

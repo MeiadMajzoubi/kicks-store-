@@ -177,6 +177,9 @@
     letter-spacing: -0.055em;
     text-wrap: balance;
   }
+  .grid-reveal {
+    animation: grid-reveal 600ms ease-out 180ms both;
+  }
   /* The brand's red full stop; used only at the end of page titles. */
   .title-mark {
     color: var(--brand);
@@ -317,6 +320,15 @@
   }
 }
 
+@keyframes grid-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes delivery-scroll {
   from {
     transform: translateX(0);
@@ -342,6 +354,9 @@
   }
   .product-card:not([data-image-missing]) .product-image {
     transform: none;
+  }
+  .grid-reveal {
+    animation: none;
   }
   .product-card:not([data-image-missing]) .product-details {
     transform: none;
