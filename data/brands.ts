@@ -20,6 +20,7 @@ export const brands: StoreBrand[] = [
   { name: "Vans", slug: "vans", logo: "/brand-logos/vans.svg" },
   { name: "Merrell", slug: "merrell", logo: "/brand-logos/merrell.svg" },
   { name: "Mizuno", slug: "mizuno", logo: "/brand-logos/mizuno.svg" },
+  { name: "Saucony", slug: "saucony", logo: "/brand-logos/saucony.svg" },
 ];
 
 export const alphabeticalBrands = [...brands].sort((a, b) =>
