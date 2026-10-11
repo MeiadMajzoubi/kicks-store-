@@ -62,8 +62,8 @@ const ACTIONS = [
 ];
 
 const SALE_COLLECTIONS = [
-  { name: "Men", href: "/sale?gender=men" },
-  { name: "Women", href: "/sale?gender=women" },
+  { name: "Men", href: "/men?sale=1" },
+  { name: "Women", href: "/women?sale=1" },
 ];
 
 export default function Navbar() {
@@ -246,7 +246,7 @@ export default function Navbar() {
                   {SHOE_CATEGORIES.map((category) => (
                     <li key={category.slug}>
                       <Link
-                        href={`/categories/${category.slug}?gender=${activePanel}`}
+                        href={`/${activePanel}?category=${category.slug}`}
                         prefetch={false}
                         onClick={closePanel}
                         className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
