@@ -10,8 +10,8 @@ import type { MockProduct } from "@/data/mockProducts";
 import Price from "./Price";
 
 const collections = [
-  { value: "men", label: "Men", products: sortByColor(mockProducts.filter((product) => product.gender === "men")) },
-  { value: "women", label: "Women", products: sortByColor(mockProducts.filter((product) => product.gender === "women")) },
+  { value: "men", label: "Men", products: sortByColor(mockProducts.filter((product) => product.gender === "men" && product.isTrending)) },
+  { value: "women", label: "Women", products: sortByColor(mockProducts.filter((product) => product.gender === "women" && product.isTrending)) },
 ];
 
 function ProductCard({ product }: { product: MockProduct }) {
