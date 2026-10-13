@@ -43,7 +43,7 @@ function ProductCard({ product }: { product: MockProduct }) {
       <div className="product-details">
         <p className="text-xs text-muted-foreground">{product.brand}</p>
         <h3 className="text-sm font-semibold leading-snug tracking-tight">{product.name}</h3>
-        <Price product={product} className="mt-1" />
+        <Price product={product} className="mt-1 text-sm font-medium" />
       </div>
     </Link>
   );

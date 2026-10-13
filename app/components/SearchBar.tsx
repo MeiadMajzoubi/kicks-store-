@@ -290,7 +290,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                                 <p className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-brand">
                                   {product.name}
                                 </p>
-                                <Price product={product} className="mt-1" />
+                                <Price product={product} className="mt-1 text-sm font-medium" />
                               </Link>
                             </li>
                           ))}
