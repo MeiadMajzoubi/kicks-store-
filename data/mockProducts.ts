@@ -44,8 +44,20 @@ export type ProductVariant = {
   sizes: VariantSizes;
 };
 
+/**
+ * A shoe is either a new arrival or on sale, never both: new arrivals are full price.
+ * Writing `isNew: true` together with a `salePrice` is a type error.
+ */
+type NewOrSale =
+  | { isNew: true; salePrice?: never }
+  | {
+      isNew: false;
+      /** Omit when no discount is confirmed; do not use 0 as a placeholder. */
+      salePrice?: number;
+    };
+
 /** What you write in the data below. */
-type ProductData = {
+type ProductData = NewOrSale & {
   id: string;
   name: string;
   /** Stored explicitly: keep published slugs stable when names change. */
@@ -56,13 +68,10 @@ type ProductData = {
 
   /** Existing prices are in USD. */
   price: number;
-  /** Omit when no discount is confirmed; do not use 0 as a placeholder. */
-  salePrice?: number;
 
   /** The first variant is the default one shown on cards. */
   variants: ProductVariant[];
 
-  isNew: boolean;
   isFeatured: boolean;
   /** Shown in the "Trending now" section on the home page. Omit = not trending. */
   isTrending?: boolean;

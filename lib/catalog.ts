@@ -102,7 +102,8 @@ export function parseFilters(params: SearchParams): CatalogFilters {
     prices: list(params.price).filter((price): price is PriceRange =>
       PRICE_OPTIONS.some((option) => option.value === price),
     ),
-    isNew: params.new === "1",
+    // New arrivals are never on sale, so the two can't combine; sale wins if both are in the URL.
+    isNew: params.new === "1" && params.sale !== "1",
     sale: params.sale === "1",
     sort,
   };

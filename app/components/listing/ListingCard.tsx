@@ -37,13 +37,12 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
         {/* Photos are 500×500; the grid keeps tiles near that width so they stay sharp. */}
         <div className="relative aspect-square overflow-hidden rounded-lg bg-surface">
           {saving > 0 && (
-            <Ribbon corner="left" className="bg-brand" edge="#ff9ca0">
+            <Ribbon className="bg-brand" edge="#ff9ca0">
               Save {saveFormat.format(saving)}
             </Ribbon>
           )}
           {product.isNew && (
-            // Moves to the other corner when the sale ribbon is there.
-            <Ribbon corner={saving > 0 ? "right" : "left"} className="bg-foreground" edge="#cfcfcf">
+            <Ribbon className="bg-foreground" edge="#cfcfcf">
               New
             </Ribbon>
           )}
@@ -114,12 +113,10 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
  * overflow-hidden edge cuts both ends, so it reads as wrapped around the card.
  */
 function Ribbon({
-  corner,
   className,
   edge,
   children,
 }: {
-  corner: "left" | "right";
   className: string;
   /** Colour of the thin lines along both long edges of the band. */
   edge: string;
@@ -130,9 +127,7 @@ function Ribbon({
       style={{
         boxShadow: `inset 0 1px 0 ${edge}, inset 0 -1px 0 ${edge}, 0 2px 6px rgba(0, 0, 0, 0.18)`,
       }}
-      className={`absolute top-[22px] z-10 w-[180px] py-1.5 text-center text-[13px] leading-none font-semibold text-white tabular-nums ${
-        corner === "left" ? "-left-[46px] -rotate-45" : "-right-[46px] rotate-45"
-      } ${className}`}
+      className={`absolute top-[22px] z-10 w-[180px] py-1.5 text-center text-[13px] leading-none font-semibold text-white tabular-nums -left-[46px] -rotate-45 ${className}`}
     >
       {children}
     </span>

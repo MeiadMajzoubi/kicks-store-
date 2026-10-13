@@ -239,13 +239,14 @@ function FilterPanel({ filters, facets, onChange }: FilterPanelProps) {
   return (
     <div>
 
-      {/* Quick filters: top-level rows, no group to open. */}
+      {/* Quick filters: top-level rows, no group to open. One or the other: a shoe is
+          never both new and on sale. */}
       <div className="border-b border-border">
         <Checkbox
           label="New Arrivals"
           count={facets.newCount}
           checked={filters.isNew}
-          onChange={() => onChange({ isNew: !filters.isNew })}
+          onChange={() => onChange({ isNew: !filters.isNew, sale: false })}
           prominent
         />
       </div>
@@ -254,7 +255,7 @@ function FilterPanel({ filters, facets, onChange }: FilterPanelProps) {
           label="Sale"
           count={facets.saleCount}
           checked={filters.sale}
-          onChange={() => onChange({ sale: !filters.sale })}
+          onChange={() => onChange({ sale: !filters.sale, isNew: false })}
           prominent
         />
       </div>
