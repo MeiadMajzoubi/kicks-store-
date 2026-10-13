@@ -8,6 +8,12 @@ import type { Product } from "@/data/mockProducts";
 import { categoryLabel } from "@/lib/catalog";
 import Price from "../Price";
 
+const saveFormat = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
+
 type ListingCardProps = {
   product: Product;
   /** Loads the first row eagerly so the page doesn't open on empty tiles. */
@@ -15,9 +21,7 @@ type ListingCardProps = {
 };
 
 export default function ListingCard({ product, priority = false }: ListingCardProps) {
-  const percentOff = product.salePrice
-    ? Math.round((1 - product.salePrice / product.price) * 100)
-    : 0;
+  const saving = product.salePrice ? product.price - product.salePrice : 0;
   const [activeVariant, setActiveVariant] = useState(0);
   const [imageMissing, setImageMissing] = useState(false);
 
@@ -32,10 +36,10 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
       <Link href={href} tabIndex={-1} aria-hidden="true" className="block">
         {/* Photos are 500×500; the grid keeps tiles near that width so they stay sharp. */}
         <div className="relative aspect-square overflow-hidden rounded-lg bg-surface">
-          {percentOff > 0 && (
-            <span className="absolute top-3 left-3 z-10 rounded-[4px] bg-brand px-2 py-1 text-[13px] leading-none font-semibold text-white tabular-nums">
-              <span className="sr-only">On sale, </span>−{percentOff}%
-            </span>
+          {saving > 0 && (
+            <Ribbon corner="left" className="bg-brand" edge="#ff9ca0">
+              Save {saveFormat.format(saving)}
+            </Ribbon>
           )}
           {imageMissing ? (
             <div className="product-unavailable">
@@ -96,5 +100,35 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
         <Price product={product} className="mt-2 text-base" />
       </div>
     </article>
+  );
+}
+
+/**
+ * Corner ribbon: a band wrapped across a corner of the photo. The tile's rounded,
+ * overflow-hidden edge cuts both ends, so it reads as wrapped around the card.
+ */
+function Ribbon({
+  corner,
+  className,
+  edge,
+  children,
+}: {
+  corner: "left" | "right";
+  className: string;
+  /** Colour of the thin lines along both long edges of the band. */
+  edge: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      style={{
+        boxShadow: `inset 0 1px 0 ${edge}, inset 0 -1px 0 ${edge}, 0 2px 6px rgba(0, 0, 0, 0.18)`,
+      }}
+      className={`absolute top-[22px] z-10 w-[180px] py-1.5 text-center text-[13px] leading-none font-semibold text-white tabular-nums ${
+        corner === "left" ? "-left-[46px] -rotate-45" : "-right-[46px] rotate-45"
+      } ${className}`}
+    >
+      {children}
+    </span>
   );
 }
