@@ -71,7 +71,7 @@ export default function ProductListing({ gender, basePath, filters, results, fac
       <header className="content-shell pt-8 sm:pt-10">
         <h1 className="section-title">
           {title}{" "}
-          <span className="font-normal text-muted-foreground tabular-nums">({results.length})</span>
+          <span className="font-normal text-muted-foreground tabular-nums">{results.length}</span>
         </h1>
 
         <div className="mt-4 border-b border-border">
@@ -103,7 +103,7 @@ export default function ProductListing({ gender, basePath, filters, results, fac
 
       {/* Toolbar: a translucent layer the grid scrolls under. */}
       <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
-        <div className="content-shell flex min-h-14 items-center justify-between gap-4">
+        <div className="content-shell flex min-h-14 items-center justify-end gap-6">
           <button
             type="button"
             onClick={() => setShowFilters((value) => !value)}
