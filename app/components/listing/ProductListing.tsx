@@ -139,15 +139,13 @@ export default function ProductListing({ gender, basePath, filters, results, fac
             className="sticky top-16 hidden max-h-[calc(100dvh-5rem)] w-60 shrink-0 self-start overflow-y-auto pr-3 [scrollbar-width:thin] lg:block"
           >
             {panel}
-            {activeCount > 0 && (
-              <button type="button" onClick={clearFilters} className="text-link mt-4">
-                Clear filters ({activeCount})
-              </button>
-            )}
           </aside>
         )}
 
         <section aria-label="Products" aria-busy={isPending} className="grid-reveal min-w-0 flex-1">
+          {activeCount > 0 && (
+            <ActiveFilters filters={filters} onChange={update} onClear={clearFilters} />
+          )}
           {results.length > 0 ? (
             <ul
               className={`grid grid-cols-2 gap-x-3 gap-y-10 transition-opacity duration-200 sm:gap-x-4 lg:grid-cols-3 ${
@@ -226,6 +224,69 @@ function SortMenu({ value, onChange }: { value: SortKey; onChange: (value: SortK
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+/** One removable chip per active filter, plus Clear All. */
+function ActiveFilters({
+  filters,
+  onChange,
+  onClear,
+}: {
+  filters: CatalogFilters;
+  onChange: (next: Partial<CatalogFilters>) => void;
+  onClear: () => void;
+}) {
+  const chips: { key: string; label: string; remove: () => void }[] = [
+    ...(filters.isNew ? [{ key: "new", label: "New Arrivals", remove: () => onChange({ isNew: false }) }] : []),
+    ...(filters.sale ? [{ key: "sale", label: "Sale", remove: () => onChange({ sale: false }) }] : []),
+    ...filters.sizes.map((size) => ({
+      key: `size-${size}`,
+      label: `UK ${size}`,
+      remove: () => onChange({ sizes: toggle(filters.sizes, size) }),
+    })),
+    ...filters.colors.map((color) => ({
+      key: `color-${color}`,
+      label: color[0].toUpperCase() + color.slice(1),
+      remove: () => onChange({ colors: toggle(filters.colors, color) }),
+    })),
+    ...filters.prices.map((price) => ({
+      key: `price-${price}`,
+      label: PRICE_OPTIONS.find((option) => option.value === price)?.label ?? price,
+      remove: () => onChange({ prices: toggle(filters.prices, price) }),
+    })),
+    ...filters.brands.map((brand) => ({
+      key: `brand-${brand}`,
+      label: brand,
+      remove: () => onChange({ brands: toggle(filters.brands, brand) }),
+    })),
+  ];
+
+  return (
+    <div className="mb-5 flex flex-wrap items-center gap-2">
+      <ul aria-label="Active filters" className="contents">
+        {chips.map((chip) => (
+          <li key={chip.key}>
+            <button
+              type="button"
+              onClick={chip.remove}
+              aria-label={`Remove filter: ${chip.label}`}
+              className="inline-flex min-h-10 items-center gap-2 rounded-[4px] border border-border px-3 text-sm font-medium transition-colors duration-150 hover:border-foreground"
+            >
+              {chip.label}
+              <X aria-hidden="true" className="size-4" strokeWidth={1.75} />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button
+        type="button"
+        onClick={onClear}
+        className="ml-2 inline-flex min-h-10 items-center text-sm font-medium underline underline-offset-4 hover:text-brand"
+      >
+        Clear All
+      </button>
+    </div>
   );
 }
 
