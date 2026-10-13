@@ -41,6 +41,12 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
               Save {saveFormat.format(saving)}
             </Ribbon>
           )}
+          {product.isNew && (
+            // Moves to the other corner when the sale ribbon is there.
+            <Ribbon corner={saving > 0 ? "right" : "left"} className="bg-foreground" edge="#cfcfcf">
+              New
+            </Ribbon>
+          )}
           {imageMissing ? (
             <div className="product-unavailable">
               <ImageOff aria-hidden="true" className="size-6" strokeWidth={1} />
