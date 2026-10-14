@@ -14,6 +14,8 @@ export type SortKey = "featured" | "price-asc" | "price-desc";
 export type PriceRange = "under-100" | "100-150" | "150-200" | "over-200";
 
 export type CatalogFilters = {
+  /** Only used on pages that mix both, like a brand page. */
+  gender?: Gender;
   category?: ProductCategory;
   sizes: number[];
   colors: ProductColor[];
@@ -76,6 +78,11 @@ const CATEGORY_NOUN: Record<ProductCategory, string> = {
   uncategorized: "Shoes",
 };
 
+/** "Running Shoes", or "Shoes" when no category is picked. */
+export function categoryNoun(category?: ProductCategory) {
+  return CATEGORY_NOUN[category ?? "uncategorized"];
+}
+
 /** "Men's Running Shoes": the card subtitle and the page title. */
 export function categoryLabel(gender: Gender, category?: ProductCategory) {
   return `${GENDER_LABEL[gender]} ${CATEGORY_NOUN[category ?? "uncategorized"]}`;
@@ -92,7 +99,10 @@ export function parseFilters(params: SearchParams): CatalogFilters {
   const category = CATEGORY_OPTIONS.find((option) => option.value === params.category)?.value;
   const sort = SORT_OPTIONS.find((option) => option.value === params.sort)?.value ?? "featured";
 
+  const gender = params.gender === "men" || params.gender === "women" ? params.gender : undefined;
+
   return {
+    gender,
     category,
     sizes: list(params.size).map(Number).filter(Number.isFinite),
     colors: list(params.color).filter((color): color is ProductColor =>
@@ -112,6 +122,7 @@ export function parseFilters(params: SearchParams): CatalogFilters {
 /** Builds the query string for a set of filters; defaults are left out. */
 export function filtersToQuery(filters: CatalogFilters) {
   const query = new URLSearchParams();
+  if (filters.gender) query.set("gender", filters.gender);
   if (filters.category) query.set("category", filters.category);
   filters.sizes.forEach((size) => query.append("size", String(size)));
   filters.colors.forEach((color) => query.append("color", color));
@@ -130,6 +141,7 @@ export function countActiveFilters(filters: CatalogFilters) {
     filters.colors.length +
     filters.brands.length +
     filters.prices.length +
+    (filters.gender ? 1 : 0) +
     (filters.isNew ? 1 : 0) +
     (filters.sale ? 1 : 0)
   );
@@ -144,6 +156,7 @@ function inStockInSize(product: Product, sizes: number[]) {
 /** Within a group options are OR-ed (black or white); groups are AND-ed. */
 export function applyFilters(products: readonly Product[], filters: CatalogFilters) {
   const result = products.filter((product) => {
+    if (filters.gender && product.gender !== filters.gender) return false;
     if (filters.category && product.category !== filters.category) return false;
     if (filters.isNew && !product.isNew) return false;
     if (filters.sale && !product.salePrice) return false;
@@ -185,5 +198,8 @@ export function facetOptions(products: readonly Product[]) {
   const newCount = products.filter((product) => product.isNew).length;
   const saleCount = products.filter((product) => product.salePrice).length;
 
-  return { sizes, colors, brands, newCount, saleCount };
+  const menCount = products.filter((product) => product.gender === "men").length;
+  const womenCount = products.filter((product) => product.gender === "women").length;
+
+  return { sizes, colors, brands, newCount, saleCount, menCount, womenCount };
 }

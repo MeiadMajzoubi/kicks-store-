@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { mockProducts } from "@/data/mockProducts";
-import { applyFilters, facetOptions, parseFilters } from "@/lib/catalog";
+import { applyFilters, categoryLabel, facetOptions, parseFilters } from "@/lib/catalog";
 import ProductListing from "../components/listing/ProductListing";
 
 export const metadata: Metadata = {
@@ -12,12 +12,14 @@ const menProducts = mockProducts.filter((product) => product.gender === "men");
 const facets = facetOptions(menProducts);
 
 export default async function MenPage({ searchParams }: PageProps<"/men">) {
-  const filters = parseFilters(await searchParams);
+  // This page is already one gender, so a gender filter in the URL is ignored.
+  const filters = { ...parseFilters(await searchParams), gender: undefined };
   const results = applyFilters(menProducts, filters);
 
   return (
     <ProductListing
       gender="men"
+      title={categoryLabel("men", filters.category)}
       basePath="/men"
       filters={filters}
       results={results}

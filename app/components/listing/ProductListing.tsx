@@ -10,7 +10,6 @@ import {
   COLOR_SWATCHES,
   PRICE_OPTIONS,
   SORT_OPTIONS,
-  categoryLabel,
   countActiveFilters,
   filtersToQuery,
   type CatalogFilters,
@@ -32,10 +31,15 @@ type Facets = {
   brands: string[];
   newCount: number;
   saleCount: number;
+  menCount: number;
+  womenCount: number;
 };
 
 type ProductListingProps = {
-  gender: Gender;
+  /** Set on the Men and Women pages; left out where both are mixed, like a brand page. */
+  gender?: Gender;
+  /** Page heading, e.g. "Men's Running Shoes" or "adidas Shoes". */
+  title: string;
   basePath: string;
   filters: CatalogFilters;
   results: Product[];
@@ -47,13 +51,12 @@ function toggle<T>(values: T[], value: T) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
-export default function ProductListing({ gender, basePath, filters, results, facets }: ProductListingProps) {
+export default function ProductListing({ gender, title, basePath, filters, results, facets }: ProductListingProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showFilters, setShowFilters] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const title = categoryLabel(gender, filters.category);
   const activeCount = countActiveFilters(filters);
 
   const update = (next: Partial<CatalogFilters>) => {
@@ -63,9 +66,9 @@ export default function ProductListing({ gender, basePath, filters, results, fac
   };
 
   const clearFilters = () =>
-    update({ sizes: [], colors: [], brands: [], prices: [], isNew: false, sale: false });
+    update({ gender: undefined, sizes: [], colors: [], brands: [], prices: [], isNew: false, sale: false });
 
-  const panel = <FilterPanel filters={filters} facets={facets} onChange={update} />;
+  const panel = <FilterPanel filters={filters} facets={facets} onChange={update} showGender={!gender} />;
 
   return (
     <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
@@ -230,7 +233,7 @@ function EmptyResults({
   facets,
   onClear,
 }: {
-  gender: Gender;
+  gender?: Gender;
   basePath: string;
   filters: CatalogFilters;
   facets: Facets;
@@ -238,38 +241,9 @@ function EmptyResults({
 }) {
   const unavailable = filters.brands.filter((brand) => !facets.brands.includes(brand));
   const brandIsTheCause = unavailable.length > 0 && unavailable.length === filters.brands.length;
-  const other = OTHER_GENDER[gender];
-  const elsewhere = unavailable.filter((brand) =>
-    brandsByGender[other].some((storeBrand) => storeBrand.name === brand),
-  );
 
-  const primary = "inline-flex min-h-12 items-center rounded-full bg-foreground px-6 text-[15px] font-medium text-background transition-opacity hover:opacity-85";
-  const secondary = "inline-flex min-h-12 items-center rounded-full border border-border bg-background px-6 text-[15px] font-medium transition-colors hover:border-foreground";
-
-  if (brandIsTheCause) {
-    const names = new Intl.ListFormat("en", { type: "conjunction" }).format(unavailable);
-    return (
-      <div className="rounded-lg bg-surface px-6 py-20 text-center">
-        <p className="text-xl font-semibold tracking-[-0.01em]">
-          {names} {unavailable.length === 1 ? "isn’t" : "aren’t"} available for {GENDER_WORD[gender]} right now
-        </p>
-        <p className="mx-auto mt-2 max-w-md text-[15px] text-muted-foreground">
-          {elsewhere.length > 0
-            ? `You can shop ${new Intl.ListFormat("en", { type: "conjunction" }).format(elsewhere)} in our ${GENDER_WORD[other]}'s range, or browse every ${GENDER_WORD[gender]}'s shoe.`
-            : `Browse every ${GENDER_WORD[gender]}'s shoe instead.`}
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {elsewhere.map((brand) => (
-            <Link key={brand} href={`/${other}?brand=${encodeURIComponent(brand)}`} className={primary}>
-              Shop {brand} for {GENDER_WORD[other]}
-            </Link>
-          ))}
-          <Link href={basePath} className={elsewhere.length > 0 ? secondary : primary}>
-            Shop all {GENDER_WORD[gender]}&rsquo;s shoes
-          </Link>
-        </div>
-      </div>
-    );
+  if (gender && brandIsTheCause) {
+    return <UnavailableBrands gender={gender} basePath={basePath} unavailable={unavailable} />;
   }
 
   return (
@@ -277,9 +251,53 @@ function EmptyResults({
       <p className="text-xl font-semibold tracking-[-0.01em]">No shoes match these filters</p>
       <p className="mt-2 text-[15px] text-muted-foreground">Remove a filter to see more styles.</p>
       <div className="mt-8 flex justify-center">
-        <button type="button" onClick={onClear} className={primary}>
+        <button type="button" onClick={onClear} className={PRIMARY_BUTTON}>
           Clear filters
         </button>
+      </div>
+    </div>
+  );
+}
+
+const PRIMARY_BUTTON =
+  "inline-flex min-h-12 items-center rounded-full bg-foreground px-6 text-[15px] font-medium text-background transition-opacity hover:opacity-85";
+const SECONDARY_BUTTON =
+  "inline-flex min-h-12 items-center rounded-full border border-border bg-background px-6 text-[15px] font-medium transition-colors hover:border-foreground";
+
+function UnavailableBrands({
+  gender,
+  basePath,
+  unavailable,
+}: {
+  gender: Gender;
+  basePath: string;
+  unavailable: string[];
+}) {
+  const other = OTHER_GENDER[gender];
+  const elsewhere = unavailable.filter((brand) =>
+    brandsByGender[other].some((storeBrand) => storeBrand.name === brand),
+  );
+
+  const names = new Intl.ListFormat("en", { type: "conjunction" }).format(unavailable);
+  return (
+    <div className="rounded-lg bg-surface px-6 py-20 text-center">
+      <p className="text-xl font-semibold tracking-[-0.01em]">
+        {names} {unavailable.length === 1 ? "isn’t" : "aren’t"} available for {GENDER_WORD[gender]} right now
+      </p>
+      <p className="mx-auto mt-2 max-w-md text-[15px] text-muted-foreground">
+        {elsewhere.length > 0
+          ? `You can shop ${new Intl.ListFormat("en", { type: "conjunction" }).format(elsewhere)} in our ${GENDER_WORD[other]}'s range, or browse every ${GENDER_WORD[gender]}'s shoe.`
+          : `Browse every ${GENDER_WORD[gender]}'s shoe instead.`}
+      </p>
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        {elsewhere.map((brand) => (
+          <Link key={brand} href={`/${other}?brand=${encodeURIComponent(brand)}`} className={PRIMARY_BUTTON}>
+            Shop {brand} for {GENDER_WORD[other]}
+          </Link>
+        ))}
+        <Link href={basePath} className={elsewhere.length > 0 ? SECONDARY_BUTTON : PRIMARY_BUTTON}>
+          Shop all {GENDER_WORD[gender]}&rsquo;s shoes
+        </Link>
       </div>
     </div>
   );
@@ -296,6 +314,9 @@ function ActiveFilters({
   onClear: () => void;
 }) {
   const chips: { key: string; label: string; remove: () => void }[] = [
+    ...(filters.gender
+      ? [{ key: "gender", label: filters.gender === "men" ? "Men" : "Women", remove: () => onChange({ gender: undefined }) }]
+      : []),
     ...(filters.isNew ? [{ key: "new", label: "New Arrivals", remove: () => onChange({ isNew: false }) }] : []),
     ...(filters.sale ? [{ key: "sale", label: "Sale", remove: () => onChange({ sale: false }) }] : []),
     ...filters.sizes.map((size) => ({
@@ -352,11 +373,25 @@ type FilterPanelProps = {
   filters: CatalogFilters;
   facets: Facets;
   onChange: (next: Partial<CatalogFilters>) => void;
+  /** Men/Women rows, for pages that mix both. */
+  showGender: boolean;
 };
 
-function FilterPanel({ filters, facets, onChange }: FilterPanelProps) {
+function FilterPanel({ filters, facets, onChange, showGender }: FilterPanelProps) {
   return (
     <div>
+      {showGender &&
+        (["men", "women"] as const).map((option) => (
+          <div key={option} className="border-b border-border">
+            <Checkbox
+              label={option === "men" ? "Men" : "Women"}
+              count={option === "men" ? facets.menCount : facets.womenCount}
+              checked={filters.gender === option}
+              onChange={() => onChange({ gender: filters.gender === option ? undefined : option })}
+              prominent
+            />
+          </div>
+        ))}
 
       {/* Quick filters: top-level rows, no group to open. One or the other: a shoe is
           never both new and on sale. */}
@@ -442,16 +477,18 @@ function FilterPanel({ filters, facets, onChange }: FilterPanelProps) {
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Brand" count={filters.brands.length}>
-        {facets.brands.map((brand) => (
-          <Checkbox
-            key={brand}
-            label={brand}
-            checked={filters.brands.includes(brand)}
-            onChange={() => onChange({ brands: toggle(filters.brands, brand) })}
-          />
-        ))}
-      </FilterGroup>
+      {facets.brands.length > 1 && (
+        <FilterGroup title="Brand" count={filters.brands.length}>
+          {facets.brands.map((brand) => (
+            <Checkbox
+              key={brand}
+              label={brand}
+              checked={filters.brands.includes(brand)}
+              onChange={() => onChange({ brands: toggle(filters.brands, brand) })}
+            />
+          ))}
+        </FilterGroup>
+      )}
     </div>
   );
 }
