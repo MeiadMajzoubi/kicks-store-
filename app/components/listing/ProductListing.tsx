@@ -23,6 +23,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { brandsByGender } from "@/data/brands";
 import ListingCard from "./ListingCard";
 
 type Facets = {
@@ -159,19 +160,7 @@ export default function ProductListing({ gender, basePath, filters, results, fac
               ))}
             </ul>
           ) : (
-            <div className="rounded-lg bg-surface px-6 py-20 text-center">
-              <p className="text-lg font-semibold">No shoes match these filters</p>
-              <p className="mt-1 text-sm text-muted-foreground">Remove a filter to see more styles.</p>
-              {activeCount > 0 && (
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="mt-6 inline-flex min-h-11 items-center rounded-full bg-foreground px-6 text-sm font-medium text-background"
-                >
-                  Clear filters
-                </button>
-              )}
-            </div>
+            <EmptyResults gender={gender} basePath={basePath} filters={filters} facets={facets} onClear={clearFilters} />
           )}
         </section>
       </div>
@@ -224,6 +213,75 @@ function SortMenu({ value, onChange }: { value: SortKey; onChange: (value: SortK
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+const GENDER_WORD: Record<Gender, string> = { men: "men", women: "women" };
+const OTHER_GENDER: Record<Gender, Gender> = { men: "women", women: "men" };
+
+/**
+ * Empty grid. When the cause is a brand this gender doesn't carry (UGG for men),
+ * say so plainly and point to where that brand is sold; otherwise suggest removing filters.
+ */
+function EmptyResults({
+  gender,
+  basePath,
+  filters,
+  facets,
+  onClear,
+}: {
+  gender: Gender;
+  basePath: string;
+  filters: CatalogFilters;
+  facets: Facets;
+  onClear: () => void;
+}) {
+  const unavailable = filters.brands.filter((brand) => !facets.brands.includes(brand));
+  const brandIsTheCause = unavailable.length > 0 && unavailable.length === filters.brands.length;
+  const other = OTHER_GENDER[gender];
+  const elsewhere = unavailable.filter((brand) =>
+    brandsByGender[other].some((storeBrand) => storeBrand.name === brand),
+  );
+
+  const primary = "inline-flex min-h-12 items-center rounded-full bg-foreground px-6 text-[15px] font-medium text-background transition-opacity hover:opacity-85";
+  const secondary = "inline-flex min-h-12 items-center rounded-full border border-border bg-background px-6 text-[15px] font-medium transition-colors hover:border-foreground";
+
+  if (brandIsTheCause) {
+    const names = new Intl.ListFormat("en", { type: "conjunction" }).format(unavailable);
+    return (
+      <div className="rounded-lg bg-surface px-6 py-20 text-center">
+        <p className="text-xl font-semibold tracking-[-0.01em]">
+          {names} {unavailable.length === 1 ? "isn’t" : "aren’t"} available for {GENDER_WORD[gender]} right now
+        </p>
+        <p className="mx-auto mt-2 max-w-md text-[15px] text-muted-foreground">
+          {elsewhere.length > 0
+            ? `You can shop ${new Intl.ListFormat("en", { type: "conjunction" }).format(elsewhere)} in our ${GENDER_WORD[other]}'s range, or browse every ${GENDER_WORD[gender]}'s shoe.`
+            : `Browse every ${GENDER_WORD[gender]}'s shoe instead.`}
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {elsewhere.map((brand) => (
+            <Link key={brand} href={`/${other}?brand=${encodeURIComponent(brand)}`} className={primary}>
+              Shop {brand} for {GENDER_WORD[other]}
+            </Link>
+          ))}
+          <Link href={basePath} className={elsewhere.length > 0 ? secondary : primary}>
+            Shop all {GENDER_WORD[gender]}&rsquo;s shoes
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg bg-surface px-6 py-20 text-center">
+      <p className="text-xl font-semibold tracking-[-0.01em]">No shoes match these filters</p>
+      <p className="mt-2 text-[15px] text-muted-foreground">Remove a filter to see more styles.</p>
+      <div className="mt-8 flex justify-center">
+        <button type="button" onClick={onClear} className={primary}>
+          Clear filters
+        </button>
+      </div>
+    </div>
   );
 }
 
