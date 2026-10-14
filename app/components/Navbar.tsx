@@ -9,7 +9,7 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { alphabeticalBrands } from "@/data/brands";
+import { alphabeticalBrands, brandsByGender } from "@/data/brands";
 import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
@@ -295,10 +295,10 @@ export default function Navbar() {
                 </h2>
 
                 <ul className="grid grid-cols-2 gap-x-5 sm:gap-x-8">
-                  {alphabeticalBrands.map((brand) => (
+                  {brandsByGender[activePanel].map((brand) => (
                     <li key={brand.slug}>
                       <Link
-                        href={`/brands/${brand.slug}?gender=${activePanel}`}
+                        href={`/${activePanel}?brand=${encodeURIComponent(brand.name)}`}
                         prefetch={false}
                         onClick={closePanel}
                         className="group flex min-h-12 items-center gap-3 border-b border-border text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"

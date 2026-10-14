@@ -1,3 +1,5 @@
+import { mockProducts, type Gender } from "./mockProducts";
+
 export type StoreBrand = {
   name: string;
   slug: string;
@@ -36,3 +38,16 @@ export const brandGroups = alphabeticalBrands.reduce<
   else groups.push({ letter, brands: [brand] });
   return groups;
 }, []);
+
+/**
+ * Brands that actually have shoes for each gender, A–Z. Worked out from the products,
+ * so a brand appears under Men or Women as soon as it has a shoe there.
+ */
+export const brandsByGender = Object.fromEntries(
+  (["men", "women"] as const).map((gender) => {
+    const names = new Set(
+      mockProducts.filter((product) => product.gender === gender).map((product) => product.brand),
+    );
+    return [gender, alphabeticalBrands.filter((brand) => names.has(brand.name))];
+  }),
+) as Record<Gender, StoreBrand[]>;
