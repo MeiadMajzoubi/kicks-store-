@@ -9,7 +9,7 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { alphabeticalBrands, brandsByGender } from "@/data/brands";
+import { alphabeticalBrands, brandsByGender, brandsOnSale } from "@/data/brands";
 import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
@@ -62,8 +62,8 @@ const ACTIONS = [
 ];
 
 const SALE_COLLECTIONS = [
-  { name: "Men", href: "/men?sale=1" },
-  { name: "Women", href: "/women?sale=1" },
+  { name: "Men", href: "/sale?gender=men" },
+  { name: "Women", href: "/sale?gender=women" },
 ];
 
 export default function Navbar() {
@@ -416,10 +416,10 @@ export default function Navbar() {
                   </h2>
 
                   <ul className="grid grid-cols-2 gap-x-6 sm:grid-cols-3 sm:gap-x-10">
-                    {alphabeticalBrands.map((brand) => (
+                    {brandsOnSale.map((brand) => (
                       <li key={brand.slug}>
                         <Link
-                          href={`/sale?brand=${encodeURIComponent(brand.slug)}`}
+                          href={`/sale?brand=${encodeURIComponent(brand.name)}`}
                           prefetch={false}
                           onClick={closePanel}
                           className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"

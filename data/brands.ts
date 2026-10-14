@@ -51,3 +51,9 @@ export const brandsByGender = Object.fromEntries(
     return [gender, alphabeticalBrands.filter((brand) => names.has(brand.name))];
   }),
 ) as Record<Gender, StoreBrand[]>;
+
+/** Brands with at least one shoe on sale, A–Z. */
+export const brandsOnSale = (() => {
+  const names = new Set(mockProducts.filter((product) => product.salePrice).map((product) => product.brand));
+  return alphabeticalBrands.filter((brand) => names.has(brand.name));
+})();

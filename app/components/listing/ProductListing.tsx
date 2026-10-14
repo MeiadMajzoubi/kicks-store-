@@ -40,6 +40,8 @@ type ProductListingProps = {
   gender?: Gender;
   /** Page heading, e.g. "Men's Running Shoes" or "adidas Shoes". */
   title: string;
+  /** The Sale page: every shoe is already on sale, so New Arrivals and Sale rows are hidden. */
+  saleOnly?: boolean;
   basePath: string;
   filters: CatalogFilters;
   results: Product[];
@@ -51,7 +53,7 @@ function toggle<T>(values: T[], value: T) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
-export default function ProductListing({ gender, title, basePath, filters, results, facets }: ProductListingProps) {
+export default function ProductListing({ gender, title, saleOnly = false, basePath, filters, results, facets }: ProductListingProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showFilters, setShowFilters] = useState(true);
@@ -68,7 +70,9 @@ export default function ProductListing({ gender, title, basePath, filters, resul
   const clearFilters = () =>
     update({ gender: undefined, sizes: [], colors: [], brands: [], prices: [], isNew: false, sale: false });
 
-  const panel = <FilterPanel filters={filters} facets={facets} onChange={update} showGender={!gender} />;
+  const panel = (
+    <FilterPanel filters={filters} facets={facets} onChange={update} showGender={!gender} showNewAndSale={!saleOnly} />
+  );
 
   return (
     <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
@@ -375,9 +379,10 @@ type FilterPanelProps = {
   onChange: (next: Partial<CatalogFilters>) => void;
   /** Men/Women rows, for pages that mix both. */
   showGender: boolean;
+  showNewAndSale: boolean;
 };
 
-function FilterPanel({ filters, facets, onChange, showGender }: FilterPanelProps) {
+function FilterPanel({ filters, facets, onChange, showGender, showNewAndSale }: FilterPanelProps) {
   return (
     <div>
       {showGender &&
@@ -395,24 +400,28 @@ function FilterPanel({ filters, facets, onChange, showGender }: FilterPanelProps
 
       {/* Quick filters: top-level rows, no group to open. One or the other: a shoe is
           never both new and on sale. */}
-      <div className="border-b border-border">
-        <Checkbox
-          label="New Arrivals"
-          count={facets.newCount}
-          checked={filters.isNew}
-          onChange={() => onChange({ isNew: !filters.isNew, sale: false })}
-          prominent
-        />
-      </div>
-      <div className="border-b border-border">
-        <Checkbox
-          label="Sale"
-          count={facets.saleCount}
-          checked={filters.sale}
-          onChange={() => onChange({ sale: !filters.sale, isNew: false })}
-          prominent
-        />
-      </div>
+      {showNewAndSale && (
+        <>
+          <div className="border-b border-border">
+            <Checkbox
+              label="New Arrivals"
+              count={facets.newCount}
+              checked={filters.isNew}
+              onChange={() => onChange({ isNew: !filters.isNew, sale: false })}
+              prominent
+            />
+          </div>
+          <div className="border-b border-border">
+            <Checkbox
+              label="Sale"
+              count={facets.saleCount}
+              checked={filters.sale}
+              onChange={() => onChange({ sale: !filters.sale, isNew: false })}
+              prominent
+            />
+          </div>
+        </>
+      )}
 
       <FilterGroup title="Size (UK)" count={filters.sizes.length}>
         <ul className="grid grid-cols-3 gap-2">
