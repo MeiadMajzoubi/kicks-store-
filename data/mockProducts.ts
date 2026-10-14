@@ -1214,7 +1214,7 @@ const productData: ProductData[] = [
     slug: "mizuno-prophecy-14-w12",
     brand: "Mizuno",
     gender: "women",
-    category: "lifestyle",
+    category: "running",
     price: 250,
     variants: [
       {
@@ -1237,7 +1237,7 @@ const productData: ProductData[] = [
     slug: "mizuno-wave-prophecy-15-w13",
     brand: "Mizuno",
     gender: "women",
-    category: "lifestyle",
+    category: "running",
     price: 250,
     variants: [
       {
@@ -1283,7 +1283,7 @@ const productData: ProductData[] = [
     slug: "ugg-sunburst-tall-w15",
     brand: "UGG",
     gender: "women",
-    category: "lifestyle",
+    category: "outdoor",
     price: 295,
     variants: [
       {
@@ -1721,7 +1721,7 @@ const productData: ProductData[] = [
     slug: "adidas-dropset-base-w35",
     brand: "adidas",
     gender: "women",
-    category: "sandals",
+    category: "training",
     price: 73,
     variants: [
       {
@@ -1745,7 +1745,7 @@ const productData: ProductData[] = [
     slug: "adidas-dropset-4-w36",
     brand: "adidas",
     gender: "women",
-    category: "sandals",
+    category: "training",
     price: 146,
     variants: [
       {
@@ -1769,7 +1769,7 @@ const productData: ProductData[] = [
     slug: "nike-metcon-10-w37",
     brand: "Nike",
     gender: "women",
-    category: "sandals",
+    category: "training",
     price: 159,
     variants: [
       {
