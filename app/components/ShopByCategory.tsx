@@ -11,35 +11,35 @@ const categories = [
     image: "/category/running.webp",
     width: 1400,
     height: 933,
-    href: "/categories/running",
+    href: "/shop?category=running",
   },
   {
     name: "Training",
     image: "/category/train.png",
     width: 1920,
     height: 1066,
-    href: "/categories/training",
+    href: "/shop?category=training",
   },
   {
     name: "Lifestyle",
     image: "/category/lifestyle.png",
     width: 1824,
     height: 900,
-    href: "/categories/lifestyle",
+    href: "/shop?category=lifestyle",
   },
   {
     name: "Outdoor",
     image: "/category/outdoor.webp",
     width: 2540,
     height: 1693,
-    href: "/categories/outdoor",
+    href: "/shop?category=outdoor",
   },
   {
     name: "Sandals",
     image: "/category/sandals.png",
     width: 1367,
     height: 476,
-    href: "/categories/sandals",
+    href: "/shop?category=sandals",
   },
 ];
 
@@ -167,10 +167,6 @@ export default function ShopByCategory() {
           0{active + 1} / 0{categories.length}
         </span>
 
-        <Link href={categories[active].href} className="text-link">
-          Shop {categories[active].name.toLowerCase()}
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Link>
       </div>
     </section>
   );
