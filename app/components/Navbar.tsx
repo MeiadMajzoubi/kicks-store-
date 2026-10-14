@@ -9,17 +9,16 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { alphabeticalBrands, brandsByGender, brandsOnSale } from "@/data/brands";
+import { alphabeticalBrands, brandsByGender } from "@/data/brands";
 import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
-type Panel = Gender | "brands" | "sale";
+type Panel = Gender | "brands";
 
 const PANEL_LABELS: Record<Panel, string> = {
   women: "Women",
   men: "Men",
   brands: "Brands",
-  sale: "Sale",
 };
 
 const SHOE_CATEGORIES = [
@@ -61,10 +60,6 @@ const ACTIONS = [
   { label: "Account", icon: User },
 ];
 
-const SALE_COLLECTIONS = [
-  { name: "Men", href: "/sale?gender=men" },
-  { name: "Women", href: "/sale?gender=women" },
-];
 
 export default function Navbar() {
   const [activePanel, setActivePanel] = useState<Panel | null>(null);
@@ -74,13 +69,11 @@ export default function Navbar() {
   const womenTriggerRef = useRef<HTMLButtonElement>(null);
   const menTriggerRef = useRef<HTMLButtonElement>(null);
   const brandsTriggerRef = useRef<HTMLButtonElement>(null);
-  const saleTriggerRef = useRef<HTMLButtonElement>(null);
 
   const triggerRefs = {
     women: womenTriggerRef,
     men: menTriggerRef,
     brands: brandsTriggerRef,
-    sale: saleTriggerRef,
   };
 
   const closePanel = () => setActivePanel(null);
@@ -128,7 +121,7 @@ export default function Navbar() {
           className="col-span-2 row-start-2 mt-2 w-full lg:col-span-1 lg:col-start-1 lg:row-start-1 lg:mt-0"
         >
           <ul className="flex items-center justify-center gap-7 text-sm font-semibold lg:justify-start lg:gap-8">
-            {(["women", "men", "brands", "sale"] as const).map((panel) => {
+            {(["women", "men", "brands"] as const).map((panel) => {
               const isOpen = activePanel === panel;
 
               return (
@@ -170,13 +163,26 @@ export default function Navbar() {
                       isOpen
                         ? "text-brand after:scale-x-100"
                         : "after:scale-x-0 hover:text-brand hover:after:scale-x-100"
-                    } ${panel === "sale" ? "text-brand" : ""}`}
+                    }`}
                   >
                     {PANEL_LABELS[panel]}
                   </button>
                 </li>
               );
             })}
+            {/* Few shoes are on sale, so Sale is a plain link to one page with its own filters. */}
+            <li>
+              <Link
+                href="/sale"
+                onClick={closePanel}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") closePanel();
+                }}
+                className="relative inline-flex min-h-11 items-center rounded-sm text-brand transition-colors duration-200 after:absolute after:bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-brand after:transition-transform after:duration-200 hover:after:scale-x-100 motion-reduce:transition-none"
+              >
+                Sale
+              </Link>
+            </li>
           </ul>
         </nav>
 
@@ -377,74 +383,6 @@ export default function Navbar() {
           </div>
         )}
 
-        {activePanel === "sale" && (
-          <div className="content-shell py-7 sm:py-9">
-            <div>
-              <div className="grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-[160px_160px_minmax(0,1fr)] lg:gap-x-12">
-                {SALE_COLLECTIONS.map((collection) => (
-                  <section
-                    key={collection.name}
-                    aria-labelledby={`sale-${collection.name.toLowerCase()}`}
-                  >
-                    <h2
-                      id={`sale-${collection.name.toLowerCase()}`}
-                      className="panel-title"
-                    >
-                      {collection.name}
-                    </h2>
-
-                    <Link
-                      href={collection.href}
-                      prefetch={false}
-                      onClick={closePanel}
-                      className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
-                    >
-                      Shoes
-                    </Link>
-                  </section>
-                ))}
-
-                <section
-                  aria-labelledby="sale-brands-heading"
-                  className="col-span-2 border-t border-border pt-6 lg:col-span-1 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0"
-                >
-                  <h2
-                    id="sale-brands-heading"
-                    className="panel-title"
-                  >
-                    Brands
-                  </h2>
-
-                  <ul className="grid grid-cols-2 gap-x-6 sm:grid-cols-3 sm:gap-x-10">
-                    {brandsOnSale.map((brand) => (
-                      <li key={brand.slug}>
-                        <Link
-                          href={`/sale?brand=${encodeURIComponent(brand.name)}`}
-                          prefetch={false}
-                          onClick={closePanel}
-                          className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
-                        >
-                          {brand.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </div>
-
-              <div className="mt-7 border-t border-border pt-3">
-                <Link
-                  href="/sale"
-                  onClick={closePanel}
-                  className="text-link"
-                >
-                  View all sale
-                  <ArrowRight aria-hidden="true" className="size-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
       </nav>
     </header>
   );
