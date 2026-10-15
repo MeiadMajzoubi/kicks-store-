@@ -5,9 +5,9 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Search, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Clock, Search, X } from "lucide-react";
 import { mockProducts } from "@/data/mockProducts";
-import { searchProducts } from "@/lib/search";
+import { searchProducts, suggest } from "@/lib/search";
 import Price from "./Price";
 
 type SearchBarProps = {
@@ -27,10 +27,35 @@ const POPULAR_SEARCHES = [
 
 const MAX_RESULTS = 6;
 
+// Recent searches live only on this device; storage can be blocked, so every access is guarded.
+const RECENT_KEY = "red-kicks:recent-searches";
+const MAX_RECENT = 5;
+
+function readRecent(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(RECENT_KEY) ?? "[]");
+    return Array.isArray(saved) ? saved.filter((item) => typeof item === "string").slice(0, MAX_RECENT) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeRecent(terms: string[]) {
+  try {
+    if (terms.length) window.localStorage.setItem(RECENT_KEY, JSON.stringify(terms));
+    else window.localStorage.removeItem(RECENT_KEY);
+  } catch {
+    // Storage unavailable (private mode, blocked): recent searches just aren't kept.
+  }
+}
+
 export default function SearchBar({ onOpen }: SearchBarProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  // Only shown inside the overlay, which never renders on the server, so no hydration mismatch.
+  const [recent, setRecent] = useState<string[]>(readRecent);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -39,7 +64,21 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
   const trimmed = query.trim();
   const matches = useMemo(() => searchProducts(mockProducts, trimmed).products, [trimmed]);
   const results = matches.slice(0, MAX_RESULTS);
+  const suggestions = useMemo(() => suggest(trimmed), [trimmed]);
   const searchHref = `/search?q=${encodeURIComponent(trimmed)}`;
+
+  // Newest first, no duplicates (ignoring case), at most five.
+  const remember = (term: string) => {
+    const next = [term, ...recent.filter((item) => item.toLowerCase() !== term.toLowerCase())].slice(0, MAX_RECENT);
+    setRecent(next);
+    writeRecent(next);
+  };
+
+  const clearRecent = () => {
+    setRecent([]);
+    writeRecent([]);
+    inputRef.current?.focus();
+  };
 
   const openSearch = () => {
     onOpen?.();
@@ -94,6 +133,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
     event.preventDefault();
     if (!trimmed) return;
 
+    remember(trimmed);
     setOpen(false);
     setQuery("");
     router.push(searchHref);
@@ -207,6 +247,41 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
               <div className="flex-1 overflow-y-auto border-t border-border">
                 <div className="content-shell py-7 lg:py-9">
                   <div className="mx-auto max-w-[640px] lg:max-w-[1040px]">
+                    {!trimmed && recent.length > 0 && (
+                      <section aria-labelledby="search-recent" className="mb-8">
+                        <div className="mb-4 flex items-center justify-between gap-4">
+                          <h2 id="search-recent" className="text-sm font-medium text-muted-foreground">
+                            Recent Searches
+                          </h2>
+                          <button
+                            type="button"
+                            onClick={clearRecent}
+                            className="inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4 hover:text-brand"
+                          >
+                            Clear
+                          </button>
+                        </div>
+
+                        <ul className="flex flex-wrap gap-3">
+                          {recent.map((term) => (
+                            <li key={term}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setQuery(term);
+                                  inputRef.current?.focus();
+                                }}
+                                className="flex min-h-11 items-center gap-2 rounded-full border border-border px-5 text-base font-medium transition-colors duration-150 hover:border-foreground motion-reduce:transition-none"
+                              >
+                                <Clock aria-hidden="true" className="size-4 text-muted-foreground" strokeWidth={1.75} />
+                                {term}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+
                     {!trimmed && (
                       <section aria-labelledby="search-popular">
                         <h2
@@ -235,6 +310,40 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                       </section>
                     )}
 
+                    {trimmed && suggestions.length > 0 && (
+                      <section aria-labelledby="search-suggestions" className="mb-8">
+                        <h2 id="search-suggestions" className="sr-only">
+                          Suggestions
+                        </h2>
+                        <ul className="divide-y divide-border border-y border-border">
+                          {suggestions.map((suggestion) => (
+                            <li key={suggestion.href}>
+                              <Link
+                                href={suggestion.href}
+                                onClick={() => {
+                                  remember(trimmed);
+                                  closeAfterNavigate();
+                                }}
+                                className="group flex min-h-14 items-center justify-between gap-4 text-base font-medium transition-colors duration-150 hover:text-brand"
+                              >
+                                <span>
+                                  {suggestion.label}
+                                  <span className="ml-2 text-sm font-normal text-muted-foreground">
+                                    {suggestion.kind === "brand" ? "Brand" : "Style"}
+                                  </span>
+                                </span>
+                                <ArrowUpRight
+                                  aria-hidden="true"
+                                  className="size-5 shrink-0 text-muted-foreground group-hover:text-brand"
+                                  strokeWidth={1.5}
+                                />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+
                     {trimmed && results.length > 0 && (
                       <section aria-labelledby="search-results">
                         <div className="mb-5 flex items-center justify-between gap-4">
@@ -247,7 +356,10 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
 
                           <Link
                             href={searchHref}
-                            onClick={closeAfterNavigate}
+                            onClick={() => {
+                              remember(trimmed);
+                              closeAfterNavigate();
+                            }}
                             className="text-link"
                           >
                             View all
@@ -288,7 +400,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                       </section>
                     )}
 
-                    {trimmed && results.length === 0 && (
+                    {trimmed && results.length === 0 && suggestions.length === 0 && (
                       <p className="text-base">
                         No results for{" "}
                         <span className="font-semibold">&ldquo;{trimmed}&rdquo;</span>.

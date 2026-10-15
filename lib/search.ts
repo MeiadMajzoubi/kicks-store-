@@ -1,4 +1,6 @@
-import type { Gender, Product, ProductCategory } from "@/data/mockProducts";
+import { alphabeticalBrands } from "@/data/brands";
+import { mockProducts, type Gender, type Product, type ProductCategory } from "@/data/mockProducts";
+import { categoryLabel, categoryNoun } from "@/lib/catalog";
 
 /*
  * Product search used by the search overlay and the /search page.
@@ -152,4 +154,73 @@ export function searchProducts(products: readonly Product[], query: string): Sea
 
   scored.sort((a, b) => b.score - a.score);
   return { products: scored.map((entry) => entry.product), corrections };
+}
+
+export type Suggestion = { label: string; href: string; kind: "brand" | "style" };
+
+/** Like the word maps above, but also accepts the start of a word ("run", "wom"). */
+function lookup<T>(map: Record<string, T>, word: string): T | undefined {
+  if (map[word]) return map[word];
+  if (word.length < 3) return undefined;
+  const key = Object.keys(map).find((candidate) => candidate.startsWith(word));
+  return key ? map[key] : undefined;
+}
+
+/**
+ * Shortcuts shown above the results while typing: brands and styles the words point to.
+ * "nik" → Nike, "run" → Running Shoes, "mens run" → Men's Running Shoes.
+ */
+export function suggest(query: string, limit = 4): Suggestion[] {
+  let gender: Gender | undefined;
+  let category: ProductCategory | undefined;
+  const terms: string[] = [];
+
+  for (const word of words(query)) {
+    const asGender = lookup(GENDER_WORDS, word);
+    const asCategory = lookup(CATEGORY_WORDS, word);
+    if (asGender && !gender) gender = asGender;
+    else if (asCategory && !category) category = asCategory;
+    else if (!FILLER_WORDS.has(word)) terms.push(word);
+  }
+
+  // Only brands that actually have shoes for the gender and style asked for.
+  const stocked = new Set(
+    mockProducts
+      .filter((product) => (!gender || product.gender === gender) && (!category || product.category === category))
+      .map((product) => product.brand),
+  );
+  const brands = alphabeticalBrands.filter((brand) =>
+    stocked.has(brand.name) &&
+    terms.some((term) =>
+      words(brand.name).some(
+        (word) =>
+          (term.length >= 2 && word.startsWith(term)) ||
+          (allowedTypos(term) > 0 && distance(term, word) <= allowedTypos(term)),
+      ),
+    ),
+  );
+
+  const params = (extra: Record<string, string | undefined>) => {
+    const query = new URLSearchParams(
+      Object.entries(extra).filter((entry): entry is [string, string] => Boolean(entry[1])),
+    ).toString();
+    return query ? `?${query}` : "";
+  };
+  const noun = gender ? categoryLabel(gender, category) : categoryNoun(category);
+  const suggestions: Suggestion[] = brands.map((brand) => ({
+    kind: "brand",
+    label: gender || category ? `${brand.name} ${noun}` : brand.name,
+    href: `/brands/${brand.slug}${params({ gender, category })}`,
+  }));
+
+  // Style shortcut only when no brand narrows it further.
+  if (!brands.length && (gender || category)) {
+    suggestions.push({
+      kind: "style",
+      label: noun === "Shoes" ? "All Shoes" : noun,
+      href: gender ? `/${gender}${params({ category })}` : `/shop${params({ category })}`,
+    });
+  }
+
+  return suggestions.slice(0, limit);
 }
