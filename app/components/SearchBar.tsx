@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search, X } from "lucide-react";
 import { mockProducts } from "@/data/mockProducts";
+import { searchProducts } from "@/lib/search";
 import Price from "./Price";
 
 type SearchBarProps = {
@@ -26,17 +27,6 @@ const POPULAR_SEARCHES = [
 
 const MAX_RESULTS = 6;
 
-function searchProducts(query: string) {
-  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-  if (!terms.length) return [];
-
-  return mockProducts.filter((product) => {
-    const haystack =
-      `${product.brand} ${product.name} ${product.category} ${product.gender}`.toLowerCase();
-    return terms.every((term) => haystack.includes(term));
-  });
-}
-
 export default function SearchBar({ onOpen }: SearchBarProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -47,7 +37,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const trimmed = query.trim();
-  const matches = useMemo(() => searchProducts(trimmed), [trimmed]);
+  const matches = useMemo(() => searchProducts(mockProducts, trimmed).products, [trimmed]);
   const results = matches.slice(0, MAX_RESULTS);
   const searchHref = `/search?q=${encodeURIComponent(trimmed)}`;
 

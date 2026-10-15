@@ -43,6 +43,10 @@ type ProductListingProps = {
   /** The Sale page: every shoe is already on sale, so New Arrivals and Sale rows are hidden. */
   saleOnly?: boolean;
   basePath: string;
+  /** Query kept on every link, e.g. "q=nike" on the search page. */
+  baseQuery?: string;
+  /** Line under the heading, e.g. a spelling correction on the search page. */
+  note?: ReactNode;
   filters: CatalogFilters;
   results: Product[];
   facets: Facets;
@@ -53,7 +57,17 @@ function toggle<T>(values: T[], value: T) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
-export default function ProductListing({ gender, title, saleOnly = false, basePath, filters, results, facets }: ProductListingProps) {
+export default function ProductListing({
+  gender,
+  title,
+  saleOnly = false,
+  basePath,
+  baseQuery,
+  note,
+  filters,
+  results,
+  facets,
+}: ProductListingProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showFilters, setShowFilters] = useState(true);
@@ -61,9 +75,15 @@ export default function ProductListing({ gender, title, saleOnly = false, basePa
 
   const activeCount = countActiveFilters(filters);
 
+  const hrefFor = (next: CatalogFilters) => {
+    const query = filtersToQuery(next).slice(1);
+    const full = [baseQuery, query].filter(Boolean).join("&");
+    return full ? `${basePath}?${full}` : basePath;
+  };
+
   const update = (next: Partial<CatalogFilters>) => {
     startTransition(() => {
-      router.push(`${basePath}${filtersToQuery({ ...filters, ...next })}`, { scroll: false });
+      router.push(hrefFor({ ...filters, ...next }), { scroll: false });
     });
   };
 
@@ -81,6 +101,7 @@ export default function ProductListing({ gender, title, saleOnly = false, basePa
           {title}{" "}
           <span className="font-normal text-muted-foreground tabular-nums">{results.length}</span>
         </h1>
+        {note && <div className="mt-2 text-[15px] text-muted-foreground">{note}</div>}
 
         <div className="mt-4 border-b border-border">
           <nav aria-label="Categories" className="-mb-px min-w-0 overflow-x-auto [scrollbar-width:none]">
@@ -90,7 +111,7 @@ export default function ProductListing({ gender, title, saleOnly = false, basePa
                 return (
                   <li key={option.label} className="shrink-0">
                     <Link
-                      href={`${basePath}${filtersToQuery({ ...filters, category: option.value })}`}
+                      href={hrefFor({ ...filters, category: option.value })}
                       scroll={false}
                       aria-current={isActive ? "page" : undefined}
                       className={`flex min-h-12 items-center border-b-2 text-[15px] font-medium transition-colors duration-150 ${
