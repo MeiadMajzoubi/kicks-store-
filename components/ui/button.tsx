@@ -17,6 +17,9 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        // Red Kicks store styles: black pill for the main action, outlined pill beside it.
+        solid: "bg-foreground text-background hover:bg-foreground/85",
+        "outline-pill": "border-border bg-background hover:border-foreground",
       },
       size: {
         default:
@@ -30,6 +33,10 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        // Store sizes: 48px main actions, 40px small controls, all fully rounded.
+        "pill-lg": "h-12 gap-2 rounded-full px-7 text-[15px] active:scale-[0.98]",
+        pill: "h-10 gap-1.5 rounded-full px-4 text-sm",
+        "icon-pill": "size-10 rounded-full [&_svg:not([class*='size-'])]:size-4",
       },
     },
     defaultVariants: {

@@ -9,9 +9,8 @@ export const metadata: Metadata = {
 export default function CartPage() {
   return (
     <main id="main-content" tabIndex={-1} className="content-shell flex-1 pt-8 pb-20 outline-none sm:pt-10">
-      <div className="mx-auto max-w-[1120px]">
-        <CartView />
-      </div>
+      {/* Full page width, so the bag lines up with the logo and menu like every other page. */}
+      <CartView />
     </main>
   );
 }

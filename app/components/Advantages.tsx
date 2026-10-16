@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import FastTruckIcon from "./icons/FastTruckIcon";
 
 type IconProps = { className?: string };
 
@@ -10,24 +11,6 @@ const line = {
   strokeLinejoin: "miter" as const,
   strokeLinecap: "butt" as const,
 };
-
-function TruckIcon({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 120 100" aria-hidden="true" className={className}>
-      {/* speed lines */}
-      <path d="M6 30H18M2 40H18M10 50H18" {...line} />
-      {/* cargo box + cab */}
-      <path d="M22 66V18H76V66M76 32H96L108 46V66" {...line} />
-      {/* bottom line with gaps for wheels */}
-      <path d="M22 66H33M51 66H79M97 66H108" {...line} />
-      {/* wheels */}
-      <circle cx="42" cy="66" r="9" {...line} />
-      <circle cx="88" cy="66" r="9" {...line} />
-      {/* window */}
-      <path d="M82 37H94L102 46H82Z" fill="currentColor" />
-    </svg>
-  );
-}
 
 function BoxesIcon({ className }: IconProps) {
   return (
@@ -92,7 +75,7 @@ function SupportIcon({ className }: IconProps) {
 }
 
 const advantages = [
-  { title: "Fast Delivery", icon: TruckIcon, href: "/delivery" },
+  { title: "Fast Delivery", icon: FastTruckIcon, href: "/delivery" },
   { title: "Great Variety", icon: BoxesIcon, href: "/products" },
   { title: "Big Sales & Clearance", icon: SaleTagIcon, href: "/sale" },
   { title: "24H Support", icon: SupportIcon, href: "/support" },
