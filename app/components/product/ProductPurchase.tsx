@@ -1,19 +1,24 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { Check, ChevronDown, Heart } from "lucide-react";
 import type { VariantSizes } from "@/data/mockProducts";
+import { addToCart, useCartCount } from "@/lib/cart";
 
 type ProductPurchaseProps = {
+  productId: string;
+  variant: number;
   sizes: VariantSizes;
 };
 
-export default function ProductPurchase({ sizes }: ProductPurchaseProps) {
+export default function ProductPurchase({ productId, variant, sizes }: ProductPurchaseProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [error, setError] = useState(false);
   const [added, setAdded] = useState(false);
   const [favourite, setFavourite] = useState(false);
   const sizeGroupRef = useRef<HTMLDivElement>(null);
+  const bagCount = useCartCount();
 
   const allSizes = [...sizes.available, ...sizes.soldOut].sort((a, b) => a - b);
   const hasSizes = allSizes.length > 0;
@@ -24,6 +29,7 @@ export default function ProductPurchase({ sizes }: ProductPurchaseProps) {
       sizeGroupRef.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus();
       return;
     }
+    addToCart(productId, variant, selected);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2000);
   };
@@ -116,8 +122,16 @@ export default function ProductPurchase({ sizes }: ProductPurchaseProps) {
           />
         </button>
         <p aria-live="polite" className="sr-only">
-          {added ? "Added to bag" : ""}
+          {added ? `Added to bag. ${bagCount} ${bagCount === 1 ? "item" : "items"} in your bag.` : ""}
         </p>
+        {bagCount > 0 && (
+          <p className="pt-1 text-center text-sm text-muted-foreground">
+            {bagCount} {bagCount === 1 ? "item" : "items"} in your bag ·{" "}
+            <Link href="/cart" className="font-medium text-foreground underline underline-offset-4 hover:text-brand">
+              View Bag
+            </Link>
+          </p>
+        )}
       </div>
 
       <details className="group mt-10 border-t border-b border-border">

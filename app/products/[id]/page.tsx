@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
           <Price product={product} className="mt-4 text-lg font-semibold" />
 
           <div className="mt-8">
-            <ProductPurchase sizes={variant.sizes} />
+            <ProductPurchase productId={product.id} variant={0} sizes={variant.sizes} />
           </div>
         </div>
       </div>

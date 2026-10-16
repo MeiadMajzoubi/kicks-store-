@@ -88,6 +88,15 @@ export function categoryLabel(gender: Gender, category?: ProductCategory) {
   return `${GENDER_LABEL[gender]} ${CATEGORY_NOUN[category ?? "uncategorized"]}`;
 }
 
+const COLOUR_NAMES: Partial<Record<ProductColor, string>> = { multi: "Multicolour" };
+
+/** ["black", "multi"] → "Black - Multicolour", the colourway as a shopper reads it. */
+export function colourName(colors: ProductColor[]) {
+  return colors
+    .map((color) => COLOUR_NAMES[color] ?? color[0].toUpperCase() + color.slice(1))
+    .join(" - ");
+}
+
 export function effectivePrice(product: Product) {
   return product.salePrice ?? product.price;
 }

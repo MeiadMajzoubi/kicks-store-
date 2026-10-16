@@ -10,6 +10,7 @@ import {
   User,
 } from "lucide-react";
 import { alphabeticalBrands, brandsByGender } from "@/data/brands";
+import { useCartCount } from "@/lib/cart";
 import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
@@ -56,13 +57,13 @@ const SHOE_SIZES: Record<Gender, readonly string[]> = {
 
 const ACTIONS = [
   { label: "Wishlist", icon: Heart },
-  { label: "Cart", icon: ShoppingBag },
   { label: "Account", icon: User },
 ];
 
 
 export default function Navbar() {
   const [activePanel, setActivePanel] = useState<Panel | null>(null);
+  const bagCount = useCartCount();
 
   const headerRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -215,6 +216,22 @@ export default function Navbar() {
               <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
           ))}
+          <Link
+            href="/cart"
+            onClick={closePanel}
+            aria-label={bagCount ? `Bag, ${bagCount} ${bagCount === 1 ? "item" : "items"}` : "Bag"}
+            className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
+          >
+            <ShoppingBag aria-hidden="true" className="size-5" strokeWidth={1.75} />
+            {bagCount > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute top-1.5 right-1 flex min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[11px] leading-[18px] font-semibold text-white tabular-nums"
+              >
+                {bagCount > 9 ? "9+" : bagCount}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
 

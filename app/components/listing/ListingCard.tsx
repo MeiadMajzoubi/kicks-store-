@@ -4,19 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ImageOff } from "lucide-react";
-import type { Product, ProductColor } from "@/data/mockProducts";
-import { categoryLabel } from "@/lib/catalog";
+import type { Product } from "@/data/mockProducts";
+import { categoryLabel, colourName } from "@/lib/catalog";
 import Price from "../Price";
 import Ribbon from "../Ribbon";
-
-const COLOUR_NAMES: Partial<Record<ProductColor, string>> = { multi: "Multicolour" };
-
-/** ["black", "multi"] → "Black - Multicolour", the colourway as a shopper reads it. */
-function colourName(colors: ProductColor[]) {
-  return colors
-    .map((color) => COLOUR_NAMES[color] ?? color[0].toUpperCase() + color.slice(1))
-    .join(" - ");
-}
 
 const saveFormat = new Intl.NumberFormat("en-US", {
   style: "currency",
