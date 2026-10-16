@@ -239,9 +239,9 @@ const productData: ProductData[] = [
   },
   {
     id: "m5",
-    name: "adidas Adizero Evo SL Exo",
+    name: "Adidas Adizero Evo SL Exo",
     slug: "adidas-adizero-evo-sl-exo-m5",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "running",
     price: 170,
@@ -639,9 +639,9 @@ const productData: ProductData[] = [
   // image: https://assets.footlocker.com/is/image/FLDM/314218801604_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
     id: "m23",
-    name: "adidas Adizero Evo SL ATR",
+    name: "Adidas Adizero Evo SL ATR",
     slug: "adidas-adizero-evo-sl-atr-m23",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "outdoor",
     price: 185,
@@ -683,9 +683,9 @@ const productData: ProductData[] = [
   // TODO: sizes are a placeholder range; the Foot Locker page only showed 9, 11 and 11.5.
   {
     id: "m25",
-    name: "adidas Terrex Agravic Speed 2 Trail",
+    name: "Adidas Terrex Agravic Speed 2 Trail",
     slug: "adidas-terrex-agravic-speed-2-trail-m25",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "outdoor",
     price: 185,
@@ -731,9 +731,9 @@ const productData: ProductData[] = [
   // TODO: sizes are a placeholder range; the Foot Locker page only showed 7.5 and 10.5.
   {
     id: "m27",
-    name: "adidas Terrex Free Hiker 2.0 Low GORE-TEX",
+    name: "Adidas Terrex Free Hiker 2.0 Low GORE-TEX",
     slug: "adidas-terrex-free-hiker-2-0-low-gore-tex-m27",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "outdoor",
     price: 218,
@@ -779,9 +779,9 @@ const productData: ProductData[] = [
   // image: https://assets.footlocker.com/is/image/FLDM/314218521004_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
     id: "m29",
-    name: "adidas Adizero Boston 13",
+    name: "Adidas Adizero Boston 13",
     slug: "adidas-adizero-boston-13-m29",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "running",
     price: 185,
@@ -804,9 +804,9 @@ const productData: ProductData[] = [
   // image: https://assets.footlocker.com/is/image/FLDM/314218988104_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
     id: "m30",
-    name: "adidas Supernova Rise 3",
+    name: "Adidas Supernova Rise 3",
     slug: "adidas-supernova-rise-3-m30",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "running",
     price: 172,
@@ -915,9 +915,9 @@ const productData: ProductData[] = [
   // image: https://assets.footlocker.com/is/image/FLDM/314626980404_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
     id: "m35",
-    name: "adidas Adilette Aqua",
+    name: "Adidas Adilette Aqua",
     slug: "adidas-adilette-aqua-m35",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "men",
     category: "sandals",
     price: 26,
@@ -1325,9 +1325,9 @@ const productData: ProductData[] = [
   },
   {
     id: "w17",
-    name: "adidas Originals Handball Spezial",
+    name: "Adidas Originals Handball Spezial",
     slug: "adidas-originals-handball-spezial-w17",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "women",
     category: "lifestyle",
     price: 70,
@@ -1448,9 +1448,9 @@ const productData: ProductData[] = [
   // TODO: green sizes are a placeholder (same range as grey); the Foot Locker page didn't list them clearly.
   {
     id: "w22",
-    name: "adidas Adizero Evo SL ATR",
+    name: "Adidas Adizero Evo SL ATR",
     slug: "adidas-adizero-evo-sl-atr-w22",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "women",
     category: "outdoor",
     price: 185,
@@ -1495,9 +1495,9 @@ const productData: ProductData[] = [
   // image: https://assets.footlocker.com/is/image/FLDM/315217864602_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
     id: "w25",
-    name: "adidas Adizero Boston 13",
+    name: "Adidas Adizero Boston 13",
     slug: "adidas-adizero-boston-13-w25",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "women",
     category: "running",
     price: 185,
@@ -1519,9 +1519,9 @@ const productData: ProductData[] = [
   // TODO: sizes are a placeholder range; the Foot Locker page only showed size 8.
   {
     id: "w26",
-    name: "adidas Supernova Rise 3",
+    name: "Adidas Supernova Rise 3",
     slug: "adidas-supernova-rise-3-w26",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "women",
     category: "running",
     price: 172,
@@ -1717,9 +1717,9 @@ const productData: ProductData[] = [
   // Category 'sandals' as requested, but this is a training shoe.
   {
     id: "w35",
-    name: "adidas Dropset Base",
+    name: "Adidas Dropset Base",
     slug: "adidas-dropset-base-w35",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "women",
     category: "training",
     price: 73,
@@ -1741,9 +1741,9 @@ const productData: ProductData[] = [
   // Category 'sandals' as requested, but this is a training shoe.
   {
     id: "w36",
-    name: "adidas Dropset 4",
+    name: "Adidas Dropset 4",
     slug: "adidas-dropset-4-w36",
-    brand: "adidas",
+    brand: "Adidas",
     gender: "women",
     category: "training",
     price: 146,

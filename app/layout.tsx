@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s | Red Kicks",
   },
   description:
-    "Explore sneakers, everyday favourites, and performance footwear from Nike, adidas, ASICS, On, New Balance, and Birkenstock at Red Kicks.",
+    "Explore sneakers, everyday favourites, and performance footwear from Nike, Adidas, ASICS, On, New Balance, and Birkenstock at Red Kicks.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

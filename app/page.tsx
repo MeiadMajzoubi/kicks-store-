@@ -15,8 +15,8 @@ import { useCarouselState } from "@/lib/use-carousel-state";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const slides = [
-  { src: "/Adious.avif", alt: "adidas Adizero performance collection" },
-  { src: "/Bunny.webp", alt: "adidas Bad Bunny collection" },
+  { src: "/Adious.avif", alt: "Adidas Adizero performance collection" },
+  { src: "/Bunny.webp", alt: "Adidas Bad Bunny collection" },
   { src: "/LIQUID.webp", alt: "Nike Liquid Max collection" },
   { src: "/Puma.webp", alt: "Puma sneaker collection" },
 ];

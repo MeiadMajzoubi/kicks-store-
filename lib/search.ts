@@ -6,7 +6,7 @@ import { categoryLabel, categoryNoun } from "@/lib/catalog";
  * Product search used by the search overlay and the /search page.
  * - Shopper words become filters: "mens running" = men + running.
  * - Synonyms: "slides" = sandals, "hiking" = outdoor.
- * - Small typos are forgiven: "addidas" finds adidas, "nkie" finds Nike.
+ * - Small typos are forgiven: "addidas" finds Adidas, "nkie" finds Nike.
  * - Results are ranked: a match in the name beats a match in the colour.
  */
 
@@ -52,7 +52,7 @@ const FILLER_WORDS = new Set(["shoe", "shoes", "sneaker", "sneakers", "trainers"
 
 export type SearchResult = {
   products: Product[];
-  /** Typos we corrected, e.g. { addidas: "adidas" }, for a "Showing results for" note. */
+  /** Typos we corrected, e.g. { addidas: "Adidas" }, for a "Showing results for" note. */
   corrections: Record<string, string>;
 };
 

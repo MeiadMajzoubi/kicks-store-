@@ -32,7 +32,7 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/br
   const filters = { ...parseFilters(await searchParams), brands: [] };
   const results = applyFilters(brandProducts, filters);
 
-  // "adidas Shoes", "adidas Running Shoes", "adidas Women's Running Shoes".
+  // "Adidas Shoes", "Adidas Running Shoes", "Adidas Women's Running Shoes".
   const title = `${brand.name} ${
     filters.gender ? categoryLabel(filters.gender, filters.category) : categoryNoun(filters.category)
   }`;

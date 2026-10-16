@@ -12,7 +12,7 @@ export const brands: StoreBrand[] = [
   { name: "Nike", slug: "nike", logo: "/brand-logos/nike.svg" },
   { name: "New Balance", slug: "new-balance", logo: "/brand-logos/new-balance.svg" },
   { name: "Jordan", slug: "jordan", logo: "/brand-logos/jordan.svg" },
-  { name: "adidas", slug: "adidas", logo: "/brand-logos/adidas.svg" },
+  { name: "Adidas", slug: "adidas", logo: "/brand-logos/adidas.svg" },
   { name: "ASICS", slug: "asics", logo: "/brand-logos/asics.svg" },
   { name: "On", slug: "on", logo: "/brand-logos/on.svg" },
   { name: "Salomon", slug: "salomon", logo: "/brand-logos/salomon.svg" },

@@ -12,7 +12,7 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const brands = [
   { name: "Nike", image: "/brands/Nike.jpeg", href: "/brands/nike" },
-  { name: "adidas", image: "/brands/Adidas.jpeg", href: "/brands/adidas" },
+  { name: "Adidas", image: "/brands/Adidas.jpeg", href: "/brands/adidas" },
   { name: "ASICS", image: "/brands/Asics.jpeg", href: "/brands/asics" },
   { name: "On", image: "/brands/On.jpeg", href: "/brands/on" },
   { name: "New Balance", image: "/brands/NB.jpeg", href: "/brands/new-balance" },

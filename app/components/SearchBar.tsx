@@ -20,7 +20,7 @@ const POPULAR_SEARCHES = [
   "Jordan",
   "Nike",
   "New Balance",
-  "adidas",
+  "Adidas",
   "Running",
   "Sandals",
 ];

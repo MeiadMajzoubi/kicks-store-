@@ -38,7 +38,7 @@ type Facets = {
 type ProductListingProps = {
   /** Set on the Men and Women pages; left out where both are mixed, like a brand page. */
   gender?: Gender;
-  /** Page heading, e.g. "Men's Running Shoes" or "adidas Shoes". */
+  /** Page heading, e.g. "Men's Running Shoes" or "Adidas Shoes". */
   title: string;
   /** The Sale page: every shoe is already on sale, so New Arrivals and Sale rows are hidden. */
   saleOnly?: boolean;
