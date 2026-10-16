@@ -13,11 +13,15 @@ export async function generateMetadata({ searchParams }: PageProps<"/search">): 
   return { title: `Results for “${correctedQuery(q, corrections)}”` };
 }
 
-/** The query with typos swapped for what we matched: "nikee air" → "nike air". */
+/**
+ * The query as a heading: typos swapped for what we matched, each word capitalised.
+ * "nikee air max" → "Nike Air Max".
+ */
 function correctedQuery(q: string, corrections: Record<string, string>) {
   return q
     .split(/\s+/)
     .map((word) => corrections[word.toLowerCase().replace(/[^a-z0-9]/g, "")] ?? word)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
 
