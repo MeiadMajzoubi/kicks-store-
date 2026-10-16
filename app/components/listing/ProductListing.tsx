@@ -45,8 +45,6 @@ type ProductListingProps = {
   basePath: string;
   /** Query kept on every link, e.g. "q=nike" on the search page. */
   baseQuery?: string;
-  /** Line under the heading, e.g. a spelling correction on the search page. */
-  note?: ReactNode;
   filters: CatalogFilters;
   results: Product[];
   facets: Facets;
@@ -63,7 +61,6 @@ export default function ProductListing({
   saleOnly = false,
   basePath,
   baseQuery,
-  note,
   filters,
   results,
   facets,
@@ -101,7 +98,6 @@ export default function ProductListing({
           {title}{" "}
           <span className="font-normal text-muted-foreground tabular-nums">{results.length}</span>
         </h1>
-        {note && <div className="mt-2 text-[15px] text-muted-foreground">{note}</div>}
 
         <div className="mt-4 border-b border-border">
           <nav aria-label="Categories" className="-mb-px min-w-0 overflow-x-auto [scrollbar-width:none]">

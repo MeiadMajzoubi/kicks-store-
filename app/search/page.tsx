@@ -8,7 +8,17 @@ import ProductListing from "../components/listing/ProductListing";
 
 export async function generateMetadata({ searchParams }: PageProps<"/search">): Promise<Metadata> {
   const q = firstValue((await searchParams).q);
-  return { title: q ? `Results for “${q}”` : "Search" };
+  if (!q) return { title: "Search" };
+  const { corrections } = searchProducts(mockProducts, q);
+  return { title: `Results for “${correctedQuery(q, corrections)}”` };
+}
+
+/** The query with typos swapped for what we matched: "nikee air" → "nike air". */
+function correctedQuery(q: string, corrections: Record<string, string>) {
+  return q
+    .split(/\s+/)
+    .map((word) => corrections[word.toLowerCase().replace(/[^a-z0-9]/g, "")] ?? word)
+    .join(" ");
 }
 
 const firstValue = (value: string | string[] | undefined) =>
@@ -29,26 +39,12 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
 
   const filters = parseFilters(params);
   const results = applyFilters(matches, filters);
-  const fixes = Object.entries(corrections);
 
   return (
     <ProductListing
-      title={`Results for “${q}”`}
+      title={`Results for “${correctedQuery(q, corrections)}”`}
       basePath="/search"
       baseQuery={`q=${encodeURIComponent(q)}`}
-      note={
-        fixes.length > 0 ? (
-          <>
-            Showing results for{" "}
-            {fixes.map(([typed, meant], index) => (
-              <span key={typed}>
-                {index > 0 && ", "}
-                <strong className="font-semibold text-foreground">{meant}</strong>
-              </span>
-            ))}
-          </>
-        ) : undefined
-      }
       filters={filters}
       results={results}
       facets={facetOptions(matches)}
