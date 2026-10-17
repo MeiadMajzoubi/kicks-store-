@@ -180,6 +180,9 @@
   .grid-reveal {
     animation: grid-reveal 600ms ease-out 180ms both;
   }
+  .nav-panel-content {
+    animation: nav-panel-content-in 300ms ease 200ms both;
+  }
   /* The brand's red full stop; used only at the end of page titles. */
   .title-mark {
     color: var(--brand);
@@ -320,6 +323,22 @@
   }
 }
 
+/* Nike's mega-menu timing: the panel drops open first, then after 200ms its links slide
+   down 10px into place (transform 300ms) while fading in (200ms, linear). */
+@keyframes nav-panel-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  66% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes grid-reveal {
   from {
     opacity: 0;
@@ -355,7 +374,8 @@
   .product-card:not([data-image-missing]) .product-image {
     transform: none;
   }
-  .grid-reveal {
+  .grid-reveal,
+  .nav-panel-content {
     animation: none;
   }
   .product-card:not([data-image-missing]) .product-details {
