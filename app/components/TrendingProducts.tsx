@@ -30,14 +30,17 @@ function ProductCard({ product }: { product: MockProduct }) {
             <span>Photo unavailable</span>
           </div>
         ) : (
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(min-width: 1024px) 208px, (min-width: 640px) 30vw, 45vw"
-            className="object-contain"
-            onError={() => setImageMissing(true)}
-          />
+          // The frame's padding keeps the shoe small; the inner box is what the photo fills.
+          <div className="relative size-full">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(min-width: 1024px) 180px, (min-width: 640px) 22vw, 34vw"
+              className="object-contain"
+              onError={() => setImageMissing(true)}
+            />
+          </div>
         )}
       </div>
       <div className="product-details">
@@ -74,7 +77,7 @@ export default function TrendingProducts() {
 
         {collections.map(({ value, products }) => (
           <TabsContent key={value} value={value} className="mt-4 sm:mt-6">
-            <ul className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-5 lg:gap-y-2">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-5 lg:gap-x-8 lg:gap-y-6">
               {products.map((product) => (
                 <li key={product.id} className="min-w-0">
                   <ProductCard product={product} />
