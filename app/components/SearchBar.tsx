@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +26,10 @@ const POPULAR_SEARCHES = [
 ];
 
 const MAX_RESULTS = 6;
+
+// The overlay stays mounted once the page has loaded, so it can animate shut as well as open.
+const noop = () => () => {};
+const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
 
 // Recent searches live only on this device; storage can be blocked, so every access is guarded.
 const RECENT_KEY = "red-kicks:recent-searches";
@@ -53,6 +57,7 @@ function writeRecent(terms: string[]) {
 export default function SearchBar({ onOpen }: SearchBarProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const loaded = useHasLoaded();
   const [query, setQuery] = useState("");
   // Only shown inside the overlay, which never renders on the server, so no hydration mismatch.
   const [recent, setRecent] = useState<string[]>(readRecent);
@@ -97,9 +102,11 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    inputRef.current?.focus();
+    // Wait a frame: the overlay is still leaving its closed (inert, hidden) state.
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
 
     return () => {
+      cancelAnimationFrame(frame);
       document.body.style.overflow = previousOverflow;
     };
   }, [open]);
@@ -159,17 +166,26 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
         <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />
       </button>
 
-      {open &&
+      {loaded &&
         createPortal(
+          // Same motion as the navbar menus (Nike's timing): the panel drops open from the
+          // top (250ms), its content slides in after a 200ms pause, and the page behind
+          // darkens slowly (800ms). Closing reverses it quickly.
           <div
-            className="fixed inset-0 z-[100]"
+            className={`fixed inset-0 z-[100] ${open ? "" : "pointer-events-none"}`}
+            inert={!open}
+            aria-hidden={!open}
             onKeyDown={handleKeyDown}
           >
             {/* Backdrop: visible on desktop, where the panel doesn't fill the screen. */}
             <div
               aria-hidden="true"
               onClick={closeSearch}
-              className="absolute inset-0 bg-foreground/40 animate-in fade-in duration-200 motion-reduce:animate-none"
+              className={`absolute inset-0 bg-[rgb(17_17_17/0.36)] motion-reduce:transition-none ${
+                open
+                  ? "visible opacity-100 transition-opacity duration-800 ease-in-out"
+                  : "invisible opacity-0 transition-[opacity,visibility] duration-250 delay-[0ms,250ms]"
+              }`}
             />
 
             <div
@@ -177,8 +193,20 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
               role="dialog"
               aria-modal="true"
               aria-label="Search"
-              className="relative flex h-dvh flex-col bg-background text-foreground animate-in fade-in slide-in-from-top-4 duration-200 motion-reduce:animate-none lg:h-auto lg:max-h-[85dvh]"
+              // Visible at once on open (so the input can take focus); hidden only after the
+              // drop-shut finishes on close.
+              className={`relative flex h-dvh flex-col bg-background text-foreground duration-250 ease-out motion-reduce:transition-none lg:h-auto lg:max-h-[85dvh] ${
+                open
+                  ? "visible transition-[clip-path] [clip-path:inset(0_0_0_0)]"
+                  : "invisible transition-[clip-path,visibility] [clip-path:inset(0_0_100%_0)] delay-[0ms,250ms]"
+              }`}
             >
+              <div
+                key={open ? "open" : "closed"}
+                className={`flex min-h-0 flex-1 flex-col ${
+                  open ? "nav-panel-content" : "opacity-0 transition-opacity duration-100"
+                }`}
+              >
               {/* Top bar: mirrors the header grid so the logo stays in place. */}
               <div className="content-shell grid grid-cols-[1fr_auto] items-center gap-x-3 py-4 lg:min-h-24 lg:grid-cols-[1fr_minmax(0,640px)_1fr] lg:gap-x-6 lg:py-5">
                 <Link
@@ -411,6 +439,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                     )}
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>,
