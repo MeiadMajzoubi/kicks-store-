@@ -24,8 +24,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">Skip to content</a>
-        <Navbar />
+        {/* Announcement bar above the menu, where shoppers expect it (Nike, Adidas, JD). */}
         <DeliveryBanner />
+        <Navbar />
 
         {children}
         <Footer />
