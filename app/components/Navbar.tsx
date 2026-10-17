@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { alphabeticalBrands, brandsByGender } from "@/data/brands";
 import { useCartCount } from "@/lib/cart";
+import { useWishlist } from "@/lib/wishlist";
 import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
@@ -55,15 +56,12 @@ const SHOE_SIZES: Record<Gender, readonly string[]> = {
   men: REFERENCE_SIZES,
 };
 
-const ACTIONS = [
-  { label: "Wishlist", icon: Heart },
-  { label: "Account", icon: User },
-];
 
 
 export default function Navbar() {
   const [activePanel, setActivePanel] = useState<Panel | null>(null);
   const bagCount = useCartCount();
+  const savedCount = useWishlist().length;
 
   const headerRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -205,17 +203,23 @@ export default function Navbar() {
 
         <div className="col-start-2 row-start-1 flex items-center justify-end gap-0 sm:gap-1 lg:col-start-3">
           <SearchBar onOpen={closePanel} />
-          {ACTIONS.map(({ label, icon: Icon }) => (
-            <button
-              key={label}
-              type="button"
-              aria-label={label}
-              onClick={closePanel}
-              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
-            >
-              <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
-            </button>
-          ))}
+          <Link
+            href="/wishlist"
+            onClick={closePanel}
+            aria-label={savedCount ? `Wishlist, ${savedCount} saved` : "Wishlist"}
+            className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
+          >
+            <Heart aria-hidden="true" className="size-5" strokeWidth={1.75} />
+            {savedCount > 0 && <CountBadge count={savedCount} />}
+          </Link>
+          <button
+            type="button"
+            aria-label="Account"
+            onClick={closePanel}
+            className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
+          >
+            <User aria-hidden="true" className="size-5" strokeWidth={1.75} />
+          </button>
           <Link
             href="/cart"
             onClick={closePanel}
@@ -223,14 +227,7 @@ export default function Navbar() {
             className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
           >
             <ShoppingBag aria-hidden="true" className="size-5" strokeWidth={1.75} />
-            {bagCount > 0 && (
-              <span
-                aria-hidden="true"
-                className="absolute top-1.5 right-1 flex min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[11px] leading-[18px] font-semibold text-white tabular-nums"
-              >
-                {bagCount > 9 ? "9+" : bagCount}
-              </span>
-            )}
+            {bagCount > 0 && <CountBadge count={bagCount} />}
           </Link>
         </div>
       </div>
@@ -402,5 +399,17 @@ export default function Navbar() {
 
       </nav>
     </header>
+  );
+}
+
+/** Small red count on the wishlist and bag icons. */
+function CountBadge({ count }: { count: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute top-1.5 right-1 flex min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[11px] leading-[18px] font-semibold text-white tabular-nums"
+    >
+      {count > 9 ? "9+" : count}
+    </span>
   );
 }

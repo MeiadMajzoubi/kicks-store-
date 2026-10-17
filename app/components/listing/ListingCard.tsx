@@ -7,6 +7,7 @@ import { ImageOff } from "lucide-react";
 import type { Product } from "@/data/mockProducts";
 import { categoryLabel, colourName } from "@/lib/catalog";
 import Price from "../Price";
+import FavouriteButton from "../FavouriteButton";
 import Ribbon from "../Ribbon";
 
 const saveFormat = new Intl.NumberFormat("en-US", {
@@ -66,6 +67,12 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
           )}
         </div>
       </Link>
+      <FavouriteButton
+        productId={product.id}
+        productName={product.name}
+        variant={activeVariant}
+        className="absolute top-1.5 right-1.5 z-20"
+      />
 
       <div className="relative pt-4">
         {hasColourways && (

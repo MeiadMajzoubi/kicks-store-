@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, ChevronDown, Heart } from "lucide-react";
 import type { VariantSizes } from "@/data/mockProducts";
 import { addToCart, useCartCount } from "@/lib/cart";
+import { toggleWishlist, useIsSaved } from "@/lib/wishlist";
 
 type ProductPurchaseProps = {
   productId: string;
@@ -16,7 +17,7 @@ export default function ProductPurchase({ productId, variant, sizes }: ProductPu
   const [selected, setSelected] = useState<number | null>(null);
   const [error, setError] = useState(false);
   const [added, setAdded] = useState(false);
-  const [favourite, setFavourite] = useState(false);
+  const favourite = useIsSaved(productId);
   const sizeGroupRef = useRef<HTMLDivElement>(null);
   const bagCount = useCartCount();
 
@@ -110,11 +111,11 @@ export default function ProductPurchase({ productId, variant, sizes }: ProductPu
         </button>
         <button
           type="button"
-          onClick={() => setFavourite((value) => !value)}
+          onClick={() => toggleWishlist(productId, variant)}
           aria-pressed={favourite}
           className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full border border-border text-base font-medium transition-colors duration-150 hover:border-foreground"
         >
-          {favourite ? "Favourited" : "Favourite"}
+          {favourite ? "Saved to Wishlist" : "Save to Wishlist"}
           <Heart
             aria-hidden="true"
             className={`size-5 ${favourite ? "fill-brand text-brand" : ""}`}
