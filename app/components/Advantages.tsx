@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { mockProducts } from "@/data/mockProducts";
 import FastTruckIcon from "./icons/FastTruckIcon";
 
 type IconProps = { className?: string };
@@ -74,11 +75,42 @@ function SupportIcon({ className }: IconProps) {
   );
 }
 
+// Like Foot Locker and JD Sports, each benefit states one concrete fact. Counts and the
+// biggest discount come from the catalogue, so they stay true as products change.
+const styleCount = mockProducts.length;
+const brandCount = new Set(mockProducts.map((product) => product.brand)).size;
+const biggestDiscount = Math.max(
+  0,
+  ...mockProducts.map((product) =>
+    product.salePrice ? Math.round((1 - product.salePrice / product.price) * 100) : 0,
+  ),
+);
+
 const advantages = [
-  { title: "Fast Delivery", icon: FastTruckIcon, href: "/delivery" },
-  { title: "Great Variety", icon: BoxesIcon, href: "/products" },
-  { title: "Big Sales & Clearance", icon: SaleTagIcon, href: "/sale" },
-  { title: "24H Support", icon: SupportIcon, href: "/support" },
+  {
+    title: "Fast Delivery",
+    detail: "Express delivery, arrives within 3 days.",
+    icon: FastTruckIcon,
+    href: "/delivery",
+  },
+  {
+    title: "Great Variety",
+    detail: `${styleCount} styles from ${brandCount} brands.`,
+    icon: BoxesIcon,
+    href: "/shop",
+  },
+  {
+    title: "Big Sales & Clearance",
+    detail: biggestDiscount ? `Up to ${biggestDiscount}% off selected styles.` : "Sale styles added regularly.",
+    icon: SaleTagIcon,
+    href: "/sale",
+  },
+  {
+    title: "24H Support",
+    detail: "Our team is here around the clock.",
+    icon: SupportIcon,
+    href: "/support",
+  },
 ];
 
 export default function Advantages() {
@@ -90,7 +122,7 @@ export default function Advantages() {
       <h2 id="advantages-title" className="section-title mb-8 sm:mb-10">Why choose us</h2>
 
       <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-        {advantages.map(({ title, icon: Icon, href }) => (
+        {advantages.map(({ title, detail, icon: Icon, href }) => (
           <li key={title}>
             <Link
               href={href}
@@ -98,11 +130,15 @@ export default function Advantages() {
             >
               <div className="flex h-full min-h-48 flex-col items-start justify-between gap-7 rounded-2xl border border-transparent bg-surface p-5 transition-colors duration-300 group-hover:border-border sm:min-h-56 sm:p-7">
                 <Icon className="size-12 sm:size-14" />
-                <div className="flex w-full items-center justify-between gap-2">
-                  <h3 className="max-w-48 text-sm font-semibold leading-snug tracking-tight sm:text-base">
-                    {title}
-                  </h3>
-                  <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-brand" />
+                <div className="flex w-full items-end justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold leading-snug tracking-tight sm:text-base">{title}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">{detail}</p>
+                  </div>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="mb-0.5 size-4 shrink-0 text-brand transition-transform duration-200 group-hover:translate-x-0.5"
+                  />
                 </div>
               </div>
             </Link>
