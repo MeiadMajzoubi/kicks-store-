@@ -5,50 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+// One wide crop for every photo (3:2), so the stack never changes size between categories.
 const categories = [
-  {
-    name: "Running",
-    image: "/category/running.webp",
-    width: 1400,
-    height: 933,
-    href: "/shop?category=running",
-  },
-  {
-    name: "Training",
-    image: "/category/train.png",
-    width: 1920,
-    height: 1066,
-    href: "/shop?category=training",
-  },
-  {
-    name: "Lifestyle",
-    image: "/category/lifestyle.png",
-    width: 1824,
-    height: 900,
-    href: "/shop?category=lifestyle",
-  },
-  {
-    name: "Outdoor",
-    image: "/category/outdoor.webp",
-    width: 2540,
-    height: 1693,
-    href: "/shop?category=outdoor",
-  },
-  {
-    name: "Sandals",
-    image: "/category/sandals.png",
-    width: 1367,
-    height: 476,
-    href: "/shop?category=sandals",
-  },
+  { name: "Running", image: "/categories/running-road.webp", href: "/shop?category=running" },
+  { name: "Training", image: "/categories/training-gym.webp", href: "/shop?category=training" },
+  { name: "Lifestyle", image: "/categories/lifestyle-street.webp", href: "/shop?category=lifestyle" },
+  { name: "Outdoor", image: "/categories/outdoor-mountain.webp", href: "/shop?category=outdoor" },
+  { name: "Sandals", image: "/categories/sandals-clogs.webp", href: "/shop?category=sandals" },
 ];
 
 const slides = [...categories, categories[0]];
-
-// Calculated once: enough space for every photo without cropping.
-const galleryHeight = Math.max(
-  ...categories.map(({ width, height }) => (0.72 * height) / (width * 0.92)),
-);
 
 export default function ShopByCategory() {
   const [active, setActive] = useState(0);
@@ -91,7 +57,7 @@ export default function ShopByCategory() {
                 href={category.href}
                 onMouseEnter={() => setActive(index)}
                 onFocus={() => setActive(index)}
-                className={`hidden items-center gap-3 rounded-sm font-semibold leading-tight tracking-[-0.04em] transition-colors duration-300 lg:inline-flex lg:text-[clamp(2rem,3.2vw,3.5rem)] ${
+                className={`hidden items-center gap-3 rounded-sm font-semibold leading-tight tracking-[-0.04em] transition-colors duration-300 lg:inline-flex lg:text-[clamp(1.75rem,2.7vw,2.625rem)] ${
                   active === index
                     ? "text-brand"
                     : "text-foreground hover:text-brand"
@@ -102,7 +68,7 @@ export default function ShopByCategory() {
                 <ArrowRight
                   aria-hidden="true"
                   strokeWidth={1.5}
-                  className={`size-8 shrink-0 transition-opacity duration-300 xl:size-10 ${
+                  className={`size-7 shrink-0 transition-opacity duration-300 xl:size-8 ${
                     active === index ? "opacity-100" : "opacity-0"
                   }`}
                 />
@@ -114,7 +80,8 @@ export default function ShopByCategory() {
         <div
           id="category-images"
           className="relative min-w-0 overflow-hidden rounded-2xl"
-          style={{ paddingTop: `${galleryHeight * 100}%` }}
+          // Front card: 72% wide at 3:2 (48% tall), dropped 8% of the box.
+          style={{ paddingTop: "52.2%" }}
         >
           {slides.map((category, index) => {
             const isActive = index === active;
@@ -148,26 +115,21 @@ export default function ShopByCategory() {
                   pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
-                <Image
-                  src={category.image}
-                  width={category.width}
-                  height={category.height}
-                  alt={`${category.name} footwear in action`}
-                  sizes="(min-width: 1664px) 760px, (min-width: 1024px) 50vw, 80vw"
-                  className="block h-auto w-full"
-                />
+                <div className="relative aspect-[3/2]">
+                  <Image
+                    src={category.image}
+                    fill
+                    alt={`Shop ${category.name}`}
+                    sizes="(min-width: 1664px) 760px, (min-width: 1024px) 50vw, 80vw"
+                    className="object-cover"
+                  />
+                </div>
               </Link>
             );
           })}
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-end gap-5">
-        <span className="text-xs tabular-nums text-muted-foreground">
-          0{active + 1} / 0{categories.length}
-        </span>
-
-      </div>
     </section>
   );
 }
