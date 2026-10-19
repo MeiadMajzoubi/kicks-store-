@@ -586,7 +586,7 @@ const productData: ProductData[] = [
     isTrending: true,
   },
 
-  // Men from Foot Locker UK: m21–m36. USD = GBP x 1.323054 (10 Oct 2026), rounded to whole dollars.
+  // Men from Foot Locker UK: m21–m38. USD = GBP x 1.323054 (10 Oct 2026), rounded to whole dollars.
   // Sizes are UK sizes listed on each page (a '6 (EU 39)' / '6 (EU 40)' pair is kept as one size 6).
   // Stock below is RANDOM DEMO DATA (seeded), not real availability.
   // Save each photo as public/Products/<id>.webp (source URL in the comment above each row).
@@ -954,6 +954,53 @@ const productData: ProductData[] = [
       },
     ],
     isNew: false,
+    isFeatured: false,
+  },
+  // Adidas x Bad Bunny from Foot Locker UK (20 Oct 2026), same GBP to USD rate as above.
+  // image: https://images.footlocker.com/is/image/FLEU/314312743504_01?wid=1000&hei=1000&fmt=png-alpha
+  {
+    id: "m37",
+    name: "Adidas Bad Bunny Badbo 1.1",
+    slug: "adidas-bad-bunny-badbo-1-1-m37",
+    brand: "Adidas",
+    gender: "men",
+    category: "lifestyle",
+    price: 132,
+    variants: [
+      {
+        colors: ["cream", "grey", "pink"],
+        image: "/Products/m37.webp",
+        images: ["/Products/m37.webp"],
+        sizes: {
+          available: [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5],
+          soldOut: [],
+        },
+      },
+    ],
+    isNew: true,
+    isFeatured: false,
+  },
+  // image: https://images.footlocker.com/is/image/FLEU/314312744304_01?wid=1000&hei=1000&fmt=png-alpha
+  {
+    id: "m38",
+    name: "Adidas Bad Bunny Gazelle",
+    slug: "adidas-bad-bunny-gazelle-m38",
+    brand: "Adidas",
+    gender: "men",
+    category: "lifestyle",
+    price: 172,
+    variants: [
+      {
+        colors: ["yellow", "black"],
+        image: "/Products/m38.webp",
+        images: ["/Products/m38.webp"],
+        sizes: {
+          available: [5, 5.5, 6, 6.5, 7],
+          soldOut: [7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11],
+        },
+      },
+    ],
+    isNew: true,
     isFeatured: false,
   },
 
