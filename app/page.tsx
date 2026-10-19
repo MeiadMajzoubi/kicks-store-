@@ -20,6 +20,8 @@ type Slide = {
   alt: string;
   title: string;
   copy: string;
+  /** Says exactly where the button goes. */
+  cta: string;
   href: string;
   // "light" photos get ink text; "dark" ones get white text over a soft shade.
   tone: "light" | "dark";
@@ -27,46 +29,51 @@ type Slide = {
   align?: "right";
 };
 
-// Like Foot Locker: the name of what's in the photo, then one plain line.
+// Like Foot Locker: what's in the photo, one plain line, and a button named after it.
 const slides: Slide[] = [
   {
     src: "/Adious.avif",
     alt: "Adidas Adizero racing shoe in pink and black",
     title: "Adidas Adizero",
-    copy: "Race-day shoes in new colours.",
-    href: "/brands/adidas?category=running",
+    copy: "Light, fast shoes for race day.",
+    cta: "Shop Adizero",
+    href: "/search?q=adizero",
     tone: "light",
   },
   {
     src: "/LIQUID.webp",
     alt: "Nike Air Max shoes on wet ground",
     title: "Nike Air Max",
-    copy: "Fresh pairs for every day.",
-    href: "/brands/nike?category=lifestyle",
+    copy: "Visible Air cushioning for every day.",
+    cta: "Shop Air Max",
+    href: "/search?q=air+max",
     tone: "dark",
   },
   {
     src: "/hero/outdoor-trail.webp",
-    alt: "Orange Nike trail shoes on a forest path",
-    title: "Nike ACG",
-    copy: "Trail shoes for wet, rough ground.",
+    alt: "Orange trail shoes on a forest path",
+    title: "Outdoor shoes",
+    copy: "Grip for trails, mud and wet rock.",
+    cta: "Shop outdoor",
     href: "/shop?category=outdoor",
     tone: "dark",
     align: "right",
   },
   {
     src: "/Bunny.webp",
-    alt: "Bad Bunny with his Adidas shoes",
+    alt: "Bad Bunny with his Adidas Badbo 1.1 shoes",
     title: "Adidas x Bad Bunny",
-    copy: "His everyday shoe, in store now.",
-    href: "/brands/adidas?category=lifestyle",
+    copy: "The Badbo 1.1 and the Gazelle, now in store.",
+    cta: "Shop Bad Bunny",
+    href: "/search?q=bad+bunny",
     tone: "dark",
   },
   {
     src: "/hero/training-lift.webp",
     alt: "Athlete lifting a dumbbell in a gym",
-    title: "Nike Training",
-    copy: "Gym shoes with grip for every lift.",
+    title: "Training shoes",
+    copy: "Flat, stable soles for lifting and classes.",
+    cta: "Shop training",
     href: "/shop?category=training",
     tone: "dark",
   },
@@ -155,13 +162,13 @@ export default function Home() {
                       </p>
                       <Link
                         href={slide.href}
-                        className={`mt-4 inline-flex h-12 items-center rounded-full px-7 text-[15px] font-semibold transition-colors duration-150 active:scale-[0.98] sm:mt-6 ${
+                        className={`mt-4 inline-flex h-12 items-center rounded-full px-7 text-[15px] font-semibold transition-[background-color,transform] duration-150 active:scale-[0.97] motion-reduce:transform-none sm:mt-6 ${
                           dark
-                            ? "bg-foreground text-white hover:bg-foreground/85 sm:bg-white sm:text-foreground sm:hover:bg-white/85"
+                            ? "bg-foreground text-white hover:bg-foreground/85 sm:bg-white sm:text-foreground sm:hover:bg-white/85 sm:focus-visible:outline-white"
                             : "bg-foreground text-white hover:bg-foreground/85"
                         }`}
                       >
-                        Shop now
+                        {slide.cta}
                       </Link>
                     </div>
                   </div>
