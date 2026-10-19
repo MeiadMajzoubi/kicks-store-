@@ -10,13 +10,12 @@ import {
 import { useCarouselState } from "@/lib/use-carousel-state";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
+// Clean photos with no logo in them; every card gets the same logo, in the same corner.
 const brands = [
-  { name: "Nike", image: "/brands/Nike.jpeg", href: "/brands/nike" },
-  { name: "Adidas", image: "/brands/Adidas.jpeg", href: "/brands/adidas" },
-  { name: "ASICS", image: "/brands/Asics.jpeg", href: "/brands/asics" },
-  { name: "On", image: "/brands/On.jpeg", href: "/brands/on" },
-  { name: "New Balance", image: "/brands/NB.jpeg", href: "/brands/new-balance" },
-  { name: "Birkenstock", image: "/brands/Birkenstock.jpeg", href: "/brands/birkenstock" },
+  { name: "Nike", image: "/brands/nike.webp", logo: "/brand-logos/nike.svg", href: "/brands/nike" },
+  { name: "Adidas", image: "/brands/adidas.webp", logo: "/brand-logos/adidas.svg", href: "/brands/adidas" },
+  { name: "On", image: "/brands/on-run.webp", logo: "/brand-logos/on.svg", href: "/brands/on" },
+  { name: "Puma", image: "/brands/puma-street.webp", logo: "/brand-logos/puma.svg", href: "/brands/puma" },
 ];
 
 export default function ShopByBrands() {
@@ -36,17 +35,24 @@ export default function ShopByBrands() {
         <CarouselContent className="-ml-4 sm:-ml-5">
           {brands.map((brand) => (
             <CarouselItem key={brand.name} className="basis-[82%] pl-4 sm:basis-1/2 sm:pl-5 md:basis-1/3 lg:basis-1/4">
-              <Link href={brand.href} className="block rounded-2xl">
+              <Link href={brand.href} aria-label={`Shop ${brand.name}`} className="group block rounded-2xl">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-surface">
                   <Image
                     src={brand.image}
-                    alt={`${brand.name} collection`}
+                    alt=""
                     fill
                     sizes="(min-width: 1664px) 385px, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 82vw"
                     className="object-cover"
                   />
+                  <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/55 to-transparent" />
+                  <div className="absolute inset-x-5 bottom-5 flex items-end justify-between gap-3">
+                    {/* The black logo files, turned white. */}
+                    <Image src={brand.logo} alt="" width={96} height={40} className="h-9 w-auto max-w-24 object-contain object-left brightness-0 invert" />
+                    <span className="inline-flex h-10 items-center rounded-full bg-white px-5 text-sm font-semibold text-foreground transition-colors group-hover:bg-white/85">
+                      Shop
+                    </span>
+                  </div>
                 </div>
-                <p className="mt-4 text-base font-semibold tracking-tight underline decoration-foreground/40 underline-offset-4 sm:text-lg">{brand.name}</p>
               </Link>
             </CarouselItem>
           ))}
