@@ -8,9 +8,9 @@ import TrendingProducts from "./components/TrendingProducts";
 import ShopByBrands from "./components/ShopByBrands";
 import ShopByCategory from "./components/ShopByCategory";
 import Advantages from "./components/Advantages";
-import { Pause, Play } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import {
-  Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi,
+  Carousel, CarouselContent, CarouselItem, type CarouselApi,
 } from "@/components/ui/carousel";
 import { useCarouselState } from "@/lib/use-carousel-state";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -19,42 +19,37 @@ type Slide = {
   src: string;
   alt: string;
   title: string;
+  /** One line on what the shoe is, the way Foot Locker writes it. */
   copy: string;
-  /** Says exactly where the button goes. */
-  cta: string;
   href: string;
   // "light" photos get ink text; "dark" ones get white text over a soft shade.
   tone: "light" | "dark";
-  // Text sits bottom-left unless the shoes are there.
+  // Text sits on the left unless the shoes are there.
   align?: "right";
 };
 
-// Like Foot Locker: what's in the photo, one plain line, and a button named after it.
 const slides: Slide[] = [
   {
     src: "/Adious.avif",
     alt: "Adidas Adizero racing shoe in pink and black",
-    title: "Adidas Adizero",
-    copy: "Light, fast shoes for race day.",
-    cta: "Shop Adizero",
+    title: "Adizero",
+    copy: "Adidas' lightest running shoes, made for race day and fast sessions.",
     href: "/search?q=adizero",
     tone: "light",
   },
   {
     src: "/LIQUID.webp",
     alt: "Nike Air Max shoes on wet ground",
-    title: "Nike Air Max",
-    copy: "Visible Air cushioning for every day.",
-    cta: "Shop Air Max",
+    title: "Air Max",
+    copy: "Nike's visible Air cushioning, built for all-day wear.",
     href: "/search?q=air+max",
     tone: "dark",
   },
   {
     src: "/hero/outdoor-trail.webp",
     alt: "Orange trail shoes on a forest path",
-    title: "Outdoor shoes",
-    copy: "Grip for trails, mud and wet rock.",
-    cta: "Shop outdoor",
+    title: "Outdoor",
+    copy: "Trail shoes with deep grip for mud, rock and wet paths.",
     href: "/shop?category=outdoor",
     tone: "dark",
     align: "right",
@@ -62,18 +57,16 @@ const slides: Slide[] = [
   {
     src: "/Bunny.webp",
     alt: "Bad Bunny with his Adidas Badbo 1.1 shoes",
-    title: "Adidas x Bad Bunny",
-    copy: "The Badbo 1.1 and the Gazelle, now in store.",
-    cta: "Shop Bad Bunny",
+    title: "Badbo 1.1",
+    copy: "Bad Bunny's everyday Adidas shoe, in soft suede and open mesh.",
     href: "/search?q=bad+bunny",
     tone: "dark",
   },
   {
     src: "/hero/training-lift.webp",
     alt: "Athlete lifting a dumbbell in a gym",
-    title: "Training shoes",
-    copy: "Flat, stable soles for lifting and classes.",
-    cta: "Shop training",
+    title: "Training",
+    copy: "Flat, stable soles for lifting, HIIT and gym classes.",
     href: "/shop?category=training",
     tone: "dark",
   },
@@ -135,40 +128,41 @@ export default function Home() {
                 <CarouselItem key={slide.src} className="relative basis-full pl-0" aria-label={`${index + 1} of ${slides.length}`}>
                   <div className="relative aspect-[22/9] w-full">
                     <Image src={slide.src} alt={slide.alt} fill sizes="(min-width: 1920px) 1920px, 100vw" preload={index === 0} className="object-cover" />
-                    {/* Shade only the corner the text sits on, so the photo stays bright. */}
+                    {/* Shade only the side the text sits on, so the photo stays bright. */}
                     {dark && (
                       <div
                         aria-hidden="true"
                         className={`absolute inset-0 hidden sm:block ${
                           right
-                            ? "bg-[linear-gradient(to_top_left,rgb(0_0_0/0.6),rgb(0_0_0/0.15)_45%,transparent_70%)]"
-                            : "bg-[linear-gradient(to_top_right,rgb(0_0_0/0.6),rgb(0_0_0/0.15)_45%,transparent_70%)]"
+                            ? "bg-[linear-gradient(to_left,rgb(0_0_0/0.55),rgb(0_0_0/0.2)_35%,transparent_60%)]"
+                            : "bg-[linear-gradient(to_right,rgb(0_0_0/0.55),rgb(0_0_0/0.2)_35%,transparent_60%)]"
                         }`}
                       />
                     )}
                   </div>
-                  {/* Under the photo on phones; over its lower-left corner from tablets up. */}
-                  <div className="sm:absolute sm:inset-0 sm:flex sm:items-end">
+                  {/* Under the photo on phones; over its middle, beside the shoes, from tablets up. */}
+                  <div className="sm:absolute sm:inset-0 sm:flex sm:items-center">
                     <div
-                      className={`content-shell pt-5 pb-2 sm:flex sm:flex-col sm:pt-0 sm:pb-[clamp(2rem,5vw,5.5rem)] ${
+                      className={`content-shell pt-5 pb-2 sm:flex sm:flex-col sm:py-0 ${
                         right ? "sm:items-end sm:text-right" : "sm:items-start"
                       } ${dark ? "sm:text-white" : ""}`}
                     >
-                      <p className="sm:max-w-[11ch] text-[clamp(1.75rem,4.2vw,4rem)] leading-[1.02] font-bold tracking-[-0.05em] text-balance">
+                      <p className="font-display text-[clamp(2.75rem,7vw,7rem)] leading-[0.88] tracking-[0.01em] uppercase">
                         {slide.title}
                       </p>
-                      <p className={`mt-2 max-w-sm text-[15px] sm:mt-3 sm:text-base ${dark ? "text-muted-foreground sm:text-white/85" : "text-muted-foreground sm:text-foreground/75"}`}>
+                      <p className={`mt-2 max-w-[34ch] text-[15px] leading-snug sm:mt-3 sm:text-[clamp(0.9375rem,1.2vw,1.125rem)] ${dark ? "text-muted-foreground sm:text-white/90" : "text-muted-foreground sm:text-foreground/75"}`}>
                         {slide.copy}
                       </p>
                       <Link
                         href={slide.href}
-                        className={`mt-4 inline-flex h-12 items-center rounded-full px-7 text-[15px] font-semibold transition-[background-color,transform] duration-150 active:scale-[0.97] motion-reduce:transform-none sm:mt-6 ${
+                        className={`group mt-5 inline-flex h-11 items-center gap-2 rounded-full px-6 text-[13px] font-semibold tracking-[0.06em] uppercase transition-colors duration-150 sm:mt-6 ${
                           dark
                             ? "bg-foreground text-white hover:bg-foreground/85 sm:bg-white sm:text-foreground sm:hover:bg-white/85 sm:focus-visible:outline-white"
                             : "bg-foreground text-white hover:bg-foreground/85"
                         }`}
                       >
-                        {slide.cta}
+                        Shop now
+                        <ArrowRight aria-hidden="true" strokeWidth={2.25} className="size-4 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none" />
                       </Link>
                     </div>
                   </div>
@@ -176,10 +170,27 @@ export default function Home() {
               );
             })}
           </CarouselContent>
-          <CarouselPrevious className="max-sm:hidden left-1 z-10 size-11 border-0 bg-transparent text-white shadow-none drop-shadow-md hover:bg-transparent hover:text-white [&_svg]:size-8! [&_svg]:stroke-[1.5] sm:left-5 sm:size-14 sm:[&_svg]:size-11!" />
-          <CarouselNext className="max-sm:hidden right-1 z-10 size-11 border-0 bg-transparent text-white shadow-none drop-shadow-md hover:bg-transparent hover:text-white [&_svg]:size-8! [&_svg]:stroke-[1.5] sm:right-5 sm:size-14 sm:[&_svg]:size-11!" />
           <div className="absolute top-2 right-3 z-10 flex items-center gap-3 rounded-full bg-black/60 pl-4 text-white sm:top-auto sm:bottom-5 sm:right-8">
             <span className="text-[11px] font-medium tabular-nums">0{current + 1}<span className="mx-2 text-white/60">/</span>0{slides.length}</span>
+            {/* Previous and next live with the counter, so they never sit on the headline. */}
+            <span className="-mr-3 flex">
+              <button
+                type="button"
+                onClick={() => api?.scrollPrev(reducedMotion)}
+                aria-label="Previous slide"
+                className="flex size-11 items-center justify-center rounded-full"
+              >
+                <ChevronLeft className="size-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => api?.scrollNext(reducedMotion)}
+                aria-label="Next slide"
+                className="flex size-11 items-center justify-center rounded-full"
+              >
+                <ChevronRight className="size-4" aria-hidden="true" />
+              </button>
+            </span>
             <button
               type="button"
               onClick={() => setPaused((value) => !value)}
