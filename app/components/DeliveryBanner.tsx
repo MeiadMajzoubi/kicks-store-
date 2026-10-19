@@ -83,9 +83,10 @@ export default function DeliveryBanner() {
           aria-hidden="true"
           onTransitionEnd={onWipeEnd}
           style={{ width, transitionDuration: `${WIPE}ms` }}
-          className="inline-block overflow-hidden whitespace-nowrap transition-[width] ease-[cubic-bezier(0.37,0,0.63,1)] motion-reduce:transition-none"
+          className="flex h-6 items-center overflow-hidden whitespace-nowrap transition-[width] ease-[cubic-bezier(0.37,0,0.63,1)] motion-reduce:transition-none"
         >
-          <span className="inline-flex text-sm leading-6 font-semibold">{MESSAGES[index]}</span>
+          {/* A flex row, not inline text: the truck icon can't shift a baseline and grow the bar. */}
+          <span className="flex shrink-0 items-center text-sm leading-6 font-semibold">{MESSAGES[index]}</span>
         </span>
       </button>
     </div>
