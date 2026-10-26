@@ -1,40 +1,26 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockProducts, type Product } from "@/data/mockProducts";
-import { MAX_QUANTITY, changeSize, setQuantity, useCart, type CartItem } from "@/lib/cart";
+import { MAX_QUANTITY, changeSize, setQuantity, useCart } from "@/lib/cart";
 import { categoryLabel, colourName, effectivePrice } from "@/lib/catalog";
+import { bagLines, bagTotals, currency, type Line } from "@/lib/checkout";
 import FastTruckIcon from "../icons/FastTruckIcon";
-
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
 // The bag lives in the browser, so the server can't know what's in it. Until the page has
 // loaded we show a quiet placeholder instead of flashing an empty bag.
 const noop = () => () => {};
 const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
 
-type Line = CartItem & { product: Product };
-
 export default function CartView() {
   const loaded = useHasLoaded();
   const cart = useCart();
-  const [checkoutNote, setCheckoutNote] = useState(false);
-
-  // Lines whose shoe is no longer in the catalogue are skipped.
-  const lines: Line[] = cart.flatMap((item) => {
-    const product = mockProducts.find((candidate) => candidate.id === item.productId);
-    return product?.variants[item.variant] ? [{ ...item, product }] : [];
-  });
-
-  const itemCount = lines.reduce((total, line) => total + line.quantity, 0);
-  const subtotal = lines.reduce((total, line) => total + effectivePrice(line.product) * line.quantity, 0);
-  const fullPrice = lines.reduce((total, line) => total + line.product.price * line.quantity, 0);
-  const saving = fullPrice - subtotal;
+  const lines = bagLines(cart);
+  const { itemCount, fullPrice, saving, delivery, toFreeDelivery, total } = bagTotals(lines);
 
   if (!loaded) {
     return <div aria-hidden="true" className="min-h-[50vh]" />;
@@ -91,13 +77,13 @@ export default function CartView() {
           )}
           <div className="flex justify-between gap-4">
             <dt>Delivery</dt>
-            <dd className="text-muted-foreground">Calculated at checkout</dd>
+            <dd className="tabular-nums">{delivery ? currency.format(delivery) : "Free"}</dd>
           </div>
         </dl>
 
         <div className="mt-5 flex justify-between gap-4 border-y border-border py-4 text-base font-semibold">
           <span>Total</span>
-          <span className="tabular-nums">{currency.format(subtotal)}</span>
+          <span className="tabular-nums">{currency.format(total)}</span>
         </div>
 
         {/* Express delivery, told before the shopper commits. */}
@@ -109,12 +95,15 @@ export default function CartView() {
           </span>
         </p>
 
-        <Button variant="solid" size="pill-lg" onClick={() => setCheckoutNote(true)} className="mt-5 w-full">
+        {toFreeDelivery > 0 && (
+          <p className="mt-3 text-sm text-muted-foreground">
+            Add <span className="font-semibold text-foreground tabular-nums">{currency.format(toFreeDelivery)}</span> more for free delivery.
+          </p>
+        )}
+
+        <Link href="/checkout" className={buttonVariants({ variant: "solid", size: "pill-lg", className: "mt-5 w-full" })}>
           Checkout
-        </Button>
-        <p aria-live="polite" className="mt-3 min-h-5 text-center text-sm text-muted-foreground">
-          {checkoutNote ? "Checkout isn’t open yet. Your bag is saved on this device." : ""}
-        </p>
+        </Link>
       </aside>
     </div>
   );

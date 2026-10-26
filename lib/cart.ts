@@ -111,6 +111,11 @@ export function removeFromCart(key: string) {
   save(items.filter((item) => item.key !== key));
 }
 
+/** Empty the bag, once an order is placed. */
+export function clearCart() {
+  save(EMPTY);
+}
+
 /** Switch a line to another size; if that size is already in the bag, the two lines merge. */
 export function changeSize(key: string, size: number) {
   const line = items.find((item) => item.key === key);
