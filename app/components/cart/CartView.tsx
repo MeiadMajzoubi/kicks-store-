@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MAX_QUANTITY, changeSize, setQuantity, useCart } from "@/lib/cart";
 import { categoryLabel, colourName, effectivePrice } from "@/lib/catalog";
 import { bagLines, bagTotals, currency, type Line } from "@/lib/checkout";
-import FastTruckIcon from "../icons/FastTruckIcon";
+import OrderTotals from "./OrderTotals";
 
 // The bag lives in the browser, so the server can't know what's in it. Until the page has
 // loaded we show a quiet placeholder instead of flashing an empty bag.
@@ -20,7 +20,8 @@ export default function CartView() {
   const loaded = useHasLoaded();
   const cart = useCart();
   const lines = bagLines(cart);
-  const { itemCount, fullPrice, saving, delivery, toFreeDelivery, total } = bagTotals(lines);
+  const totals = bagTotals(lines);
+  const { itemCount } = totals;
 
   if (!loaded) {
     return <div aria-hidden="true" className="min-h-[50vh]" />;
@@ -64,42 +65,9 @@ export default function CartView() {
           Summary
         </h2>
 
-        <dl className="mt-5 space-y-3 border-t border-border pt-5 text-[15px]">
-          <div className="flex justify-between gap-4">
-            <dt>Subtotal</dt>
-            <dd className="tabular-nums">{currency.format(fullPrice)}</dd>
-          </div>
-          {saving > 0 && (
-            <div className="flex justify-between gap-4 text-brand">
-              <dt>Sale savings</dt>
-              <dd className="tabular-nums">−{currency.format(saving)}</dd>
-            </div>
-          )}
-          <div className="flex justify-between gap-4">
-            <dt>Delivery</dt>
-            <dd className="tabular-nums">{delivery ? currency.format(delivery) : "Free"}</dd>
-          </div>
-        </dl>
-
-        <div className="mt-5 flex justify-between gap-4 border-y border-border py-4 text-base font-semibold">
-          <span>Total</span>
-          <span className="tabular-nums">{currency.format(total)}</span>
+        <div className="mt-5 border-t border-border pt-5">
+          <OrderTotals totals={totals} />
         </div>
-
-        {/* Express delivery, told before the shopper commits. */}
-        <p className="mt-5 flex items-center gap-3 text-sm">
-          <FastTruckIcon className="h-6 w-8 shrink-0 text-brand" />
-          <span>
-            <span className="font-semibold">Express delivery</span>
-            <span className="text-muted-foreground">, arrives within 3 days</span>
-          </span>
-        </p>
-
-        {toFreeDelivery > 0 && (
-          <p className="mt-3 text-sm text-muted-foreground">
-            Add <span className="font-semibold text-foreground tabular-nums">{currency.format(toFreeDelivery)}</span> more for free delivery.
-          </p>
-        )}
 
         <Link href="/checkout" className={buttonVariants({ variant: "solid", size: "pill-lg", className: "mt-5 w-full" })}>
           Checkout
