@@ -126,15 +126,16 @@ export function searchProducts(products: readonly Product[], query: string): Sea
   // An empty query finds nothing; one made only of filler words ("shoes") finds everything.
   if (!words(query).length) return { products: [], corrections: {} };
 
-  const corrections: Record<string, string> = {};
   const scored: { product: Product; score: number }[] = [];
+  // Every word each search term matched, across all results.
+  const matchedWords = new Map<string, Set<string>>();
 
   for (const product of products) {
     if (gender && product.gender !== gender) continue;
     if (category && product.category !== category) continue;
 
     const fields = fieldsOf(product);
-    const fixed: Record<string, string> = {};
+    const matched: [string, string][] = [];
     let total = 0;
     let matchedAll = true;
     for (const term of terms) {
@@ -144,12 +145,23 @@ export function searchProducts(products: readonly Product[], query: string): Sea
         break;
       }
       total += score;
-      if (word !== term && !word.startsWith(term)) fixed[term] = word;
+      matched.push([term, word]);
     }
     if (matchedAll) {
       scored.push({ product, score: total });
-      Object.assign(corrections, fixed);
+      for (const [term, word] of matched) {
+        if (!matchedWords.has(term)) matchedWords.set(term, new Set());
+        matchedWords.get(term)!.add(word);
+      }
     }
+  }
+
+  // A term is corrected only when every result agrees on one word: "nikee" and "nik" both
+  // become "nike", but "ad" stays as typed because it matches both "adidas" and "adizero".
+  const corrections: Record<string, string> = {};
+  for (const [term, found] of matchedWords) {
+    const [word] = found;
+    if (found.size === 1 && word !== term) corrections[term] = word;
   }
 
   scored.sort((a, b) => b.score - a.score);
