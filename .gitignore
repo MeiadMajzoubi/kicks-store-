@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# skill shortcuts (real files live in .agents/skills)
+/.claude/skills/prisma-*
+/.windsurf/
