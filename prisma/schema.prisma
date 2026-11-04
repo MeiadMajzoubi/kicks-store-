@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
@@ -10,4 +5,87 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Gender {
+  men
+  women
+}
+
+enum Category {
+  running
+  lifestyle
+  training
+  outdoor
+  sandals
+  uncategorized
+}
+
+enum Color {
+  black
+  white
+  cream
+  grey
+  silver
+  brown
+  red
+  orange
+  yellow
+  green
+  blue
+  purple
+  pink
+  multi
+}
+
+model Brand {
+  id      String @id @default(cuid()) 
+  name     String    @unique
+  slug     String    @unique
+  logo     String
+  products Product[]
+}
+
+model Product {
+  id         String   @id 
+  name       String
+  slug       String   @unique
+  gender     Gender
+  category   Category
+  price      Float
+  salePrice  Float?
+  isNew      Boolean  @default(false)
+  isFeatured Boolean  @default(false)
+  isTrending Boolean  @default(false)
+
+  brandId String
+  brand   Brand  @relation(fields: [brandId], references: [id])
+
+  variants Variant[]
+}
+
+model Variant {
+  id       String   @id @default(cuid())
+  position Int
+  colors   Color[]
+  image    String
+  images   String[]
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sizes Size[]
+
+  @@unique([productId, position])
+}
+
+model Size {
+  id    String @id @default(cuid())
+  value Float
+  stock Int    @default(0)
+
+  variantId String
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([variantId, value])
 }
