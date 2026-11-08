@@ -1015,7 +1015,7 @@ const productData: ProductData[] = [
     price: 180,
     variants: [
       {
-        colors: ["pink", "black"],
+        colors: ["black"],
         image: "/Products/w1.avif",
         images: ["/Products/w1.avif"],
         sizes: {
@@ -1150,7 +1150,7 @@ const productData: ProductData[] = [
     price: 200,
     variants: [
       {
-        colors: ["white", "green"],
+        colors: ["black"],
         image: "/Products/w7.avif",
         images: ["/Products/w7.avif"],
         sizes: {
@@ -1173,7 +1173,7 @@ const productData: ProductData[] = [
     price: 220,
     variants: [
       {
-        colors: ["purple", "red"],
+        colors: ["purple", "white"],
         image: "/Products/w8.avif",
         images: ["/Products/w8.avif"],
         sizes: {
@@ -1196,7 +1196,7 @@ const productData: ProductData[] = [
     price: 220,
     variants: [
       {
-        colors: ["black", "red"],
+        colors: ["red", "black"],
         image: "/Products/w9.avif",
         images: ["/Products/w9.avif"],
         sizes: {
@@ -1288,7 +1288,7 @@ const productData: ProductData[] = [
     price: 250,
     variants: [
       {
-        colors: ["grey", "purple"],
+        colors: ["grey", "pink"],
         image: "/Products/w13.avif",
         images: ["/Products/w13.avif"],
         sizes: {
