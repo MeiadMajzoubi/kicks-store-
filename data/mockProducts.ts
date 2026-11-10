@@ -57,7 +57,7 @@ type NewOrSale =
     };
 
 /** What you write in the data below. */
-type ProductData = NewOrSale & {
+export type ProductData = NewOrSale & {
   id: string;
   name: string;
   /** Stored explicitly: keep published slugs stable when names change. */
@@ -126,7 +126,7 @@ export function hasColor(product: Product, color: ProductColor): boolean {
   return product.filterColors.includes(color);
 }
 
-function withDefaults(product: ProductData): Product {
+export function withDefaults(product: ProductData): Product {
   const defaultVariant = product.variants[0];
   return {
     ...product,
