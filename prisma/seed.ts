@@ -2,7 +2,7 @@ import "dotenv/config";
 
 import { prisma } from "@/lib/prisma";
 import { brands } from "@/data/brands";
-import { mockProducts } from "@/data/mockProducts";
+import { productData } from "./seed-data/products";
 
 const randomStock = () => Math.floor(Math.random() * 10) + 1;
 
@@ -17,7 +17,7 @@ async function main() {
   }
   console.log(`seeded ${brands.length} brands`);
 
-  for (const p of mockProducts) {
+  for (const p of productData) {
     if (p.isNew && p.salePrice) {
       throw new Error(`${p.id} is new and on sale`);
     }
@@ -57,7 +57,7 @@ async function main() {
       },
     });
   }
-  console.log(`seeded ${mockProducts.length} products`);
+  console.log(`seeded ${productData.length} products`);
 }
 
 main()
