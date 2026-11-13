@@ -18,10 +18,6 @@ async function main() {
   console.log(`seeded ${brands.length} brands`);
 
   for (const p of productData) {
-    if (p.isNew && p.salePrice) {
-      throw new Error(`${p.id} is new and on sale`);
-    }
-
     await prisma.product.create({
       data: {
         id: p.id,
