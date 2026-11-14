@@ -1,3 +1,5 @@
+import { connection } from "next/server";
+import { getProducts } from "@/lib/products";
 import HeroCarousel from "./components/HeroCarousel";
 import TrendingProducts from "./components/TrendingProducts";
 import ShopByBrands from "./components/ShopByBrands";
@@ -5,7 +7,11 @@ import ShopByCategory from "./components/ShopByCategory";
 import Advantages from "./components/Advantages";
 
 // Rendered on the server; only the sections that move or react ship their own browser code.
-export default function Home() {
+export default async function Home() {
+  // Built on every visit, so trending shoes and store numbers always match the database.
+  await connection();
+  const trending = (await getProducts()).filter((product) => product.isTrending);
+
   return (
     <main id="main-content" tabIndex={-1} className="min-h-screen outline-none">
       <section aria-label="Featured collections">
@@ -17,7 +23,7 @@ export default function Home() {
         </div>
       </section>
       <div className="pt-6 sm:pt-10 lg:pt-14">
-        <TrendingProducts />
+        <TrendingProducts products={trending} />
       </div>
       <ShopByBrands />
       <ShopByCategory />

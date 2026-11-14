@@ -5,16 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ImageOff } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { mockProducts, sortByColor } from "@/data/mockProducts";
-import type { MockProduct } from "@/data/mockProducts";
+import { sortByColor } from "@/lib/catalog";
+import type { Product } from "@/lib/products";
 import Price from "./Price";
 
-const collections = [
-  { value: "men", label: "Men", products: sortByColor(mockProducts.filter((product) => product.gender === "men" && product.isTrending)) },
-  { value: "women", label: "Women", products: sortByColor(mockProducts.filter((product) => product.gender === "women" && product.isTrending)) },
-];
-
-function ProductCard({ product }: { product: MockProduct }) {
+function ProductCard({ product }: { product: Product }) {
   const [imageMissing, setImageMissing] = useState(false);
 
   return (
@@ -33,7 +28,7 @@ function ProductCard({ product }: { product: MockProduct }) {
           // The frame's padding keeps the shoe small; the inner box is what the photo fills.
           <div className="relative size-full">
             <Image
-              src={product.image}
+              src={product.variants[0].image}
               alt={product.name}
               fill
               sizes="(min-width: 1024px) 180px, (min-width: 640px) 22vw, 34vw"
@@ -44,7 +39,7 @@ function ProductCard({ product }: { product: MockProduct }) {
         )}
       </div>
       <div className="product-details">
-        <p className="text-xs text-muted-foreground">{product.brand}</p>
+        <p className="text-xs text-muted-foreground">{product.brand.name}</p>
         <h3 className="text-sm font-semibold leading-snug tracking-tight">{product.name}</h3>
         <Price product={product} className="mt-1 text-sm font-medium" />
       </div>
@@ -52,7 +47,13 @@ function ProductCard({ product }: { product: MockProduct }) {
   );
 }
 
-export default function TrendingProducts() {
+// products: the trending shoes, loaded from Postgres by the home page (a server page) and passed down.
+export default function TrendingProducts({ products }: { products: Product[] }) {
+  const collections = [
+    { value: "men", label: "Men", products: sortByColor(products.filter((product) => product.gender === "men")) },
+    { value: "women", label: "Women", products: sortByColor(products.filter((product) => product.gender === "women")) },
+  ];
+
   return (
     <section id="trending" aria-labelledby="trending-title" className="content-shell mb-4 rounded-3xl bg-surface px-4 py-7 sm:p-8 lg:px-10 lg:py-10">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">

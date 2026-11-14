@@ -162,6 +162,15 @@ function inStockInSize(product: Product, sizes: number[]) {
   );
 }
 
+/** Sort by the default colourway's first colour (white first, multi last), without changing the input. */
+export function sortByColor<T extends { variants: { colors: string[] }[] }>(products: readonly T[]): T[] {
+  const rank = (product: T) => {
+    const index = COLOR_ORDER.indexOf(product.variants[0]?.colors[0] as ProductColor);
+    return index === -1 ? COLOR_ORDER.length : index;
+  };
+  return [...products].sort((a, b) => rank(a) - rank(b));
+}
+
 /** Colour filter: true if any colourway of the product has this colour. */
 function hasColor(product: Product, color: ProductColor) {
   return product.variants.some((variant) => variant.colors.includes(color));

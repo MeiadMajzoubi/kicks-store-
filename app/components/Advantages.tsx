@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { mockProducts } from "@/data/mockProducts";
+import { getProducts } from "@/lib/products";
 import FastTruckIcon from "./icons/FastTruckIcon";
 
 type IconProps = { className?: string };
@@ -76,17 +76,19 @@ function SupportIcon({ className }: IconProps) {
 }
 
 // Like Foot Locker and JD Sports, each benefit states one concrete fact. Counts and the
-// biggest discount come from the catalogue, so they stay true as products change.
-const styleCount = mockProducts.length;
-const brandCount = new Set(mockProducts.map((product) => product.brand)).size;
-const biggestDiscount = Math.max(
-  0,
-  ...mockProducts.map((product) =>
-    product.salePrice ? Math.round((1 - product.salePrice / product.price) * 100) : 0,
-  ),
-);
+// biggest discount come from the database, so they stay true as products change.
+async function getAdvantages() {
+  const products = await getProducts();
+  const styleCount = products.length;
+  const brandCount = new Set(products.map((product) => product.brand.name)).size;
+  const biggestDiscount = Math.max(
+    0,
+    ...products.map((product) =>
+      product.salePrice ? Math.round((1 - product.salePrice / product.price) * 100) : 0,
+    ),
+  );
 
-const advantages = [
+  return [
   {
     title: "Fast Delivery",
     detail: "Express delivery, arrives within 3 days.",
@@ -111,9 +113,12 @@ const advantages = [
     icon: SupportIcon,
     href: "/support",
   },
-];
+  ];
+}
 
-export default function Advantages() {
+export default async function Advantages() {
+  const advantages = await getAdvantages();
+
   return (
     <section
       aria-labelledby="advantages-title"
