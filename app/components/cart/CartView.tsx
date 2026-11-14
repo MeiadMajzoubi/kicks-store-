@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MAX_QUANTITY, changeSize, setQuantity, useCart } from "@/lib/cart";
 import { categoryLabel, colourName, effectivePrice } from "@/lib/catalog";
 import { bagLines, bagTotals, currency, type Line } from "@/lib/checkout";
+import type { Product } from "@/lib/products";
 import OrderTotals from "./OrderTotals";
 
 // The bag lives in the browser, so the server can't know what's in it. Until the page has
@@ -16,10 +17,11 @@ import OrderTotals from "./OrderTotals";
 const noop = () => () => {};
 const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
 
-export default function CartView() {
+// products: every shoe, loaded from Postgres by the page (a server page) and passed down.
+export default function CartView({ products }: { products: Product[] }) {
   const loaded = useHasLoaded();
   const cart = useCart();
-  const lines = bagLines(cart);
+  const lines = bagLines(products, cart);
   const totals = bagTotals(lines);
   const { itemCount } = totals;
 
@@ -83,7 +85,8 @@ function CartLine({ line }: { line: Line }) {
   const href = `/products/${product.id}`;
   const unit = effectivePrice(product);
   // Every size this colourway comes in that isn't sold out, plus the one already chosen.
-  const sizes = [...new Set([...variant.sizes.available, line.size])].sort((a, b) => a - b);
+  const inStock = variant.sizes.filter((size) => size.stock > 0).map((size) => size.value);
+  const sizes = [...new Set([...inStock, line.size])].sort((a, b) => a - b);
   const sizeItems = sizes.map((size) => ({ value: size, label: `UK ${size}` }));
 
   return (

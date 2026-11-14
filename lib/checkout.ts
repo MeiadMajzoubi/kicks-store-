@@ -1,4 +1,4 @@
-import { mockProducts, type Product } from "@/data/mockProducts";
+import type { Product } from "@/lib/products";
 import type { CartItem } from "@/lib/cart";
 import { effectivePrice } from "@/lib/catalog";
 
@@ -15,9 +15,9 @@ export const currency = new Intl.NumberFormat("en-US", { style: "currency", curr
 export type Line = CartItem & { product: Product };
 
 /** Bag items joined to their shoes. Shoes no longer in the catalogue are skipped. */
-export function bagLines(items: readonly CartItem[]): Line[] {
+export function bagLines(products: readonly Product[], items: readonly CartItem[]): Line[] {
   return items.flatMap((item) => {
-    const product = mockProducts.find((candidate) => candidate.id === item.productId);
+    const product = products.find((candidate) => candidate.id === item.productId);
     return product?.variants[item.variant] ? [{ ...item, product }] : [];
   });
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { mockProducts } from "@/data/mockProducts";
+import { testProducts } from "@/lib/test-products";
 import {
   arrivalDate,
   bagLines,
@@ -17,7 +17,7 @@ import {
 const MONDAY = new Date(2026, 9, 26);
 
 // The Badbo 1.1 ($132, full price), used to build bags.
-const badbo = mockProducts.find((product) => product.id === "m37")!;
+const badbo = testProducts.find((product) => product.id === "m37")!;
 
 /** A bag line for a shoe at a chosen price. */
 const line = (price: number, quantity = 1): Line => ({
@@ -128,7 +128,7 @@ describe("bagTotals: delivery rule", () => {
 
 describe("bagLines", () => {
   test("skips shoes that are no longer in the catalogue", () => {
-    const lines = bagLines([
+    const lines = bagLines(testProducts, [
       { key: "m37-0-9", productId: "m37", variant: 0, size: 9, quantity: 1 },
       { key: "gone-0-9", productId: "gone", variant: 0, size: 9, quantity: 1 },
     ]);

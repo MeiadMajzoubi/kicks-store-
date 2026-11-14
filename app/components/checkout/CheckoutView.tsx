@@ -22,6 +22,7 @@ import {
   newOrderNumber,
   type Line,
 } from "@/lib/checkout";
+import type { Product } from "@/lib/products";
 import FastTruckIcon from "../icons/FastTruckIcon";
 import OrderTotals from "../cart/OrderTotals";
 
@@ -71,14 +72,15 @@ const CHECKS: { [K in keyof Fields]: [(value: string) => boolean, string] } = {
 
 type Order = { number: string; email: string; lines: Line[]; total: number; arrives: string };
 
-export default function CheckoutView() {
+// products: every shoe, loaded from Postgres by the page (a server page) and passed down.
+export default function CheckoutView({ products }: { products: Product[] }) {
   const loaded = useHasLoaded();
   const cart = useCart();
   const [fields, setFields] = useState(EMPTY_FIELDS);
   const [errors, setErrors] = useState<Partial<Record<keyof Fields, string>>>({});
   const [order, setOrder] = useState<Order | null>(null);
 
-  const lines = bagLines(cart);
+  const lines = bagLines(products, cart);
   const totals = bagTotals(lines);
 
   if (!loaded) return <div aria-hidden="true" className="min-h-[50vh]" />;
