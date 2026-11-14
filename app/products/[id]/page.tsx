@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { mockProducts } from "@/data/mockProducts";
+import { connection } from "next/server";
+import { getProduct } from "@/lib/products";
 import { categoryLabel } from "@/lib/catalog";
 import Price from "../../components/Price";
 import Ribbon from "../../components/Ribbon";
 import ProductGallery from "../../components/product/ProductGallery";
 import ProductPurchase from "../../components/product/ProductPurchase";
-
-const findProduct = (id: string) => mockProducts.find((product) => product.id === id);
 
 const saveFormat = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -15,15 +14,8 @@ const saveFormat = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-export function generateStaticParams() {
-  return mockProducts.map((product) => ({ id: product.id }));
-}
-
-// Only products in the catalogue have a page; anything else is a 404.
-export const dynamicParams = false;
-
 export async function generateMetadata({ params }: PageProps<"/products/[id]">): Promise<Metadata> {
-  const product = findProduct((await params).id);
+  const product = await getProduct((await params).id);
   if (!product) return {};
   return {
     title: product.name,
@@ -32,7 +24,10 @@ export async function generateMetadata({ params }: PageProps<"/products/[id]">):
 }
 
 export default async function ProductPage({ params }: PageProps<"/products/[id]">) {
-  const product = findProduct((await params).id);
+  // Built on every visit, not once at build time, so the sizes in stock are always current.
+  await connection();
+  // Only shoes in the database have a page; anything else is a 404.
+  const product = await getProduct((await params).id);
   if (!product) notFound();
 
   const variant = product.variants[0];

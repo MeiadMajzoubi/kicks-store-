@@ -3,14 +3,15 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, Heart } from "lucide-react";
-import type { VariantSizes } from "@/data/mockProducts";
+import type { Product } from "@/lib/products";
 import { addToCart, useCartCount } from "@/lib/cart";
 import { toggleWishlist, useIsSaved } from "@/lib/wishlist";
 
 type ProductPurchaseProps = {
   productId: string;
   variant: number;
-  sizes: VariantSizes;
+  /** Every size of this colourway with its stock; stock 0 = sold out. */
+  sizes: Product["variants"][number]["sizes"];
 };
 
 export default function ProductPurchase({ productId, variant, sizes }: ProductPurchaseProps) {
@@ -21,8 +22,7 @@ export default function ProductPurchase({ productId, variant, sizes }: ProductPu
   const sizeGroupRef = useRef<HTMLDivElement>(null);
   const bagCount = useCartCount();
 
-  const allSizes = [...sizes.available, ...sizes.soldOut].sort((a, b) => a - b);
-  const hasSizes = allSizes.length > 0;
+  const hasSizes = sizes.length > 0;
 
   const addToBag = () => {
     if (selected === null) {
@@ -53,8 +53,8 @@ export default function ProductPurchase({ productId, variant, sizes }: ProductPu
             error ? "outline-1 outline-offset-4 outline-brand" : ""
           }`}
         >
-          {allSizes.map((size) => {
-            const soldOut = sizes.soldOut.includes(size);
+          {sizes.map(({ value: size, stock }) => {
+            const soldOut = stock === 0;
             const isSelected = selected === size;
             return (
               <button
