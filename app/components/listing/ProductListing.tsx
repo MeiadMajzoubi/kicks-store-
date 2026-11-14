@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, useTransition, type ReactNode } from "reac
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, SlidersHorizontal, X } from "lucide-react";
-import type { Gender, Product } from "@/data/mockProducts";
+import type { Gender } from "@/data/mockProducts";
+import type { Product } from "@/lib/products";
 import {
   CATEGORY_OPTIONS,
   COLOR_SWATCHES,

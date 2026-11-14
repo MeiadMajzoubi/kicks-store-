@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { mockProducts } from "@/data/mockProducts";
+import { testProducts } from "@/lib/test-products";
 import {
   applyFilters,
   categoryLabel,
@@ -63,41 +63,41 @@ describe("filtersToQuery: writing the URL", () => {
 
 describe("applyFilters", () => {
   test("no filters keeps every shoe", () => {
-    expect(applyFilters(mockProducts, none)).toHaveLength(mockProducts.length);
+    expect(applyFilters(testProducts, none)).toHaveLength(testProducts.length);
   });
 
   test("size 9 keeps only shoes with size 9 in stock", () => {
-    const results = applyFilters(mockProducts, { ...none, sizes: [9] });
+    const results = applyFilters(testProducts, { ...none, sizes: [9] });
     expect(results.length).toBeGreaterThan(0);
     for (const product of results) {
-      expect(product.variants.some((variant) => variant.sizes.available.includes(9))).toBe(true);
+      expect(product.variants.some((variant) => variant.sizes.some((size) => size.value === 9 && size.stock > 0))).toBe(true);
     }
   });
 
   test("a sold-out size doesn't count", () => {
     // The Bad Bunny Gazelle is sold out in size 9.
-    const results = applyFilters(mockProducts, { ...none, sizes: [9] });
+    const results = applyFilters(testProducts, { ...none, sizes: [9] });
     expect(results.some((product) => product.id === "m38")).toBe(false);
   });
 
   test("two brands means either one (OR)", () => {
-    const results = applyFilters(mockProducts, { ...none, brands: ["Nike", "On"] });
-    expect(results.every((product) => product.brand === "Nike" || product.brand === "On")).toBe(true);
-    expect(results.some((product) => product.brand === "On")).toBe(true);
+    const results = applyFilters(testProducts, { ...none, brands: ["Nike", "On"] });
+    expect(results.every((product) => product.brand.name === "Nike" || product.brand.name === "On")).toBe(true);
+    expect(results.some((product) => product.brand.name === "On")).toBe(true);
   });
 
   test("brand and category together means both (AND)", () => {
-    const results = applyFilters(mockProducts, { ...none, brands: ["Nike"], category: "running" });
-    expect(results.every((product) => product.brand === "Nike" && product.category === "running")).toBe(true);
+    const results = applyFilters(testProducts, { ...none, brands: ["Nike"], category: "running" });
+    expect(results.every((product) => product.brand.name === "Nike" && product.category === "running")).toBe(true);
   });
 
   test("under $100 keeps only shoes under $100", () => {
-    const results = applyFilters(mockProducts, { ...none, prices: ["under-100"] });
+    const results = applyFilters(testProducts, { ...none, prices: ["under-100"] });
     expect(results.every((product) => effectivePrice(product) < 100)).toBe(true);
   });
 
   test("sorts by price, low to high", () => {
-    const prices = applyFilters(mockProducts, { ...none, sort: "price-asc" }).map(effectivePrice);
+    const prices = applyFilters(testProducts, { ...none, sort: "price-asc" }).map(effectivePrice);
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
   });
 });
@@ -114,14 +114,14 @@ describe("countActiveFilters", () => {
 
 describe("facetOptions", () => {
   test("lists each brand once, A to Z", () => {
-    const { brands } = facetOptions(mockProducts);
+    const { brands } = facetOptions(testProducts);
     expect(new Set(brands).size).toBe(brands.length);
     expect(brands[0]).toBe("Adidas");
   });
 
   test("counts men and women", () => {
-    const { menCount, womenCount } = facetOptions(mockProducts);
-    expect(menCount + womenCount).toBe(mockProducts.length);
+    const { menCount, womenCount } = facetOptions(testProducts);
+    expect(menCount + womenCount).toBe(testProducts.length);
   });
 });
 

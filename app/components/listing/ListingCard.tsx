@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ImageOff } from "lucide-react";
-import type { Product } from "@/data/mockProducts";
+import type { Product } from "@/lib/products";
 import { categoryLabel, colourName } from "@/lib/catalog";
 import Price from "../Price";
 import FavouriteButton from "../FavouriteButton";

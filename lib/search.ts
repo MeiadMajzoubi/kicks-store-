@@ -1,5 +1,5 @@
 import { alphabeticalBrands } from "@/data/brands";
-import { mockProducts, type Gender, type Product, type ProductCategory } from "@/data/mockProducts";
+import type { Gender, ProductCategory, ProductColor } from "@/data/mockProducts";
 import { categoryLabel, categoryNoun } from "@/lib/catalog";
 
 /*
@@ -50,8 +50,17 @@ const CATEGORY_WORDS: Record<string, ProductCategory> = {
 /** Words that just mean "shoes" and narrow nothing. */
 const FILLER_WORDS = new Set(["shoe", "shoes", "sneaker", "sneakers", "trainers", "kicks", "pair", "for", "the", "and"]);
 
-export type SearchResult = {
-  products: Product[];
+/** The fields search reads. Full products and the lighter search-bar list both fit. */
+export type Searchable = {
+  name: string;
+  gender: Gender;
+  category: ProductCategory;
+  brand: { name: string };
+  variants: { colors: ProductColor[] }[];
+};
+
+export type SearchResult<T> = {
+  products: T[];
   /** Typos we corrected, e.g. { addidas: "Adidas" }, for a "Showing results for" note. */
   corrections: Record<string, string>;
 };
@@ -89,10 +98,10 @@ const allowedTypos = (term: string) => (term.length >= 7 ? 2 : term.length >= 4 
 
 type Field = { words: string[]; weight: number };
 
-function fieldsOf(product: Product): Field[] {
+function fieldsOf(product: Searchable): Field[] {
   return [
     { words: words(product.name), weight: 3 },
-    { words: words(product.brand), weight: 3 },
+    { words: words(product.brand.name), weight: 3 },
     { words: product.variants.flatMap((variant) => variant.colors), weight: 1 },
   ];
 }
@@ -112,7 +121,7 @@ function scoreTerm(term: string, fields: Field[]) {
   return best;
 }
 
-export function searchProducts(products: readonly Product[], query: string): SearchResult {
+export function searchProducts<T extends Searchable>(products: readonly T[], query: string): SearchResult<T> {
   let gender: Gender | undefined;
   let category: ProductCategory | undefined;
   const terms: string[] = [];
@@ -126,7 +135,7 @@ export function searchProducts(products: readonly Product[], query: string): Sea
   // An empty query finds nothing; one made only of filler words ("shoes") finds everything.
   if (!words(query).length) return { products: [], corrections: {} };
 
-  const scored: { product: Product; score: number }[] = [];
+  const scored: { product: T; score: number }[] = [];
   // Every word each search term matched, across all results.
   const matchedWords = new Map<string, Set<string>>();
 
@@ -182,7 +191,7 @@ function lookup<T>(map: Record<string, T>, word: string): T | undefined {
  * Shortcuts shown above the results while typing: brands and styles the words point to.
  * "nik" → Nike, "run" → Running Shoes, "mens run" → Men's Running Shoes.
  */
-export function suggest(query: string, limit = 4): Suggestion[] {
+export function suggest(products: readonly Searchable[], query: string, limit = 4): Suggestion[] {
   let gender: Gender | undefined;
   let category: ProductCategory | undefined;
   const terms: string[] = [];
@@ -197,9 +206,9 @@ export function suggest(query: string, limit = 4): Suggestion[] {
 
   // Only brands that actually have shoes for the gender and style asked for.
   const stocked = new Set(
-    mockProducts
+    products
       .filter((product) => (!gender || product.gender === gender) && (!category || product.category === category))
-      .map((product) => product.brand),
+      .map((product) => product.brand.name),
   );
   const brands = alphabeticalBrands.filter((brand) =>
     stocked.has(brand.name) &&

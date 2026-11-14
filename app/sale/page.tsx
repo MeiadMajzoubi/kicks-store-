@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { mockProducts } from "@/data/mockProducts";
+import { getProducts } from "@/lib/products";
 import { applyFilters, categoryLabel, categoryNoun, facetOptions, parseFilters } from "@/lib/catalog";
 import ProductListing from "../components/listing/ProductListing";
 
@@ -8,10 +8,8 @@ export const metadata: Metadata = {
   description: "Shop men's and women's shoes on sale at Red Kicks.",
 };
 
-const saleProducts = mockProducts.filter((product) => product.salePrice);
-const facets = facetOptions(saleProducts);
-
 export default async function SalePage({ searchParams }: PageProps<"/sale">) {
+  const saleProducts = (await getProducts()).filter((product) => product.salePrice);
   // Everything here is on sale (and so never new), so those filters are fixed.
   const filters = { ...parseFilters(await searchParams), sale: false, isNew: false };
   const results = applyFilters(saleProducts, filters);
@@ -26,7 +24,7 @@ export default async function SalePage({ searchParams }: PageProps<"/sale">) {
       basePath="/sale"
       filters={filters}
       results={results}
-      facets={facets}
+      facets={facetOptions(saleProducts)}
     />
   );
 }

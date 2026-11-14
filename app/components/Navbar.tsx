@@ -12,6 +12,7 @@ import {
 import { alphabeticalBrands, brandsByGender } from "@/data/brands";
 import { useCartCount } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import type { SearchProduct } from "@/lib/products";
 import SearchBar from "./SearchBar";
 
 type Gender = "women" | "men";
@@ -58,7 +59,7 @@ const SHOE_SIZES: Record<Gender, readonly string[]> = {
 
 
 
-export default function Navbar() {
+export default function Navbar({ searchProducts }: { searchProducts: SearchProduct[] }) {
   const [activePanel, setActivePanel] = useState<Panel | null>(null);
   // The panel last opened: its content stays in place while the panel slides shut.
   const [lastPanel, setLastPanel] = useState<Panel>("women");
@@ -206,7 +207,7 @@ export default function Navbar() {
           </Link>
 
           <div className="col-start-2 row-start-1 flex items-center justify-end gap-0 sm:gap-1 lg:col-start-3">
-            <SearchBar onOpen={closePanel} />
+            <SearchBar products={searchProducts} onOpen={closePanel} />
             <Link
               href="/wishlist"
               onClick={closePanel}

@@ -6,11 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ArrowUpRight, Clock, Search, X } from "lucide-react";
-import { mockProducts } from "@/data/mockProducts";
+import type { SearchProduct } from "@/lib/products";
 import { searchProducts, suggest } from "@/lib/search";
 import Price from "./Price";
 
 type SearchBarProps = {
+  // The shoes to search, loaded from Postgres by the server and passed down.
+  products: SearchProduct[];
   // Lets the navbar close any open mega panel when search opens.
   onOpen?: () => void;
 };
@@ -54,7 +56,7 @@ function writeRecent(terms: string[]) {
   }
 }
 
-export default function SearchBar({ onOpen }: SearchBarProps) {
+export default function SearchBar({ products, onOpen }: SearchBarProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const loaded = useHasLoaded();
@@ -67,9 +69,9 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const trimmed = query.trim();
-  const matches = useMemo(() => searchProducts(mockProducts, trimmed).products, [trimmed]);
+  const matches = useMemo(() => searchProducts(products, trimmed).products, [products, trimmed]);
   const results = matches.slice(0, MAX_RESULTS);
-  const suggestions = useMemo(() => suggest(trimmed), [trimmed]);
+  const suggestions = useMemo(() => suggest(products, trimmed), [products, trimmed]);
   const searchHref = `/search?q=${encodeURIComponent(trimmed)}`;
 
   // Newest first, no duplicates (ignoring case), at most five.
@@ -406,7 +408,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                               >
                                 <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
                                   <Image
-                                    src={product.image}
+                                    src={product.variants[0].image}
                                     alt=""
                                     fill
                                     sizes="(min-width: 1024px) 160px, (min-width: 640px) 30vw, 45vw"
@@ -415,7 +417,7 @@ export default function SearchBar({ onOpen }: SearchBarProps) {
                                 </div>
 
                                 <p className="mt-3 text-xs font-medium text-muted-foreground">
-                                  {product.brand}
+                                  {product.brand.name}
                                 </p>
                                 <p className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-brand">
                                   {product.name}

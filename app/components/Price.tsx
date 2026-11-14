@@ -1,12 +1,11 @@
-import type { Product } from "@/data/mockProducts";
-
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
 
 type PriceProps = {
-  product: Pick<Product, "price" | "salePrice">;
+  /** salePrice is missing or null when the shoe isn't on sale. */
+  product: { price: number; salePrice?: number | null };
   className?: string;
 };
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { brands } from "@/data/brands";
-import { mockProducts } from "@/data/mockProducts";
+import { getProducts } from "@/lib/products";
 import { applyFilters, categoryLabel, categoryNoun, facetOptions, parseFilters } from "@/lib/catalog";
 import ProductListing from "../../components/listing/ProductListing";
 
@@ -27,7 +27,7 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/br
   const brand = findBrand((await params).slug);
   if (!brand) notFound();
 
-  const brandProducts = mockProducts.filter((product) => product.brand === brand.name);
+  const brandProducts = (await getProducts()).filter((product) => product.brand.name === brand.name);
   // The page is already one brand, so a brand filter in the URL is ignored.
   const filters = { ...parseFilters(await searchParams), brands: [] };
   const results = applyFilters(brandProducts, filters);

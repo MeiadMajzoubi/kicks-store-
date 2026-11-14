@@ -1,11 +1,10 @@
 import {
   COLOR_ORDER,
-  hasColor,
   type Gender,
-  type Product,
   type ProductCategory,
   type ProductColor,
 } from "@/data/mockProducts";
+import type { Product } from "@/lib/products";
 
 /* Filters live in the URL (/men?category=running&size=9&color=black) so every
    result can be shared, bookmarked, and linked from the navbar. */
@@ -97,7 +96,8 @@ export function colourName(colors: ProductColor[]) {
     .join(" - ");
 }
 
-export function effectivePrice(product: Product) {
+/** The price a shopper pays. salePrice is missing or null when the shoe isn't on sale. */
+export function effectivePrice(product: { price: number; salePrice?: number | null }) {
   return product.salePrice ?? product.price;
 }
 
@@ -158,8 +158,13 @@ export function countActiveFilters(filters: CatalogFilters) {
 
 function inStockInSize(product: Product, sizes: number[]) {
   return product.variants.some((variant) =>
-    sizes.some((size) => variant.sizes.available.includes(size)),
+    variant.sizes.some((size) => size.stock > 0 && sizes.includes(size.value)),
   );
+}
+
+/** Colour filter: true if any colourway of the product has this colour. */
+function hasColor(product: Product, color: ProductColor) {
+  return product.variants.some((variant) => variant.colors.includes(color));
 }
 
 /** Within a group options are OR-ed (black or white); groups are AND-ed. */
@@ -171,7 +176,7 @@ export function applyFilters(products: readonly Product[], filters: CatalogFilte
     if (filters.sale && !product.salePrice) return false;
     if (filters.sizes.length && !inStockInSize(product, filters.sizes)) return false;
     if (filters.colors.length && !filters.colors.some((color) => hasColor(product, color))) return false;
-    if (filters.brands.length && !filters.brands.includes(product.brand)) return false;
+    if (filters.brands.length && !filters.brands.includes(product.brand.name)) return false;
     if (filters.prices.length) {
       const price = effectivePrice(product);
       const inRange = PRICE_OPTIONS.some(
@@ -192,15 +197,17 @@ export function facetOptions(products: readonly Product[]) {
   const sizes = [
     ...new Set(
       products.flatMap((product) =>
-        product.variants.flatMap((variant) => [...variant.sizes.available, ...variant.sizes.soldOut]),
+        product.variants.flatMap((variant) => variant.sizes.map((size) => size.value)),
       ),
     ),
   ].sort((a, b) => a - b);
 
-  const colorSet = new Set(products.flatMap((product) => product.filterColors));
+  const colorSet = new Set(
+    products.flatMap((product) => product.variants.flatMap((variant) => variant.colors)),
+  );
   const colors = COLOR_ORDER.filter((color) => colorSet.has(color));
 
-  const brands = [...new Set(products.map((product) => product.brand))].sort((a, b) =>
+  const brands = [...new Set(products.map((product) => product.brand.name))].sort((a, b) =>
     a.localeCompare(b, "en", { sensitivity: "base" }),
   );
 

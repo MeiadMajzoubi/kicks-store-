@@ -1,15 +1,15 @@
 import { describe, expect, test } from "vitest";
-import { mockProducts } from "@/data/mockProducts";
+import { testProducts } from "@/lib/test-products";
 import { searchProducts, suggest } from "@/lib/search";
 
-const search = (query: string) => searchProducts(mockProducts, query);
-const nikeCount = mockProducts.filter((product) => product.brand === "Nike").length;
+const search = (query: string) => searchProducts(testProducts, query);
+const nikeCount = testProducts.filter((product) => product.brand.name === "Nike").length;
 
 describe("searchProducts: finding shoes", () => {
   test("finds every Nike for 'nike'", () => {
     const { products } = search("nike");
     expect(products).toHaveLength(nikeCount);
-    expect(products.every((product) => product.brand === "Nike")).toBe(true);
+    expect(products.every((product) => product.brand.name === "Nike")).toBe(true);
   });
 
   test("forgives one typo: 'nikee' finds the same shoes", () => {
@@ -29,7 +29,7 @@ describe("searchProducts: finding shoes", () => {
   });
 
   test("ignores filler words: 'shoes' finds everything", () => {
-    expect(search("shoes").products).toHaveLength(mockProducts.length);
+    expect(search("shoes").products).toHaveLength(testProducts.length);
   });
 });
 
@@ -42,7 +42,7 @@ describe("searchProducts: gender and category words", () => {
 
   test("'mens nike' keeps only men's Nike shoes", () => {
     const { products } = search("mens nike");
-    expect(products.every((p) => p.gender === "men" && p.brand === "Nike")).toBe(true);
+    expect(products.every((p) => p.gender === "men" && p.brand.name === "Nike")).toBe(true);
   });
 });
 
@@ -68,6 +68,6 @@ describe("searchProducts: the corrected title", () => {
 
 describe("suggest", () => {
   test("suggests the Nike brand page while typing 'nik'", () => {
-    expect(suggest("nik").some((s) => s.href === "/brands/nike")).toBe(true);
+    expect(suggest(testProducts, "nik").some((s) => s.href === "/brands/nike")).toBe(true);
   });
 });

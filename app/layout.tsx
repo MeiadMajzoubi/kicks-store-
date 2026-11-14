@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import DeliveryBanner from "./components/DeliveryBanner";
 import Footer from "./components/Footer";
+import { getSearchProducts } from "@/lib/products";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,14 +27,17 @@ export const metadata: Metadata = {
     "Explore sneakers, everyday favourites, and performance footwear from Nike, Adidas, ASICS, On, New Balance, and Birkenstock at Red Kicks.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // The search bar runs in the browser, so the server loads its shoes and hands them over.
+  const searchProducts = await getSearchProducts();
+
   return (
     <html lang="en" className={`${geistSans.variable} ${bebasNeue.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">Skip to content</a>
         {/* Announcement bar above the menu, where shoppers expect it (Nike, Adidas, JD). */}
         <DeliveryBanner />
-        <Navbar />
+        <Navbar searchProducts={searchProducts} />
 
         {children}
         <Footer />

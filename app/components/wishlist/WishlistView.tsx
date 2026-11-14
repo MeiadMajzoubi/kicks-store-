@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mockProducts, type Product } from "@/data/mockProducts";
+import type { Product } from "@/lib/products";
 import { addToCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import ListingCard from "../listing/ListingCard";
@@ -25,13 +25,14 @@ const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
  * Saved shoes in the same grid and cards as the shop pages, each with one "Select Size"
  * button: picking a size adds that pair to the bag (the pattern big sneaker stores use).
  */
-export default function WishlistView() {
+// products: every shoe, loaded from Postgres by the wishlist page (a server page) and passed down.
+export default function WishlistView({ products }: { products: Product[] }) {
   const loaded = useHasLoaded();
   const saved = useWishlist();
 
   // Shoes no longer in the catalogue are skipped.
   const entries = saved.flatMap((item) => {
-    const product = mockProducts.find((candidate) => candidate.id === item.productId);
+    const product = products.find((candidate) => candidate.id === item.productId);
     return product ? [{ product, variant: product.variants[item.variant] ? item.variant : 0 }] : [];
   });
 
@@ -72,13 +73,12 @@ export default function WishlistView() {
 /** One outlined button; it opens the sizes, and picking one adds that pair to the bag. */
 function SelectSize({ product, variant }: { product: Product; variant: number }) {
   const [added, setAdded] = useState<number | null>(null);
-  const { available, soldOut } = product.variants[variant].sizes;
-  const sizes = [...available, ...soldOut].sort((a, b) => a - b);
+  const sizes = product.variants[variant].sizes;
 
   const button =
     "mt-4 inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full border border-border text-sm font-medium transition-colors hover:border-foreground";
 
-  if (!available.length) {
+  if (!sizes.some((size) => size.stock > 0)) {
     return (
       <span className={`${button} cursor-not-allowed text-muted-foreground hover:border-border`}>Sold out</span>
     );
@@ -113,8 +113,8 @@ function SelectSize({ product, variant }: { product: Product; variant: number })
               Size (UK)
             </DropdownMenuLabel>
             <div className="grid grid-cols-4 gap-1.5">
-            {sizes.map((size) => {
-              const isSoldOut = soldOut.includes(size);
+            {sizes.map(({ value: size, stock }) => {
+              const isSoldOut = stock === 0;
               return (
                 <DropdownMenuItem
                   key={size}

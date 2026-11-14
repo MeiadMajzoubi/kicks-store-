@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { alphabeticalBrands } from "@/data/brands";
-import { mockProducts } from "@/data/mockProducts";
+import { getProducts } from "@/lib/products";
 import { CATEGORY_OPTIONS, applyFilters, facetOptions, parseFilters } from "@/lib/catalog";
 import { searchProducts } from "@/lib/search";
 import ProductListing from "../components/listing/ProductListing";
@@ -9,7 +9,7 @@ import ProductListing from "../components/listing/ProductListing";
 export async function generateMetadata({ searchParams }: PageProps<"/search">): Promise<Metadata> {
   const q = firstValue((await searchParams).q);
   if (!q) return { title: "Search" };
-  const { corrections } = searchProducts(mockProducts, q);
+  const { corrections } = searchProducts(await getProducts(), q);
   return { title: `Results for “${correctedQuery(q, corrections)}”` };
 }
 
@@ -29,15 +29,18 @@ const firstValue = (value: string | string[] | undefined) =>
   (Array.isArray(value) ? value[0] : value)?.trim() ?? "";
 
 // Brands with the most shoes first: the most useful suggestions when nothing matches.
-const popularBrands = [...alphabeticalBrands]
-  .map((brand) => ({ ...brand, count: mockProducts.filter((product) => product.brand === brand.name).length }))
-  .sort((a, b) => b.count - a.count)
-  .slice(0, 6);
+async function getPopularBrands() {
+  const products = await getProducts();
+  return [...alphabeticalBrands]
+    .map((brand) => ({ ...brand, count: products.filter((product) => product.brand.name === brand.name).length }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 6);
+}
 
 export default async function SearchPage({ searchParams }: PageProps<"/search">) {
   const params = await searchParams;
   const q = firstValue(params.q);
-  const { products: matches, corrections } = searchProducts(mockProducts, q);
+  const { products: matches, corrections } = searchProducts(await getProducts(), q);
 
   if (!matches.length) return <NoResults query={q} />;
 
@@ -56,7 +59,8 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   );
 }
 
-function NoResults({ query }: { query: string }) {
+async function NoResults({ query }: { query: string }) {
+  const popularBrands = await getPopularBrands();
   const chip =
     "inline-flex min-h-11 items-center rounded-full bg-surface px-5 text-[15px] font-medium transition-colors hover:bg-surface-hover";
 
