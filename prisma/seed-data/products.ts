@@ -1,4 +1,4 @@
-import type { ProductData } from "@/data/mockProducts";
+import type { ProductData } from "./types";
 
 // 39 original products (m15 was merged into m12 as its black colour).
 // Categories and colours were set by looking at each photo and the product name.

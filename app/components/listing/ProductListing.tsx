@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition, type ReactNode } from "reac
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, SlidersHorizontal, X } from "lucide-react";
-import type { Gender } from "@/data/mockProducts";
+import type { Gender } from "@/lib/product-types";
 import type { Product } from "@/lib/products";
 import {
   CATEGORY_OPTIONS,
@@ -23,7 +23,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { brandsByGender } from "@/data/brands";
 import ListingCard from "./ListingCard";
 
 type Facets = {
@@ -49,6 +48,8 @@ type ProductListingProps = {
   filters: CatalogFilters;
   results: Product[];
   facets: Facets;
+  /** Men and Women pages: brands that have shoes for the other gender, for the "try Women" hint. */
+  otherGenderBrands?: string[];
 };
 
 /** Adds the value if missing, removes it if present. */
@@ -65,6 +66,7 @@ export default function ProductListing({
   filters,
   results,
   facets,
+  otherGenderBrands = [],
 }: ProductListingProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -185,7 +187,14 @@ export default function ProductListing({
               ))}
             </ul>
           ) : (
-            <EmptyResults gender={gender} basePath={basePath} filters={filters} facets={facets} onClear={clearFilters} />
+            <EmptyResults
+              gender={gender}
+              basePath={basePath}
+              filters={filters}
+              facets={facets}
+              otherGenderBrands={otherGenderBrands}
+              onClear={clearFilters}
+            />
           )}
         </section>
       </div>
@@ -241,8 +250,8 @@ function SortMenu({ value, onChange }: { value: SortKey; onChange: (value: SortK
   );
 }
 
-const GENDER_WORD: Record<Gender, string> = { men: "men", women: "women" };
 const OTHER_GENDER: Record<Gender, Gender> = { men: "women", women: "men" };
+const GENDER_WORD: Record<Gender, string> = { men: "men", women: "women" };
 
 /**
  * Empty grid. When the cause is a brand this gender doesn't carry (UGG for men),
@@ -253,19 +262,28 @@ function EmptyResults({
   basePath,
   filters,
   facets,
+  otherGenderBrands,
   onClear,
 }: {
   gender?: Gender;
   basePath: string;
   filters: CatalogFilters;
   facets: Facets;
+  otherGenderBrands: string[];
   onClear: () => void;
 }) {
   const unavailable = filters.brands.filter((brand) => !facets.brands.includes(brand));
   const brandIsTheCause = unavailable.length > 0 && unavailable.length === filters.brands.length;
 
   if (gender && brandIsTheCause) {
-    return <UnavailableBrands gender={gender} basePath={basePath} unavailable={unavailable} />;
+    return (
+      <UnavailableBrands
+        gender={gender}
+        basePath={basePath}
+        unavailable={unavailable}
+        otherGenderBrands={otherGenderBrands}
+      />
+    );
   }
 
   return (
@@ -290,15 +308,15 @@ function UnavailableBrands({
   gender,
   basePath,
   unavailable,
+  otherGenderBrands,
 }: {
   gender: Gender;
   basePath: string;
   unavailable: string[];
+  otherGenderBrands: string[];
 }) {
   const other = OTHER_GENDER[gender];
-  const elsewhere = unavailable.filter((brand) =>
-    brandsByGender[other].some((storeBrand) => storeBrand.name === brand),
-  );
+  const elsewhere = unavailable.filter((brand) => otherGenderBrands.includes(brand));
 
   const names = new Intl.ListFormat("en", { type: "conjunction" }).format(unavailable);
   return (

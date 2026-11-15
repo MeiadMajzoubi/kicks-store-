@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default async function MenPage({ searchParams }: PageProps<"/men">) {
-  const menProducts = (await getProducts()).filter((product) => product.gender === "men");
+  const products = await getProducts();
+  const menProducts = products.filter((product) => product.gender === "men");
+  const otherGenderBrands = [
+    ...new Set(products.filter((product) => product.gender === "women").map((product) => product.brand.name)),
+  ];
   // This page is already one gender, so a gender filter in the URL is ignored.
   const filters = { ...parseFilters(await searchParams), gender: undefined };
   const results = applyFilters(menProducts, filters);
@@ -22,6 +26,7 @@ export default async function MenPage({ searchParams }: PageProps<"/men">) {
       filters={filters}
       results={results}
       facets={facetOptions(menProducts)}
+      otherGenderBrands={otherGenderBrands}
     />
   );
 }

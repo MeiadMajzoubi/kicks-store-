@@ -9,7 +9,7 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { alphabeticalBrands, brandsByGender } from "@/data/brands";
+import { alphabeticalBrands, getBrandsByGender } from "@/data/brands";
 import { useCartCount } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import type { SearchProduct } from "@/lib/products";
@@ -64,6 +64,8 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
   // The panel last opened: its content stays in place while the panel slides shut.
   const [lastPanel, setLastPanel] = useState<Panel>("women");
   const shownPanel = activePanel ?? lastPanel;
+  // Brands that have shoes for men / for women, worked out from the shoes in the database.
+  const brandsByGender = getBrandsByGender(searchProducts);
   const isPanelOpen = activePanel !== null;
   const bagCount = useCartCount();
   const savedCount = useWishlist().length;

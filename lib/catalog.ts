@@ -3,7 +3,7 @@ import {
   type Gender,
   type ProductCategory,
   type ProductColor,
-} from "@/data/mockProducts";
+} from "@/lib/product-types";
 import type { Product } from "@/lib/products";
 
 /* Filters live in the URL (/men?category=running&size=9&color=black) so every

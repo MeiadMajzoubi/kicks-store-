@@ -1,5 +1,5 @@
 import { alphabeticalBrands } from "@/data/brands";
-import type { Gender, ProductCategory, ProductColor } from "@/data/mockProducts";
+import type { Gender, ProductCategory, ProductColor } from "@/lib/product-types";
 import { categoryLabel, categoryNoun } from "@/lib/catalog";
 
 /*
