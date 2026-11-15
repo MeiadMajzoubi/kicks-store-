@@ -1149,7 +1149,7 @@ export const productData: ProductData[] = [
     price: 250,
     variants: [
       {
-        colors: ["grey", "pink"],
+        colors: ["grey", "purple"],
         image: "/Products/w13.avif",
         images: ["/Products/w13.avif"],
         sizes: {
