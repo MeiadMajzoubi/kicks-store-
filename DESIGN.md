@@ -165,6 +165,9 @@ No 5, 7, 10, 14, 20. No arbitrary values (`mt-[18px]`). Heights and positions (`
   shape — keep it consistent: every button, chip and filter toggle is a pill.
 - **Image tiles, cards and panels** use `rounded-2xl` (1rem — the trending card value). One
   radius for every tile in the store; don't mix 1rem and 0.5rem tiles.
+  - The one exception: the Shop by category cards are several times wider than a trending card,
+    and at that size the tile radius reads as a thick, soft corner, so they use `rounded-lg` (the
+    base radius). A tile only changes radius because of its size — never for variety.
 - **Inputs, selects, dropdowns, popovers** use `rounded-lg` (the base `--radius`).
 - Full-bleed banners and ink strips: `rounded-none`.
 - Depth comes from **surface colour and borders**, not shadows. `shadow-sm` only on floating

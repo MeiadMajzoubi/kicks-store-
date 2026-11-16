@@ -6,12 +6,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 // One wide crop for every photo (3:2), so the stack never changes size between categories.
+// These cards are several times the width of a trending card, so they round to the base radius
+// instead of the store's tile radius: the tile value reads as a thick, soft corner at this size.
 const categories = [
-  { name: "Running", image: "/categories/running-road.webp", href: "/shop?category=running" },
-  { name: "Training", image: "/categories/training-gym.webp", href: "/shop?category=training" },
+  { name: "Running", image: "/categories/running-sunset.webp", href: "/shop?category=running" },
+  { name: "Training", image: "/categories/training-jump.webp", href: "/shop?category=training" },
   { name: "Lifestyle", image: "/categories/lifestyle-street.webp", href: "/shop?category=lifestyle" },
-  { name: "Outdoor", image: "/categories/outdoor-mountain.webp", href: "/shop?category=outdoor" },
-  { name: "Sandals", image: "/categories/sandals-clogs.webp", href: "/shop?category=sandals" },
+  { name: "Outdoor", image: "/categories/outdoor-trail.webp", href: "/shop?category=outdoor" },
+  { name: "Sandals", image: "/categories/sandals-park.webp", href: "/shop?category=sandals" },
 ];
 
 const slides = [...categories, categories[0]];
@@ -79,7 +81,7 @@ export default function ShopByCategory() {
 
         <div
           id="category-images"
-          className="relative min-w-0 overflow-hidden rounded-2xl"
+          className="relative min-w-0 overflow-hidden rounded-lg"
           // Front card: 72% wide at 3:2 (48% tall), dropped 8% of the box.
           style={{ paddingTop: "52.2%" }}
         >
@@ -96,7 +98,7 @@ export default function ShopByCategory() {
                 href={category.href}
                 tabIndex={isVisible ? 0 : -1}
                 aria-hidden={isVisible ? undefined : true}
-                className="absolute overflow-hidden rounded-2xl bg-surface transition-[left,width,top,opacity,box-shadow] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none focus-visible:outline-offset-[-6px]"
+                className="absolute overflow-hidden rounded-lg bg-surface transition-[left,width,top,opacity,box-shadow] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none focus-visible:outline-offset-[-6px]"
                 style={{
                   left: isActive
                     ? "0%"
@@ -120,7 +122,11 @@ export default function ShopByCategory() {
                     src={category.image}
                     fill
                     alt={`Shop ${category.name}`}
-                    sizes="(min-width: 1664px) 760px, (min-width: 1024px) 50vw, 80vw"
+                    // The front card is 72% of the 66% column, so ~48vw, capped at 760px on wide screens.
+                    // Telling the browser the true size is what keeps it sharp: too small a number and it
+                    // stretches a small file, too big and it stalls fetching a giant one.
+                    sizes="(min-width: 1664px) 820px, (min-width: 1024px) 52vw, 76vw"
+                    quality={90}
                     className="object-cover"
                   />
                 </div>
