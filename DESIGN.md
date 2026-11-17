@@ -96,8 +96,8 @@ as its own task (ink background, `--surface` becomes `#222`, red stays `#d71920`
 ### 4.1 Faces
 
 - **Geist Sans** — everything: UI, body, product names, prices, and page/section titles.
-- **Bebas Neue** (`font-display`) — the logo's face. Only for big display lines: the hero
-  headline and campaign banners. Always uppercase (the face has no lowercase), never below
+- **Anton** (`font-display`) — heavy condensed, the sports-poster face. Only for big slogans:
+  the hero and campaign banners. Always uppercase, `leading-[0.9] tracking-tight`, never below
   `text-4xl`, never for body or buttons.
 - Numbers that line up (prices, sizes, totals, quantities): `tabular-nums` in Geist.
   No monospace font for prices or labels.
@@ -106,7 +106,7 @@ as its own task (ink background, `--surface` becomes `#222`, red stays `#d71920`
 
 | Role | Class | Notes |
 |---|---|---|
-| Hero / campaign | `font-display text-6xl md:text-8xl leading-none` | Bebas, uppercase. |
+| Hero / campaign | `font-display text-6xl sm:text-7xl lg:text-8xl leading-[0.9] tracking-tight` | Anton, uppercase. A slogan, not a product name. |
 | Page title | `.page-title` | Geist 700, tight tracking, ends with `.title-mark` red full stop. |
 | Section title | `.section-title` | Geist 700, tight tracking. |
 | Section intro | `.section-intro` | One sentence, muted, max 32rem. |
@@ -121,7 +121,7 @@ Rules:
 - Hierarchy comes from **size and weight**, not colour and not boxes.
 - Big text gets **negative** tracking (already in the classes); small text stays at 0.
 - Titles are sentence case: "New this week." — not "NEW THIS WEEK" in Geist, not Title Case.
-- Uppercase only through Bebas. No tracked-out all-caps labels above headings (eyebrows).
+- Uppercase only through Anton. No tracked-out all-caps labels above headings (eyebrows).
 - Left-aligned by default. Centre only short single lines inside a centred block (empty states).
 - `text-wrap: balance` on titles (in the classes), `text-pretty` on paragraphs.
 
@@ -162,7 +162,7 @@ No 5, 7, 10, 14, 20. No arbitrary values (`mt-[18px]`). Heights and positions (`
 ## 6. Shape and depth
 
 - **Buttons and the search field are pills** (`rounded-full`). That's the store's signature
-  shape — keep it consistent: every button, chip and filter toggle is a pill.
+  shape — keep it consistent: every button, chip and filter toggle is a pill, the hero's included.
 - **Image tiles, cards and panels** use `rounded-2xl` (1rem — the trending card value). One
   radius for every tile in the store; don't mix 1rem and 0.5rem tiles.
   - The one exception: the Shop by category cards are several times wider than a trending card,
@@ -330,7 +330,16 @@ Every list and async view has all three:
 
 ### 9.9 Home sections
 
-- Hero: one message, one CTA, Bebas headline, the shoe big and allowed to bleed off the edge.
+- Hero: the same layout on every slide, the way Nike and Foot Locker do it: a **big slogan**, **one
+  short line**, **one button**. Only the **slogan's colour** changes, one solid, calm colour taken
+  from the photo (silver, tan, sage, rust, volt in `HeroCarousel.tsx`). The button is **plain
+  white** on every slide, like Nike's: never orange, green or any photo colour. No glass: no
+  gradient text, transparency, `backdrop-blur`, glow or tinted shadow.
+  - One face (Anton), one button shape (the pill), one label ("Shop now →"). Don't give a slide its
+    own font, shape or extra button: that reads as a template trying to look custom.
+  - The text sits in the quiet part of each photo (empty sky, backdrop, floor), never over the
+    shoe, the athlete or busy grass. A soft gradient behind it, not a dark layer over the photo.
+  - 16px of side padding on phones, 32px on laptops; the button is never clipped or overlapped.
 - Trending, Shop by brand, Shop by category: section title (+ optional intro) then content.
 - **Store facts** (the Advantages section): allowed only with **real numbers from the
   database** ("73 styles", "6 brands"), set as big Geist numbers with a short label — no icons

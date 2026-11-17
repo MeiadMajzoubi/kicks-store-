@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-display: var(--font-bebas-neue);
+  --font-display: var(--font-anton);
   --font-mono: ui-monospace, SFMono-Regular, monospace;
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
@@ -175,6 +175,12 @@
   }
   .nav-panel-content {
     animation: nav-panel-content-in 300ms ease 200ms both;
+  }
+  /* Hero slogan over a full-brightness photo: a soft shadow under the letters, not a dark layer
+     over the picture. Only the paragraphs get it; each slide's buttons style their own depth. */
+  .hero-text :is(p) {
+    /* A tight edge so each letter is crisp, plus a wide soft halo that tones down the bright white. */
+    text-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 4px 40px rgb(0 0 0 / 0.55);
   }
   /* The brand's red full stop; used only at the end of page titles. */
   .title-mark {

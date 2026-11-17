@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Geist } from "next/font/google";
+import { Anton, Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import DeliveryBanner from "./components/DeliveryBanner";
@@ -11,9 +11,9 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-// The condensed face the RED KICKS logo is drawn in; used only for big display lines.
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas-neue",
+// Heavy condensed face for big slogans (hero, 404): the sports-poster look.
+const anton = Anton({
+  variable: "--font-anton",
   weight: "400",
   subsets: ["latin"],
 });
@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const searchProducts = await getSearchProducts();
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${bebasNeue.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${anton.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">Skip to content</a>
         {/* Announcement bar above the menu, where shoppers expect it (Nike, Adidas, JD). */}
