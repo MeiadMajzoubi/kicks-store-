@@ -82,7 +82,8 @@ export default function CartView({ products }: { products: Product[] }) {
 function CartLine({ line }: { line: Line }) {
   const { product } = line;
   const variant = product.variants[line.variant];
-  const href = `/products/${product.id}`;
+  // Opens the page on the colour in the bag, not the first one.
+  const href = `/products/${product.id}${line.variant ? `?colour=${line.variant}` : ""}`;
   const unit = effectivePrice(product);
   // Every size this colourway comes in that isn't sold out, plus the one already chosen.
   const inStock = variant.sizes.filter((size) => size.stock > 0).map((size) => size.value);

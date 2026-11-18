@@ -28,7 +28,8 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
   const [imageMissing, setImageMissing] = useState(false);
 
   const variant = product.variants[activeVariant];
-  const href = `/products/${product.id}`;
+  // Opens the page on the colour shown on the card, not the first one.
+  const href = `/products/${product.id}${activeVariant ? `?colour=${activeVariant}` : ""}`;
   const hasColourways = product.variants.length > 1;
 
   return (
