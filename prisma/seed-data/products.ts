@@ -108,12 +108,23 @@ export const productData: ProductData[] = [
     price: 170,
     variants: [
       {
-        colors: ["grey", "orange"],
-        image: "/Products/m5.webp",
-        images: ["/Products/m5.webp"],
+        // Replaced the black-and-orange colourway; the grey takes over its stock.
+        colors: ["grey", "silver"],
+        image: "/Products/m5-grey_v2.webp",
+        images: ["/Products/m5-grey_v2.webp"],
         sizes: {
           available: [6.5, 7.5, 8.5, 10, 11, 11.5, 12, 13],
           soldOut: [6, 7, 8, 9, 9.5, 10.5],
+        },
+      },
+      {
+        // The brown is also sold to women: its photo is w38's.
+        colors: ["brown", "cream"],
+        image: "/Products/w38_v2.webp",
+        images: ["/Products/w38_v2.webp"],
+        sizes: {
+          available: [7.5, 8.5, 9, 10, 11, 12],
+          soldOut: [6.5, 7, 8, 13],
         },
       },
     ],
@@ -151,10 +162,17 @@ export const productData: ProductData[] = [
     price: 221,
     variants: [
       {
-        colors: ["brown"],
-        image: "/Products/m7.webp",
-        images: ["/Products/m7.webp"],
-        sizes: { available: [8, 9, 10, 12], soldOut: [7, 11] },
+        // The cream is also sold to women (w40): its photo is shared.
+        colors: ["cream", "brown"],
+        image: "/Products/m7-2-o.jpg",
+        images: ["/Products/m7-2-o.jpg"],
+        sizes: { available: [7, 8, 9, 10, 11], soldOut: [12, 13] },
+      },
+      {
+        colors: ["black"],
+        image: "/Products/m7-3-o.jpg",
+        images: ["/Products/m7-3-o.jpg"],
+        sizes: { available: [8, 9, 10, 11, 12], soldOut: [7, 13] },
       },
     ],
     isNew: false,
@@ -318,9 +336,10 @@ export const productData: ProductData[] = [
     price: 204,
     variants: [
       {
-        colors: ["black", "red"],
-        image: "/Products/m14.webp",
-        images: ["/Products/m14.webp"],
+        // Replaced the navy colourway; the green takes over its stock.
+        colors: ["green", "black"],
+        image: "/Products/m14-green-o.avif",
+        images: ["/Products/m14-green-o.avif"],
         sizes: {
           available: [6, 6.5, 7, 7.5, 8, 8.5, 9.5, 10, 10.5, 11, 12],
           soldOut: [9, 11.5, 13],
@@ -383,7 +402,7 @@ export const productData: ProductData[] = [
     slug: "salomon-xt-6-m18",
     brand: "Salomon",
     gender: "men",
-    category: "outdoor",
+    category: "lifestyle",
     price: 159,
     variants: [
       {
@@ -393,6 +412,24 @@ export const productData: ProductData[] = [
         sizes: {
           available: [6.5, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12],
           soldOut: [6, 7, 13],
+        },
+      },
+      {
+        colors: ["black", "green"],
+        image: "/Products/m18-2-o.avif",
+        images: ["/Products/m18-2-o.avif"],
+        sizes: {
+          available: [7, 8, 8.5, 9, 10, 11, 12],
+          soldOut: [6.5, 7.5, 9.5, 10.5],
+        },
+      },
+      {
+        colors: ["blue", "brown"],
+        image: "/Products/m18-3-o.avif",
+        images: ["/Products/m18-3-o.avif"],
+        sizes: {
+          available: [7.5, 8, 9, 9.5, 10, 11.5],
+          soldOut: [7, 8.5, 10.5, 12],
         },
       },
     ],
@@ -439,6 +476,33 @@ export const productData: ProductData[] = [
         sizes: {
           available: [6, 7, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13],
           soldOut: [6.5, 7.5],
+        },
+      },
+      {
+        colors: ["blue", "orange"],
+        image: "/Products/m20-2-o.avif",
+        images: ["/Products/m20-2-o.avif"],
+        sizes: {
+          available: [7, 8, 9, 10, 11, 12],
+          soldOut: [6.5, 7.5, 8.5, 13],
+        },
+      },
+      {
+        colors: ["white", "blue"],
+        image: "/Products/m20-3-o.avif",
+        images: ["/Products/m20-3-o.avif"],
+        sizes: {
+          available: [7.5, 8, 8.5, 9.5, 10, 11],
+          soldOut: [6.5, 7, 9, 12],
+        },
+      },
+      {
+        colors: ["black", "red"],
+        image: "/Products/m20-4-o.avif",
+        images: ["/Products/m20-4-o.avif"],
+        sizes: {
+          available: [7, 8, 9, 10, 10.5, 12],
+          soldOut: [6.5, 8.5, 11, 13],
         },
       },
     ],
@@ -904,6 +968,13 @@ export const productData: ProductData[] = [
         images: ["/Products/w2.avif"],
         sizes: { available: [4, 5, 6, 7], soldOut: [8] },
       },
+      {
+        // Second colourway. The men's Boston Shearling (m39) carries it too: its photo is m39's.
+        colors: ["brown", "cream"],
+        image: "/Products/m39-o.jpg",
+        images: ["/Products/m39-o.jpg"],
+        sizes: { available: [4, 5, 6, 7, 8], soldOut: [3] },
+      },
     ],
     isNew: false,
     isFeatured: false,
@@ -919,12 +990,22 @@ export const productData: ProductData[] = [
     price: 180,
     variants: [
       {
-        colors: ["blue", "white"],
-        image: "/Products/w3.avif",
-        images: ["/Products/w3.avif"],
+        // Replaced the navy colourway; this white takes over its stock.
+        colors: ["white", "yellow"],
+        image: "/Products/w3-1-o.webp",
+        images: ["/Products/w3-1-o.webp"],
         sizes: {
           available: [4.5, 5, 6, 6.5, 7, 8.5],
           soldOut: [3.5, 4, 5.5, 7.5, 8],
+        },
+      },
+      {
+        colors: ["white", "orange"],
+        image: "/Products/w3-2-o.webp",
+        images: ["/Products/w3-2-o.webp"],
+        sizes: {
+          available: [4, 5, 5.5, 6.5, 7.5, 8],
+          soldOut: [3.5, 4.5, 6, 7, 8.5],
         },
       },
     ],
@@ -948,6 +1029,16 @@ export const productData: ProductData[] = [
         sizes: {
           available: [4, 4.5, 5, 6, 7.5, 8, 8.5],
           soldOut: [3.5, 5.5, 6.5, 7],
+        },
+      },
+      {
+        // The white one is also sold to women: its photo is the men's m20-3.
+        colors: ["white", "blue"],
+        image: "/Products/m20-3-o.avif",
+        images: ["/Products/m20-3-o.avif"],
+        sizes: {
+          available: [4, 5, 5.5, 6.5, 7, 8],
+          soldOut: [3.5, 4.5, 6, 7.5],
         },
       },
     ],
@@ -1065,6 +1156,24 @@ export const productData: ProductData[] = [
           soldOut: [4.5, 5.5, 7],
         },
       },
+      {
+        colors: ["white", "black"],
+        image: "/Products/w9-2-o.avif",
+        images: ["/Products/w9-2-o.avif"],
+        sizes: {
+          available: [4, 4.5, 5, 6, 7, 8],
+          soldOut: [3.5, 5.5, 6.5],
+        },
+      },
+      {
+        colors: ["purple", "pink"],
+        image: "/Products/w9-3-o.avif",
+        images: ["/Products/w9-3-o.avif"],
+        sizes: {
+          available: [3.5, 4.5, 5.5, 6, 6.5, 7.5],
+          soldOut: [4, 5, 7, 8],
+        },
+      },
     ],
     isNew: false,
     isFeatured: false,
@@ -1111,6 +1220,15 @@ export const productData: ProductData[] = [
           soldOut: [5.5, 6, 6.5],
         },
       },
+      {
+        colors: ["red", "black"],
+        image: "/Products/w11-2-o.avif",
+        images: ["/Products/w11-2-o.avif"],
+        sizes: {
+          available: [4, 5, 5.5, 6, 7, 8],
+          soldOut: [3.5, 4.5, 6.5, 7.5],
+        },
+      },
     ],
     isNew: false,
     isFeatured: false,
@@ -1126,12 +1244,22 @@ export const productData: ProductData[] = [
     price: 250,
     variants: [
       {
+        // Same colourway as before, now with the sharper photo.
         colors: ["black", "orange"],
-        image: "/Products/w12.avif",
-        images: ["/Products/w12.avif"],
+        image: "/Products/w12-1-o.webp",
+        images: ["/Products/w12-1-o.webp"],
         sizes: {
           available: [3.5, 4.5, 6, 6.5, 7, 7.5, 8, 8.5],
           soldOut: [4, 5, 5.5],
+        },
+      },
+      {
+        colors: ["blue", "green"],
+        image: "/Products/w12-2-o.webp",
+        images: ["/Products/w12-2-o.webp"],
+        sizes: {
+          available: [4, 5, 5.5, 6, 7, 8],
+          soldOut: [3.5, 4.5, 6.5, 7.5, 8.5],
         },
       },
     ],
@@ -1479,12 +1607,22 @@ export const productData: ProductData[] = [
     price: 198,
     variants: [
       {
+        // Replaced the old black photo; this black takes over its stock.
         colors: ["black"],
-        image: "/Products/w28.webp",
-        images: ["/Products/w28.webp"],
+        image: "/Products/w28-1-o.avif",
+        images: ["/Products/w28-1-o.avif"],
         sizes: {
           available: [3, 3.5, 4.5, 5, 5.5, 7, 7.5, 8, 8.5],
           soldOut: [4, 6, 6.5],
+        },
+      },
+      {
+        colors: ["cream", "green"],
+        image: "/Products/w28-2-o.avif",
+        images: ["/Products/w28-2-o.avif"],
+        sizes: {
+          available: [3.5, 4, 5, 6, 6.5, 7.5, 8],
+          soldOut: [3, 4.5, 5.5, 7, 8.5],
         },
       },
     ],
@@ -1688,6 +1826,153 @@ export const productData: ProductData[] = [
           available: [2.5, 3.5, 4, 4.5, 5.5, 6, 6.5, 7, 7.5, 8, 9, 10.5],
           soldOut: [3, 5, 8.5, 9.5],
         },
+      },
+    ],
+    isNew: false,
+    isFeatured: false,
+  },
+  // The Boston Shearling is unisex, so the men's one shares both colourways (and photos) with w2.
+  {
+    id: "m39",
+    name: "Birkenstock Boston Shearling",
+    slug: "birkenstock-boston-shearling-m39",
+    brand: "Birkenstock",
+    gender: "men",
+    category: "sandals",
+    price: 180,
+    variants: [
+      {
+        colors: ["silver"],
+        image: "/Products/w2.avif",
+        images: ["/Products/w2.avif"],
+        sizes: { available: [8, 9, 10, 11], soldOut: [7, 12] },
+      },
+      {
+        colors: ["brown", "cream"],
+        image: "/Products/m39-o.jpg",
+        images: ["/Products/m39-o.jpg"],
+        sizes: { available: [7, 8, 9, 10, 12], soldOut: [11] },
+      },
+    ],
+    isNew: false,
+    isFeatured: false,
+  },
+  // The women's Exo: the brown is shared with the men's (m5), the pink is women only.
+  {
+    id: "w38",
+    name: "Adidas Adizero Evo SL Exo",
+    slug: "adidas-adizero-evo-sl-exo-w38",
+    brand: "Adidas",
+    gender: "women",
+    category: "running",
+    price: 170,
+    variants: [
+      {
+        colors: ["brown", "cream"],
+        image: "/Products/w38_v2.webp",
+        images: ["/Products/w38_v2.webp"],
+        sizes: { available: [4, 5, 6, 7], soldOut: [3, 8] },
+      },
+      {
+        colors: ["pink", "grey"],
+        image: "/Products/w38-2_v2.webp",
+        images: ["/Products/w38-2_v2.webp"],
+        sizes: { available: [3.5, 4.5, 5, 6, 7], soldOut: [3, 4, 8] },
+      },
+    ],
+    isNew: false,
+    isFeatured: false,
+  },
+  // The women's Dn Roam: the white. The men's one (m14) is the green.
+  {
+    id: "w39",
+    name: "Nike Air Max Dn Roam",
+    slug: "nike-air-max-dn-roam-w39",
+    brand: "Nike",
+    gender: "women",
+    category: "lifestyle",
+    price: 204,
+    variants: [
+      {
+        colors: ["white"],
+        image: "/Products/w39-o.avif",
+        images: ["/Products/w39-o.avif"],
+        sizes: {
+          available: [4, 4.5, 5, 6, 7, 8],
+          soldOut: [3.5, 5.5],
+        },
+      },
+    ],
+    isNew: false,
+    isFeatured: false,
+  },
+  // The men's Wave Sky 9 Wide: the black. The women's one (w3) is in the two whites.
+  {
+    id: "m40",
+    name: "Mizuno Wave Sky 9 Wide",
+    slug: "mizuno-wave-sky-9-wide-m40",
+    brand: "Mizuno",
+    gender: "men",
+    category: "running",
+    price: 180,
+    variants: [
+      {
+        colors: ["black"],
+        image: "/Products/m40-o.webp",
+        images: ["/Products/m40-o.webp"],
+        sizes: {
+          available: [7, 8, 9, 10, 11, 12],
+          soldOut: [6.5, 13],
+        },
+      },
+    ],
+    isNew: false,
+    isFeatured: false,
+  },
+  // The men's Pegasus Premium is the black one. The women's (w9) is red, white and purple.
+  {
+    id: "m41",
+    name: "Nike Pegasus Premium",
+    slug: "nike-pegasus-premium-m41",
+    brand: "Nike",
+    gender: "men",
+    category: "running",
+    price: 220,
+    variants: [
+      {
+        colors: ["black", "silver"],
+        image: "/Products/m41-o.avif",
+        images: ["/Products/m41-o.avif"],
+        sizes: {
+          available: [7, 8, 8.5, 9, 10, 11, 12],
+          soldOut: [6.5, 7.5, 9.5, 13],
+        },
+      },
+    ],
+    isNew: false,
+    isFeatured: false,
+  },
+  // The women's Boston: the grey, and the cream it shares with the men's (m7).
+  {
+    id: "w40",
+    name: "Birkenstock Boston",
+    slug: "birkenstock-boston-w40",
+    brand: "Birkenstock",
+    gender: "women",
+    category: "sandals",
+    price: 221,
+    variants: [
+      {
+        colors: ["grey"],
+        image: "/Products/w40-2-o.jpg",
+        images: ["/Products/w40-2-o.jpg"],
+        sizes: { available: [4, 5, 6, 7, 8], soldOut: [3, 3.5] },
+      },
+      {
+        colors: ["cream", "brown"],
+        image: "/Products/m7-2-o.jpg",
+        images: ["/Products/m7-2-o.jpg"],
+        sizes: { available: [3.5, 4, 5, 6, 7], soldOut: [3, 8] },
       },
     ],
     isNew: false,
