@@ -71,11 +71,16 @@ export default function ProductDetail({ productId, name, variants, initialVarian
                     aria-label={colourName(option.colors)}
                     aria-pressed={index === active}
                     onClick={() => choose(index)}
-                    className={`relative block size-16 overflow-hidden rounded-md bg-surface ring-2 transition-shadow duration-150 ${
-                      index === active ? "ring-foreground" : "ring-transparent hover:ring-border"
+                    // Same as the colour tiles on the listing cards: the shoe on white, a flat line under the chosen one.
+                    className={`relative block w-20 border-b-2 pb-1.5 transition-colors duration-150 ${
+                      index === active ? "border-foreground" : "border-transparent hover:border-border"
                     }`}
                   >
-                    <ProductPhoto src={option.images[0]} alt="" sizes="64px" inset="p-1.5" />
+                    <span className="relative block aspect-[4/3]">
+                      <span className="absolute inset-y-0 left-1/2 aspect-square -translate-x-1/2 overflow-hidden">
+                        <ProductPhoto src={option.images[0]} alt="" sizes="80px" inset="" surface="white" />
+                      </span>
+                    </span>
                   </button>
                 </li>
               ))}
