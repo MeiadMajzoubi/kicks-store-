@@ -110,8 +110,8 @@ export const productData: ProductData[] = [
       {
         // Replaced the black-and-orange colourway; the grey takes over its stock.
         colors: ["grey", "silver"],
-        image: "/Products/m5-grey_v2.webp",
-        images: ["/Products/m5-grey_v2.webp"],
+        image: "/Products/m5-grey-o.avif",
+        images: ["/Products/m5-grey-o.avif"],
         sizes: {
           available: [6.5, 7.5, 8.5, 10, 11, 11.5, 12, 13],
           soldOut: [6, 7, 8, 9, 9.5, 10.5],
@@ -120,8 +120,8 @@ export const productData: ProductData[] = [
       {
         // The brown is also sold to women: its photo is w38's.
         colors: ["brown", "cream"],
-        image: "/Products/w38_v2.webp",
-        images: ["/Products/w38_v2.webp"],
+        image: "/Products/w38-o.avif",
+        images: ["/Products/w38-o.avif"],
         sizes: {
           available: [7.5, 8.5, 9, 10, 11, 12],
           soldOut: [6.5, 7, 8, 13],
@@ -1869,14 +1869,14 @@ export const productData: ProductData[] = [
     variants: [
       {
         colors: ["brown", "cream"],
-        image: "/Products/w38_v2.webp",
-        images: ["/Products/w38_v2.webp"],
+        image: "/Products/w38-o.avif",
+        images: ["/Products/w38-o.avif"],
         sizes: { available: [4, 5, 6, 7], soldOut: [3, 8] },
       },
       {
         colors: ["pink", "grey"],
-        image: "/Products/w38-2_v2.webp",
-        images: ["/Products/w38-2_v2.webp"],
+        image: "/Products/w38-2-o.avif",
+        images: ["/Products/w38-2-o.avif"],
         sizes: { available: [3.5, 4.5, 5, 6, 7], soldOut: [3, 4, 8] },
       },
     ],

@@ -9,6 +9,7 @@ import { ArrowRight, ArrowUpRight, Clock, Search, X } from "lucide-react";
 import type { SearchProduct } from "@/lib/products";
 import { searchProducts, suggest } from "@/lib/search";
 import Price from "./Price";
+import ProductPhoto from "./ProductPhoto";
 
 type SearchBarProps = {
   // The shoes to search, loaded from Postgres by the server and passed down.
@@ -407,12 +408,12 @@ export default function SearchBar({ products, onOpen }: SearchBarProps) {
                                 className="group block"
                               >
                                 <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
-                                  <Image
+                                  <ProductPhoto
                                     src={product.variants[0].image}
                                     alt=""
-                                    fill
                                     sizes="(min-width: 1024px) 160px, (min-width: 640px) 30vw, 45vw"
-                                    className="object-contain p-2 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
+                                    inset="p-2"
+                                    className="transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
                                   />
                                 </div>
 

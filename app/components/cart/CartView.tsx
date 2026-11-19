@@ -1,7 +1,6 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { categoryLabel, colourName, effectivePrice } from "@/lib/catalog";
 import { bagLines, bagTotals, currency, type Line } from "@/lib/checkout";
 import type { Product } from "@/lib/products";
 import OrderTotals from "./OrderTotals";
+import ProductPhoto from "../ProductPhoto";
 
 // The bag lives in the browser, so the server can't know what's in it. Until the page has
 // loaded we show a quiet placeholder instead of flashing an empty bag.
@@ -98,7 +98,7 @@ function CartLine({ line }: { line: Line }) {
         aria-hidden="true"
         className="relative size-28 shrink-0 overflow-hidden rounded-lg bg-surface sm:size-32"
       >
-        <Image src={variant.image} alt="" fill sizes="128px" quality={100} className="object-contain p-2" />
+        <ProductPhoto src={variant.image} alt="" sizes="128px" inset="p-2" />
       </Link>
 
       <div className="flex min-w-0 flex-1 flex-col">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
 import { Lock, X } from "lucide-react";
@@ -25,6 +24,7 @@ import {
 import type { Product } from "@/lib/products";
 import FastTruckIcon from "../icons/FastTruckIcon";
 import OrderTotals from "../cart/OrderTotals";
+import ProductPhoto from "../ProductPhoto";
 
 // Same as the bag: the server can't see the browser's bag, so wait for the page to load.
 const noop = () => () => {};
@@ -325,7 +325,7 @@ function SummaryLine({ line }: { line: Line }) {
   return (
     <li className="flex gap-4 py-4">
       <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-surface">
-        <Image src={variant.image} alt="" fill sizes="80px" className="object-contain p-1.5" />
+        <ProductPhoto src={variant.image} alt="" sizes="80px" inset="p-1.5" />
       </div>
       <div className="min-w-0 flex-1 text-sm">
         <p className="font-semibold leading-snug">{line.product.name}</p>

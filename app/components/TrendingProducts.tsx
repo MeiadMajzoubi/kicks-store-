@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ImageOff } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sortByColor } from "@/lib/catalog";
 import type { Product } from "@/lib/products";
 import Price from "./Price";
+import ProductPhoto from "./ProductPhoto";
 
 function ProductCard({ product }: { product: Product }) {
   const [imageMissing, setImageMissing] = useState(false);
@@ -27,12 +27,11 @@ function ProductCard({ product }: { product: Product }) {
         ) : (
           // The frame's padding keeps the shoe small; the inner box is what the photo fills.
           <div className="relative size-full">
-            <Image
+            <ProductPhoto
               src={product.variants[0].image}
               alt={product.name}
-              fill
               sizes="(min-width: 1024px) 180px, (min-width: 640px) 22vw, 34vw"
-              className="object-contain"
+              inset=""
               onError={() => setImageMissing(true)}
             />
           </div>

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import Image from "next/image";
 import type { Product } from "@/lib/products";
 import { colourName } from "@/lib/catalog";
 import ProductGallery from "./ProductGallery";
 import ProductPurchase from "./ProductPurchase";
+import ProductPhoto from "../ProductPhoto";
 
 type ProductDetailProps = {
   productId: string;
@@ -65,7 +65,7 @@ export default function ProductDetail({ productId, name, variants, initialVarian
                       index === active ? "ring-foreground" : "ring-transparent hover:ring-border"
                     }`}
                   >
-                    <Image src={option.images[0]} alt="" fill sizes="64px" quality={100} className="object-contain p-1.5" />
+                    <ProductPhoto src={option.images[0]} alt="" sizes="64px" inset="p-1.5" />
                   </button>
                 </li>
               ))}

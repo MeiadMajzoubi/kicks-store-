@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ImageOff } from "lucide-react";
 import type { Product } from "@/lib/products";
@@ -9,6 +8,7 @@ import { categoryLabel, colourName } from "@/lib/catalog";
 import Price from "../Price";
 import FavouriteButton from "../FavouriteButton";
 import Ribbon from "../Ribbon";
+import ProductPhoto from "../ProductPhoto";
 
 const saveFormat = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -54,15 +54,13 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
               <span>Photo unavailable</span>
             </div>
           ) : (
-            <Image
+            <ProductPhoto
               key={variant.image}
               src={variant.image}
               alt=""
-              fill
               preload={priority}
-              quality={100}
               sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 30vw, 50vw"
-              className="object-contain p-[5%]"
+              inset="p-[5%]"
               onError={() => setImageMissing(true)}
             />
           )}
@@ -78,7 +76,7 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
       <div className="relative pt-4">
         {hasColourways && (
           // Colourways are always visible; the line under a photo marks the one shown.
-          <ul aria-label={`${product.name} colours`} className="mb-3 flex gap-2">
+          <ul aria-label={`${product.name} colours`} className="mb-3 flex flex-wrap gap-2">
             {product.variants.map((option, index) => (
               <li key={option.image}>
                 <button
@@ -93,7 +91,9 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
                   }`}
                 >
                   <span className="relative block aspect-[4/3]">
-                    <Image src={option.image} alt="" fill sizes="56px" quality={100} className="object-contain" />
+                    <span className="absolute inset-y-0 left-1/2 aspect-square -translate-x-1/2 overflow-hidden">
+                      <ProductPhoto src={option.image} alt="" sizes="56px" inset="" surface="white" />
+                    </span>
                   </span>
                 </button>
               </li>

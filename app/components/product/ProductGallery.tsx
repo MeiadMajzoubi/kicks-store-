@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ProductPhoto from "../ProductPhoto";
 
 type ProductGalleryProps = {
   images: string[];
@@ -35,7 +35,7 @@ export default function ProductGallery({ images, name, badge }: ProductGalleryPr
                   index === active ? "opacity-100 ring-1 ring-foreground" : "opacity-70 hover:opacity-100"
                 }`}
               >
-                <Image src={src} alt="" fill sizes="64px" quality={100} className="object-contain p-1" />
+                <ProductPhoto src={src} alt="" sizes="64px" inset="p-1" />
               </button>
             </li>
           ))}
@@ -44,15 +44,13 @@ export default function ProductGallery({ images, name, badge }: ProductGalleryPr
 
       <div className="relative aspect-square min-w-0 flex-1 overflow-hidden rounded-lg bg-surface">
         {badge}
-        <Image
+        <ProductPhoto
           key={images[active]}
           src={images[active]}
           alt={count > 1 ? `${name}, photo ${active + 1} of ${count}` : name}
-          fill
           preload
-          quality={100}
           sizes="(min-width: 1024px) 560px, 100vw"
-          className="object-contain p-[6%]"
+          inset="p-[6%]"
         />
 
         {count > 1 && (
