@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import type { Product } from "@/lib/products";
 import { colourName } from "@/lib/catalog";
 import ProductGallery from "./ProductGallery";
@@ -39,7 +39,17 @@ export default function ProductDetail({ productId, name, variants, initialVarian
   };
 
   return (
-    <div className="mx-auto grid max-w-[1120px] gap-8 lg:grid-cols-[minmax(0,620px)_minmax(0,400px)] lg:justify-center lg:gap-12 xl:gap-16">
+    // The photo column shrinks with the window height (page top 12.8rem; thumbnails and their gap add 5rem),
+    // so the whole photo is on screen when the page opens and the buying panel stays close beside it.
+    // Never below 21rem, never past 620px.
+    <div
+      style={
+        {
+          "--photo-column": `min(620px, max(${variant.images.length > 1 ? "26rem" : "21rem"}, calc(100svh - ${variant.images.length > 1 ? "7.8rem" : "12.8rem"})))`,
+        } as CSSProperties
+      }
+      className="mx-auto grid max-w-[1240px] gap-8 lg:grid-cols-[minmax(0,var(--photo-column))_minmax(0,500px)] lg:justify-center lg:gap-12 xl:gap-16"
+    >
       <div className="lg:sticky lg:top-6 lg:self-start">
         {/* `key`: switching colour starts the gallery again from the first photo. */}
         <ProductGallery key={active} images={variant.images} name={name} badge={badge} />

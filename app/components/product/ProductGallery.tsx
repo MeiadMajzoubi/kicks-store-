@@ -21,7 +21,7 @@ export default function ProductGallery({ images, name, badge }: ProductGalleryPr
       {count > 1 && (
         <ul
           aria-label="Product photos"
-          className="flex gap-2 overflow-x-auto lg:max-h-[620px] lg:w-16 lg:shrink-0 lg:flex-col lg:overflow-y-auto"
+          className="flex gap-2 overflow-x-auto lg:max-h-[max(21rem,calc(100svh-12.8rem))] lg:w-16 lg:shrink-0 lg:flex-col lg:overflow-y-auto"
         >
           {images.map((src, index) => (
             <li key={src} className="shrink-0">
