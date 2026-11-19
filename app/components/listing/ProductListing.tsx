@@ -176,9 +176,11 @@ export default function ProductListing({
           )}
           {results.length > 0 ? (
             <ul
-              className={`grid grid-cols-2 gap-x-3 gap-y-10 transition-opacity duration-200 sm:gap-x-4 lg:grid-cols-3 ${
-                showFilters ? "" : "xl:grid-cols-4"
-              } ${isPending ? "opacity-50" : ""}`}
+              // From laptop width: always four cards a row, sharing the full width, so there is no empty
+              // strip on the right. The cards get narrower when the filters are open.
+              className={`grid w-full grid-cols-2 gap-x-3 gap-y-10 transition-opacity duration-200 sm:gap-x-4 lg:gap-x-8 lg:gap-y-12 lg:grid-cols-4 ${
+                isPending ? "opacity-50" : ""
+              }`}
             >
               {results.map((product, index) => (
                 <li key={product.id}>
