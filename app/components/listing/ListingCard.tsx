@@ -37,7 +37,7 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
       {/* Duplicate of the title link for pointer users; the title link carries the name. */}
       <Link href={href} tabIndex={-1} aria-hidden="true" className="block">
         {/* Photos are 500×500; the grid keeps tiles near that width so they stay sharp. */}
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-surface">
+        <div className="relative aspect-square overflow-hidden rounded-[7.5px] bg-surface">
           {saving > 0 && (
             <Ribbon className="bg-brand" edge="#ff9ca0">
               Save {saveFormat.format(saving)}

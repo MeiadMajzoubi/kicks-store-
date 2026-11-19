@@ -96,7 +96,7 @@ function CartLine({ line }: { line: Line }) {
         href={href}
         tabIndex={-1}
         aria-hidden="true"
-        className="relative size-28 shrink-0 overflow-hidden rounded-lg bg-surface sm:size-32"
+        className="relative size-28 shrink-0 overflow-hidden rounded-[7.5px] bg-surface sm:size-32"
       >
         <ProductPhoto src={variant.image} alt="" sizes="128px" inset="p-2" />
       </Link>

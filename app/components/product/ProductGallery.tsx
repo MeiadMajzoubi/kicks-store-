@@ -31,7 +31,7 @@ export default function ProductGallery({ images, name, badge }: ProductGalleryPr
                 aria-current={index === active ? "true" : undefined}
                 onMouseEnter={() => setActive(index)}
                 onClick={() => setActive(index)}
-                className={`relative block size-16 overflow-hidden rounded-md bg-surface transition-opacity duration-150 ${
+                className={`relative block size-16 overflow-hidden rounded-[7.5px] bg-surface transition-opacity duration-150 ${
                   index === active ? "opacity-100 ring-1 ring-foreground" : "opacity-70 hover:opacity-100"
                 }`}
               >
@@ -42,7 +42,7 @@ export default function ProductGallery({ images, name, badge }: ProductGalleryPr
         </ul>
       )}
 
-      <div className="relative aspect-square min-w-0 flex-1 overflow-hidden rounded-lg bg-surface">
+      <div className="relative aspect-square min-w-0 flex-1 overflow-hidden rounded-[7.5px] bg-surface">
         {badge}
         <ProductPhoto
           key={images[active]}

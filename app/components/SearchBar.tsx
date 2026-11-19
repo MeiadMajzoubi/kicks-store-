@@ -407,7 +407,7 @@ export default function SearchBar({ products, onOpen }: SearchBarProps) {
                                 onClick={closeAfterNavigate}
                                 className="group block"
                               >
-                                <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
+                                <div className="relative aspect-square overflow-hidden rounded-[7.5px] bg-surface">
                                   <ProductPhoto
                                     src={product.variants[0].image}
                                     alt=""

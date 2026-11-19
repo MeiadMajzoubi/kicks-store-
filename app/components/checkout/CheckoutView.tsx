@@ -324,7 +324,7 @@ function SummaryLine({ line }: { line: Line }) {
   const variant = line.product.variants[line.variant];
   return (
     <li className="flex gap-4 py-4">
-      <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-surface">
+      <div className="relative size-20 shrink-0 overflow-hidden rounded-[7.5px] bg-surface">
         <ProductPhoto src={variant.image} alt="" sizes="80px" inset="p-1.5" />
       </div>
       <div className="min-w-0 flex-1 text-sm">
