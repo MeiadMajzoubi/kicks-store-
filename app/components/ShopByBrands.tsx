@@ -12,10 +12,11 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 // Clean photos with no logo in them; every card gets the same logo, in the same corner.
 const brands = [
-  { name: "Nike", image: "/brands/nike.webp", logo: "/brand-logos/nike.svg", href: "/brands/nike" },
-  { name: "Adidas", image: "/brands/adidas.webp", logo: "/brand-logos/adidas.svg", href: "/brands/adidas" },
-  { name: "On", image: "/brands/on-run.webp", logo: "/brand-logos/on.svg", href: "/brands/on" },
-  { name: "Puma", image: "/brands/puma-street.webp", logo: "/brand-logos/puma.svg", href: "/brands/puma" },
+  { name: "Merrell", image: "/brands/merrel.png", logo: "/brand-logos/merrell.svg", href: "/brands/merrell" },
+  // A wide photo in a tall card: `position` keeps the person in the crop (share of the way across the photo).
+  { name: "Adidas", image: "/brands/jude-14.jpg", logo: "/brand-logos/adidas.svg", href: "/brands/adidas", position: "81% 50%" },
+  { name: "On", image: "/brands/on-top.jpg", logo: "/brand-logos/on.svg", href: "/brands/on" },
+  { name: "UGG", image: "/brands/topbrand-ugg.webp", logo: "/brand-logos/ugg.svg", href: "/brands/ugg" },
 ];
 
 export default function ShopByBrands() {
@@ -43,6 +44,7 @@ export default function ShopByBrands() {
                     fill
                     sizes="(min-width: 1664px) 385px, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 82vw"
                     className="object-cover"
+                    style={{ objectPosition: "position" in brand ? brand.position : undefined }}
                   />
                   <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/55 to-transparent" />
                   <div className="absolute inset-x-5 bottom-5 flex items-end justify-between gap-3">
