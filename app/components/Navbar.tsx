@@ -14,6 +14,7 @@ import { useCartCount } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import type { SearchProduct } from "@/lib/products";
 import SearchBar from "./SearchBar";
+import CountBadge from "./CountBadge";
 
 type Gender = "women" | "men";
 type Panel = Gender | "brands";
@@ -108,7 +109,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
     <>
       <header
         ref={headerRef}
-        className="relative z-50 w-full border-b border-border bg-background"
+        className="sticky top-0 z-50 w-full border-b border-border/60 shadow-sm"
         onPointerLeave={(event) => {
           if (event.pointerType === "mouse") closePanel();
         }}
@@ -126,12 +127,15 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
           closePanel();
         }}
       >
+        {/* The bar is glass: the page shows through, blurred. It is its own layer (not the header itself),
+            so the menu panel below can blur the page behind it too. */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-background/75 backdrop-blur-xl backdrop-saturate-150" />
         <div className="content-shell grid grid-cols-[auto_1fr] items-center gap-x-2 pt-5 lg:min-h-24 lg:grid-cols-[1fr_auto_1fr] lg:gap-x-6 lg:py-5">
           <nav
             aria-label="Main navigation"
-            className="col-span-2 row-start-2 mt-2 w-full lg:col-span-1 lg:col-start-1 lg:row-start-1 lg:mt-0"
+            className="col-span-2 row-start-2 mt-2 w-full lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:mt-0"
           >
-            <ul className="flex items-center justify-center gap-7 text-sm font-semibold lg:justify-start lg:gap-8">
+            <ul className="flex items-center justify-center gap-7 text-[15px] font-semibold lg:gap-8">
               {(["women", "men", "brands"] as const).map((panel) => {
                 const isOpen = activePanel === panel;
 
@@ -196,7 +200,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
             href="/"
             aria-label="Red Kicks home"
             onClick={closePanel}
-            className="col-start-1 row-start-1 w-fit rounded-sm lg:col-start-2 lg:justify-self-center"
+            className="col-start-1 row-start-1 w-fit rounded-sm lg:justify-self-start"
           >
             <Image
               src="/text_kicks_black.svg"
@@ -214,7 +218,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
               href="/wishlist"
               onClick={closePanel}
               aria-label={savedCount ? `Wishlist, ${savedCount} saved` : "Wishlist"}
-              className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
+              className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:hidden"
             >
               <Heart aria-hidden="true" className="size-5" strokeWidth={1.75} />
               {savedCount > 0 && <CountBadge count={savedCount} />}
@@ -223,7 +227,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
               type="button"
               aria-label="Account"
               onClick={closePanel}
-              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
+              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:hidden"
             >
               <User aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
@@ -247,10 +251,11 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
           }
           inert={!isPanelOpen}
           aria-hidden={!isPanelOpen}
-          className={`absolute inset-x-0 top-full overflow-hidden bg-background text-foreground transition-[max-height,visibility] duration-250 ease-out motion-reduce:transition-none ${
+          className={`absolute inset-x-0 top-full overflow-hidden text-foreground transition-[max-height,visibility] duration-250 ease-out motion-reduce:transition-none ${
             isPanelOpen ? "visible max-h-[calc(100dvh-8rem)]" : "invisible max-h-0 delay-[0ms,250ms]"
           }`}
         >
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-background/80 backdrop-blur-xl backdrop-saturate-150" />
           {/* Links slide in after the panel opens (Nike's 200ms pause), keyed so switching
               between Women, Men and Brands replays it; on close they vanish quickly. */}
           <div
@@ -429,17 +434,5 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
         }`}
       />
     </>
-  );
-}
-
-/** Small red count on the wishlist and bag icons. */
-function CountBadge({ count }: { count: number }) {
-  return (
-    <span
-      aria-hidden="true"
-      className="absolute top-2 right-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-brand px-[3px] text-[9px] leading-none font-semibold text-white tabular-nums"
-    >
-      {count > 9 ? "9+" : count}
-    </span>
   );
 }

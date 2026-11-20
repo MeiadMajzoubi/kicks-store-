@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import DeliveryBanner from "./components/DeliveryBanner";
+import AnnouncementBar from "./components/AnnouncementBar";
 import Footer from "./components/Footer";
 import { getSearchProducts } from "@/lib/products";
 
@@ -36,7 +36,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">Skip to content</a>
         {/* Announcement bar above the menu, where shoppers expect it (Nike, Adidas, JD). */}
-        <DeliveryBanner />
+        <AnnouncementBar />
         <Navbar searchProducts={searchProducts} />
 
         {children}
