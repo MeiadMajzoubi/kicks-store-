@@ -19,7 +19,8 @@ export default async function Home() {
 
         <div className="content-shell border-b border-border py-8 sm:py-10 lg:py-12">
           <h1 className="page-title">Find your next pair<span className="title-mark">.</span></h1>
-          <p className="section-intro">For the everyday. For the extra mile. Make your next move.</p>
+          
+          <h3 className="section-title mt-3 text-[clamp(1.125rem,1.8vw,1.625rem)] text-brand">For the everyday. For the extra mile. Make your next move<span className="text-foreground">.</span></h3>
         </div>
       </section>
       <div className="pt-6 sm:pt-10 lg:pt-14">
