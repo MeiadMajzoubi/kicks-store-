@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ImageOff } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sortByColor } from "@/lib/catalog";
 import type { Product } from "@/lib/products";
 import Price from "./Price";
@@ -48,6 +49,7 @@ function ProductCard({ product }: { product: Product }) {
 
 // products: the trending shoes, loaded from Postgres by the home page (a server page) and passed down.
 export default function TrendingProducts({ products }: { products: Product[] }) {
+  const [selected, setSelected] = useState("men");
   const collections = [
     { value: "men", label: "Men", products: sortByColor(products.filter((product) => product.gender === "men")) },
     { value: "women", label: "Women", products: sortByColor(products.filter((product) => product.gender === "women")) },
@@ -62,30 +64,53 @@ export default function TrendingProducts({ products }: { products: Product[] }) 
         </Link>
       </div>
 
-      <Tabs defaultValue="men" className="w-full gap-0">
-        <TabsList aria-label="Trending collections" className="h-11 w-max gap-1 rounded-full border border-border bg-background p-1">
+      {/* Switching is one smooth move: the black pill glides to the new tab (700ms on the spring easing, transform only,
+          so it can be interrupted mid-way), while the two lists, both already loaded, crossfade in the same spot. The
+          leaving list fades quicker than the new one arrives. */}
+      <Tabs value={selected} onValueChange={(next) => setSelected(String(next))} className="w-full gap-0">
+        <TabsList aria-label="Trending collections" className="relative h-11 w-max gap-0 rounded-full border border-border bg-background p-1 group-data-horizontal/tabs:h-11">
+          <TabsPrimitive.Indicator
+            aria-hidden="true"
+            className="absolute top-1 bottom-1 left-0 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-foreground transition-transform duration-700 ease-(--ease-spring)"
+          />
           {collections.map(({ value, label }) => (
             <TabsTrigger
               key={value}
+              id={`trending-tab-${value}`}
               value={value}
-              className="h-full flex-none rounded-full px-6 text-sm font-semibold text-foreground shadow-none after:hidden data-active:bg-foreground! data-active:text-white! data-active:shadow-none!"
+              aria-controls={`trending-panel-${value}`}
+              className="z-10 h-full w-24 flex-none rounded-full px-0 text-sm font-semibold text-foreground shadow-none transition-[color,transform] duration-400 after:hidden active:scale-[0.97] data-active:bg-transparent! data-active:text-white! data-active:shadow-none!"
             >
               {label}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {collections.map(({ value, products }) => (
-          <TabsContent key={value} value={value} className="mt-4 sm:mt-6">
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-5 lg:gap-x-8 lg:gap-y-6">
-              {products.map((product) => (
-                <li key={product.id} className="min-w-0">
-                  <ProductCard product={product} />
-                </li>
-              ))}
-            </ul>
-          </TabsContent>
-        ))}
+        <div className="mt-4 grid sm:mt-6">
+          {collections.map(({ value, products }) => {
+            const active = value === selected;
+            return (
+              <div
+                key={value}
+                id={`trending-panel-${value}`}
+                role="tabpanel"
+                aria-labelledby={`trending-tab-${value}`}
+                inert={!active}
+                className={`col-start-1 row-start-1 transition-[opacity,translate] motion-reduce:delay-0 ${
+                  active ? "translate-y-0 opacity-100 delay-150 duration-600 ease-(--ease-spring)" : "pointer-events-none translate-y-2 opacity-0 duration-300 ease-out"
+                }`}
+              >
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-5 lg:gap-x-8 lg:gap-y-6">
+                  {products.map((product) => (
+                    <li key={product.id} className="min-w-0">
+                      <ProductCard product={product} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </Tabs>
     </section>
   );
