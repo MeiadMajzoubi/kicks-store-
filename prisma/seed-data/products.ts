@@ -383,7 +383,7 @@ export const productData: ProductData[] = [
     price: 96,
     variants: [
       {
-        colors: ["grey", "cream"],
+        colors: ["silver", "cream"],
         image: "/Products/m17.webp",
         images: ["/Products/m17.webp"],
         sizes: {
@@ -406,7 +406,7 @@ export const productData: ProductData[] = [
     price: 159,
     variants: [
       {
-        colors: ["black", "red"],
+        colors: ["blue", "red"],
         image: "/Products/m18.webp",
         images: ["/Products/m18.webp"],
         sizes: {
@@ -872,7 +872,7 @@ export const productData: ProductData[] = [
     price: 57,
     variants: [
       {
-        colors: ["black", "blue"],
+        colors: ["blue"],
         image: "/Products/m36.webp",
         images: ["/Products/m36.webp"],
         sizes: { available: [5.5, 7, 8, 9, 10, 11, 12, 14], soldOut: [6, 13] },
@@ -963,7 +963,7 @@ export const productData: ProductData[] = [
     price: 180,
     variants: [
       {
-        colors: ["silver"],
+        colors: ["cream", "brown"],
         image: "/Products/w2.avif",
         images: ["/Products/w2.avif"],
         sizes: { available: [4, 5, 6, 7], soldOut: [8] },
@@ -1842,7 +1842,7 @@ export const productData: ProductData[] = [
     price: 180,
     variants: [
       {
-        colors: ["silver"],
+        colors: ["cream", "brown"],
         image: "/Products/w2.avif",
         images: ["/Products/w2.avif"],
         sizes: { available: [8, 9, 10, 11], soldOut: [7, 12] },
