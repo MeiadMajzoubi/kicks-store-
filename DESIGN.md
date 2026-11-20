@@ -174,7 +174,10 @@ No 5, 7, 10, 14, 20. No arbitrary values (`mt-[18px]`). Heights and positions (`
   layers (dropdown, popover, sheet, search overlay). Never `shadow-lg`/`xl`, never coloured
   shadows.
 - Sticky bars (navbar, filter bar, mobile buy bar) are solid `bg-background` with a
-  `border-b`. No transparency, no `backdrop-blur`, no glass.
+  `border-b`. No transparency, no `backdrop-blur`, no glass. **The one exception is the main navbar and its
+  menu panel:** they are glass (`bg-background/75 backdrop-blur-xl backdrop-saturate-150`, a hairline `border-b border-border/60`
+  and `shadow-sm`), sticky, so the page slides under them blurred. The glass is its own layer inside the header
+  (not the header itself), so the menu panel can blur the page behind it too.
 
 ---
 
@@ -300,12 +303,13 @@ Reuse these; don't invent new effects per component.
   in `text-muted-foreground` — never hidden. Low stock ("Only 2 left") in `text-sm`, not red.
 - Colourways: thumbnail tiles, selected one gets a `ring-2 ring-foreground`.
 
-### 9.5 Navbar and banner
+### 9.5 Announcement bar and navbar
 
-- Delivery banner: ink strip, one short line, centred is fine here (it's one line).
-- Navbar: solid `bg-background`, `border-b`, height 16 (64px). Logo left, nav, then search,
-  wishlist and bag right. Bag count is the red badge (`rounded-full`, `text-xs tabular-nums`).
+- **Announcement bar** (`AnnouncementBar.tsx`): an ink strip, `min-h-11`. In the middle, one short promise at a time (delivery time, free delivery, sale) with previous and next arrows and a pause button; the message rises in on `--ease-spring`. It stops while the pointer or keyboard is on it and never moves by itself with reduced motion. Messages are short, sentence case, real promises the store keeps. On large screens the shopper's own links sit on the right: Help, wishlist, account. On phones only the messages show.
+- **Navbar**: solid `bg-background`, `border-b`. Logo left, links centred (Women, Men, Brands, then Sale in `text-brand`), then a pill search field and the bag on the right. The search field opens the search panel. On phones: logo left, search, wishlist, account and bag icons right, links on a second row.
+- Wishlist and account live in the announcement bar from `lg` up, and in the navbar below it. The bag count badge is the shared `CountBadge`.
 - Mega-menu: solid panel, plain link columns, the motion from §8.3.
+- The navbar is sticky glass (§6); the announcement bar above it is solid ink and scrolls away.
 
 ### 9.6 Listing page and filters
 
@@ -366,7 +370,7 @@ Every list and async view has all three:
 If it looks like it could be on any startup's landing page, it doesn't belong here.
 
 - Gradients on text, buttons, backgrounds or borders. (The `multi` colour swatch is data, not decoration.)
-- Glassmorphism, `backdrop-blur`, glow, coloured or large shadows.
+- Glassmorphism, `backdrop-blur`, glow, coloured or large shadows (the navbar in §6 is the only glass).
 - Three (or four) feature cards with an icon in a tinted rounded square.
 - Stats rows with made-up numbers, fake testimonials, star ratings without reviews, logo clouds.
 - Pill badges above the hero headline ("✨ New collection").
