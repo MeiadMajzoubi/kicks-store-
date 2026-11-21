@@ -62,7 +62,7 @@ export default function CartView({ products }: { products: Product[] }) {
         </ul>
       </section>
 
-      <aside aria-labelledby="summary-title" className="lg:sticky lg:top-6 lg:self-start">
+      <aside aria-labelledby="summary-title" className="lg:sticky lg:top-(--below-header) lg:self-start">
         <h2 id="summary-title" className="text-2xl font-semibold tracking-[-0.02em]">
           Summary
         </h2>

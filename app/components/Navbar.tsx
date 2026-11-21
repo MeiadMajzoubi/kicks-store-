@@ -109,7 +109,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
     <>
       <header
         ref={headerRef}
-        className="sticky top-0 z-50 w-full border-b border-border/60 shadow-sm"
+        className="relative z-50 w-full border-b border-border/60 shadow-sm lg:sticky lg:top-0"
         onPointerLeave={(event) => {
           if (event.pointerType === "mouse") closePanel();
         }}

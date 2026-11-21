@@ -130,7 +130,7 @@ export default function ProductListing({
       </header>
 
       {/* Toolbar: a translucent layer the grid scrolls under. */}
-      <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
+      <div className="sticky top-0 z-30 bg-background/80 lg:top-(--header-h) backdrop-blur-xl backdrop-saturate-150">
         <div className="content-shell flex min-h-14 items-center justify-end gap-6">
           <button
             type="button"
@@ -164,7 +164,7 @@ export default function ProductListing({
           <aside
             id="listing-filters"
             aria-label="Filters"
-            className="sticky top-16 hidden max-h-[calc(100dvh-5rem)] w-60 shrink-0 self-start overflow-y-auto pr-3 [scrollbar-width:thin] lg:block"
+            className="sticky top-(--below-filter-bar) hidden max-h-(--sidebar-max-h) w-60 shrink-0 self-start overflow-y-auto pr-3 [scrollbar-width:thin] lg:block"
           >
             {panel}
           </aside>

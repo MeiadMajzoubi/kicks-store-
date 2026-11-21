@@ -176,7 +176,7 @@ No 5, 7, 10, 14, 20. No arbitrary values (`mt-[18px]`). Heights and positions (`
 - Sticky bars (navbar, filter bar, mobile buy bar) are solid `bg-background` with a
   `border-b`. No transparency, no `backdrop-blur`, no glass. **The one exception is the main navbar and its
   menu panel:** they are glass (`bg-background/75 backdrop-blur-xl backdrop-saturate-150`, a hairline `border-b border-border/60`
-  and `shadow-sm`), sticky, so the page slides under them blurred. The glass is its own layer inside the header
+  and `shadow-sm`), sticky from `lg` up (on phones it scrolls away: two rows are too tall to keep), so the page slides under them blurred. Anything else that sticks to the top on those sizes uses `--header-h` and the tokens built from it in `globals.css`. The glass is its own layer inside the header
   (not the header itself), so the menu panel can blur the page behind it too.
 
 ---

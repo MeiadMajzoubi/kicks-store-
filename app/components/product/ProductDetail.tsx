@@ -50,7 +50,7 @@ export default function ProductDetail({ productId, name, variants, initialVarian
       }
       className="mx-auto grid max-w-[1240px] gap-8 lg:grid-cols-[minmax(0,var(--photo-column))_minmax(0,500px)] lg:justify-center lg:gap-12 xl:gap-16"
     >
-      <div className="lg:sticky lg:top-6 lg:self-start">
+      <div className="lg:sticky lg:top-(--below-header) lg:self-start">
         {/* `key`: switching colour starts the gallery again from the first photo. */}
         <ProductGallery key={active} images={variant.images} name={name} badge={badge} />
       </div>
