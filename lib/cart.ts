@@ -111,6 +111,22 @@ export function removeFromCart(key: string) {
   save(items.filter((item) => item.key !== key));
 }
 
+/** Put a removed line back where it was (the Undo button). If the same shoe was added again meanwhile, they merge. */
+export function restoreToCart(item: CartItem, index: number) {
+  load();
+  if (items.some((line) => line.key === item.key)) {
+    save(
+      items.map((line) =>
+        line.key === item.key ? { ...line, quantity: Math.min(line.quantity + item.quantity, MAX_QUANTITY) } : line,
+      ),
+    );
+    return;
+  }
+  const next = [...items];
+  next.splice(Math.min(index, next.length), 0, item);
+  save(next);
+}
+
 /** Empty the bag, once an order is placed. */
 export function clearCart() {
   save(EMPTY);

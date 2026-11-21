@@ -1,15 +1,16 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MAX_QUANTITY, changeSize, setQuantity, useCart } from "@/lib/cart";
+import { MAX_QUANTITY, changeSize, removeFromCart, restoreToCart, setQuantity, useCart, type CartItem } from "@/lib/cart";
 import { categoryLabel, colourName, effectivePrice } from "@/lib/catalog";
 import { bagLines, bagTotals, currency, type Line } from "@/lib/checkout";
 import type { Product } from "@/lib/products";
 import OrderTotals from "./OrderTotals";
+import UndoToast from "./UndoToast";
 import ProductPhoto from "../ProductPhoto";
 
 // The bag lives in the browser, so the server can't know what's in it. Until the page has
@@ -25,6 +26,26 @@ export default function CartView({ products }: { products: Product[] }) {
   const totals = bagTotals(lines);
   const { itemCount } = totals;
 
+  // The line just taken out, kept for a few seconds so Undo can put it back where it was.
+  const [removed, setRemoved] = useState<{ item: CartItem; index: number; name: string } | null>(null);
+  const dismissUndo = useCallback(() => setRemoved(null), []);
+  const removeLine = (line: Line) => {
+    const index = cart.findIndex((item) => item.key === line.key);
+    if (index < 0) return;
+    setRemoved({ item: cart[index], index, name: line.product.name });
+    removeFromCart(line.key);
+  };
+  const undo = (
+    <UndoToast
+      message={removed ? `Removed ${removed.name} from your bag.` : null}
+      onUndo={() => {
+        if (removed) restoreToCart(removed.item, removed.index);
+        setRemoved(null);
+      }}
+      onDismiss={dismissUndo}
+    />
+  );
+
   if (!loaded) {
     return <div aria-hidden="true" className="min-h-[50vh]" />;
   }
@@ -37,6 +58,7 @@ export default function CartView({ products }: { products: Product[] }) {
         <Link href="/shop" className="text-link mt-2">
           Start shopping
         </Link>
+        {undo}
       </div>
     );
   }
@@ -57,7 +79,7 @@ export default function CartView({ products }: { products: Product[] }) {
 
         <ul className="mt-2 divide-y divide-border sm:ml-(--bag-indent)">
           {lines.map((line) => (
-            <CartLine key={line.key} line={line} />
+            <CartLine key={line.key} line={line} onRemove={removeLine} />
           ))}
         </ul>
       </section>
@@ -75,11 +97,12 @@ export default function CartView({ products }: { products: Product[] }) {
           Checkout
         </Link>
       </aside>
+      {undo}
     </div>
   );
 }
 
-function CartLine({ line }: { line: Line }) {
+function CartLine({ line, onRemove }: { line: Line; onRemove: (line: Line) => void }) {
   const { product } = line;
   const variant = product.variants[line.variant];
   // Opens the page on the colour in the bag, not the first one.
@@ -157,7 +180,7 @@ function CartLine({ line }: { line: Line }) {
             <Button
               variant="ghost"
               size="icon-pill"
-              onClick={() => setQuantity(line.key, line.quantity - 1)}
+              onClick={() => (line.quantity === 1 ? onRemove(line) : setQuantity(line.key, line.quantity - 1))}
               aria-label={line.quantity === 1 ? `Remove ${product.name} from bag` : "Decrease quantity"}
               className="hover:bg-surface hover:text-brand"
             >

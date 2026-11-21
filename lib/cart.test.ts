@@ -5,6 +5,7 @@ import {
   changeSize,
   clearCart,
   removeFromCart,
+  restoreToCart,
   setQuantity,
   type CartItem,
 } from "@/lib/cart";
@@ -82,5 +83,42 @@ describe("changeSize", () => {
     changeSize("m37-0-9", 10);
     expect(saved()).toHaveLength(1);
     expect(saved()[0].quantity).toBe(2);
+  });
+});
+
+describe("restoreToCart (the Undo button)", () => {
+  test("puts a removed line back in the place it was", () => {
+    addToCart("m1", 0, 8);
+    addToCart("m2", 0, 9);
+    addToCart("m3", 0, 10);
+    const middle = saved()[1];
+    removeFromCart(middle.key);
+    restoreToCart(middle, 1);
+    expect(saved().map((line) => line.productId)).toEqual(["m1", "m2", "m3"]);
+  });
+
+  test("keeps the quantity the line had", () => {
+    addToCart("m1", 0, 8);
+    setQuantity("m1-0-8", 3);
+    const line = saved()[0];
+    removeFromCart(line.key);
+    restoreToCart(line, 0);
+    expect(saved()[0].quantity).toBe(3);
+  });
+
+  test("merges if the same shoe was added again in the meantime", () => {
+    addToCart("m1", 0, 8);
+    const line = saved()[0];
+    removeFromCart(line.key);
+    addToCart("m1", 0, 8);
+    restoreToCart(line, 0);
+    expect(saved()).toHaveLength(1);
+    expect(saved()[0].quantity).toBe(2);
+  });
+
+  test("an index past the end just goes last", () => {
+    addToCart("m1", 0, 8);
+    restoreToCart({ key: "m2-0-9", productId: "m2", variant: 0, size: 9, quantity: 1 }, 99);
+    expect(saved().map((line) => line.productId)).toEqual(["m1", "m2"]);
   });
 });
