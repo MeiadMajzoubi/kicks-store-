@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Anton, Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
@@ -20,13 +20,20 @@ const anton = Anton({
 });
 
 export const metadata: Metadata = {
+  // Shared links need a full address for their image; set SITE_URL to the real one when the store goes live.
+  metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
   title: {
     default: "Red Kicks — Find your next pair",
     template: "%s | Red Kicks",
   },
   description:
     "Explore sneakers, everyday favourites, and performance footwear from Nike, Adidas, ASICS, On, New Balance, and Birkenstock at Red Kicks.",
+  openGraph: { siteName: "Red Kicks", type: "website", locale: "en_US" },
+  twitter: { card: "summary_large_image" },
 };
+
+// The phone's browser bar takes the colour of the black strip at the top of the page.
+export const viewport: Viewport = { themeColor: "#181818" };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   // The search bar runs in the browser, so the server loads its shoes and hands them over.
