@@ -308,7 +308,8 @@ Reuse these; don't invent new effects per component.
 - **Announcement bar** (`AnnouncementBar.tsx`): an ink strip, `min-h-11`. In the middle, one short promise at a time (delivery time, free delivery, sale) with previous and next arrows and a pause button; the message rises in on `--ease-spring`. It stops while the pointer or keyboard is on it and never moves by itself with reduced motion. Messages are short, sentence case, real promises the store keeps. On large screens the shopper's own links sit on the right: Help, wishlist, account. On phones only the messages show.
 - **Navbar**: solid `bg-background`, `border-b`. Logo left, links centred (Women, Men, Brands, then Sale in `text-brand`), then a pill search field and the bag on the right. The search field opens the search panel. On phones: logo left, search, wishlist, account and bag icons right, links on a second row.
 - Wishlist and account live in the announcement bar from `lg` up, and in the navbar below it. The bag count badge is the shared `CountBadge`.
-- Mega-menu: solid panel, plain link columns, the motion from §8.3.
+- Mega-menu: glass panel (§6), plain link columns, the motion from §8.3.
+- **Checkout:** the announcement bar, navbar and full footer are swapped for a slim header (logo, "Back to bag") and a slim footer (Delivery, Support), so nothing pulls the shopper away mid-order. `SiteChrome` does the swap by route.
 - The navbar is sticky glass (§6); the announcement bar above it is solid ink and scrolls away.
 
 ### 9.6 Listing page and filters
@@ -327,6 +328,8 @@ Reuse these; don't invent new effects per component.
 - One column on mobile, never more than two on desktop.
 
 ### 9.8 States
+
+Taking something away can be undone: removing a shoe from the bag shows a light toast ("Removed … from your bag." with an Undo button, 8 seconds, waits while the pointer or keyboard is on it) and Undo puts the line back where it was.
 
 Every list and async view has all three:
 
