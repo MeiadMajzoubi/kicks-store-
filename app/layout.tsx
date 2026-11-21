@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import AnnouncementBar from "./components/AnnouncementBar";
 import Footer from "./components/Footer";
+import SiteChrome from "./components/SiteChrome";
 import { getSearchProducts } from "@/lib/products";
 
 const geistSans = Geist({
@@ -35,12 +36,19 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} ${anton.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">Skip to content</a>
-        {/* Announcement bar above the menu, where shoppers expect it (Nike, Adidas, JD). */}
-        <AnnouncementBar />
-        <Navbar searchProducts={searchProducts} />
-
-        {children}
-        <Footer />
+        {/* Announcement bar above the menu, where shoppers expect it (Nike, Adidas, JD). On the checkout the
+            header and footer are swapped for slim ones (SiteChrome). */}
+        <SiteChrome
+          header={
+            <>
+              <AnnouncementBar />
+              <Navbar searchProducts={searchProducts} />
+            </>
+          }
+          footer={<Footer />}
+        >
+          {children}
+        </SiteChrome>
       </body>
     </html>
   );
