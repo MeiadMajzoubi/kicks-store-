@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#d71920"/><path d="M22 14V50M45 14L25 33M29 32L46 50" fill="none" stroke="#fff" stroke-width="8" stroke-linejoin="miter"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#000000"/>
+  <g transform="translate(256 256) scale(1.5) translate(-256 -256)">
+    <text x="256" y="256" text-anchor="middle" dominant-baseline="central" font-family="'Space Grotesk', Arial, Helvetica, sans-serif" font-weight="700" font-size="300" fill="#FF0000" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round" paint-order="stroke">R</text>
+  </g>
+</svg>
