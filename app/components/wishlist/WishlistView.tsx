@@ -107,7 +107,7 @@ function SelectSize({ product, variant }: { product: Product; variant: number })
             </>
           )}
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" sideOffset={6} className="w-64 rounded-xl p-2">
+        <DropdownMenuContent align="start" sideOffset={6} className="w-64 rounded-lg p-2">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="px-1 pb-2 text-xs font-medium text-muted-foreground">
               Size (UK)

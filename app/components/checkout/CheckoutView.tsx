@@ -171,7 +171,7 @@ export default function CheckoutView({ products }: { products: Product[] }) {
         </Section>
 
         <Section title="Delivery">
-          <div className="flex items-center gap-4 rounded-xl border border-foreground px-5 py-4">
+          <div className="flex items-center gap-4 rounded-lg border border-foreground px-5 py-4">
             <FastTruckIcon className="h-6 w-8 shrink-0 text-brand" />
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold">Express delivery</p>
@@ -264,7 +264,7 @@ function Field({
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${name}-error` : undefined}
         onChange={(event) => onChange(event.target.value)}
-        className="h-14 w-full rounded-xl border border-foreground/25 bg-background px-4 text-base tabular-nums transition-[border-color,box-shadow] duration-150 outline-none hover:border-foreground/50 focus-visible:border-foreground focus-visible:shadow-[0_0_0_1px_var(--foreground)] focus-visible:outline-none aria-invalid:border-brand aria-invalid:focus-visible:shadow-[0_0_0_1px_var(--brand)]"
+        className="h-14 w-full rounded-lg border border-foreground/25 bg-background px-4 text-base tabular-nums transition-[border-color,box-shadow] duration-150 outline-none hover:border-foreground/50 focus-visible:border-foreground focus-visible:shadow-[0_0_0_1px_var(--foreground)] focus-visible:outline-none aria-invalid:border-brand aria-invalid:focus-visible:shadow-[0_0_0_1px_var(--brand)]"
       />
       {error && (
         <p id={`${name}-error`} className="text-sm text-brand">

@@ -164,7 +164,7 @@ function CartLine({ line, onRemove }: { line: Line; onRemove: (line: Line) => vo
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="min-w-32 rounded-xl p-1">
+            <SelectContent className="min-w-32 rounded-lg p-1">
               {sizeItems.map((item) => (
                 <SelectItem key={item.value} value={item.value} className="min-h-9 rounded-lg px-3 text-sm tabular-nums">
                   {item.label}

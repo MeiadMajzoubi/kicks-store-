@@ -28,9 +28,7 @@ export default async function Home() {
           <h3 className="section-title mt-3 text-[clamp(1.125rem,1.8vw,1.625rem)] text-brand">For the everyday. For the extra mile. Make your next move<span className="text-foreground">.</span></h3>
         </div>
       </section>
-      <div className="pt-6 sm:pt-10 lg:pt-14">
-        <TrendingProducts products={trending} />
-      </div>
+      <TrendingProducts products={trending} />
       <ShopByBrands />
       <ShopByCategory />
       <Advantages />

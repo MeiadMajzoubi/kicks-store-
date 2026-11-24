@@ -23,13 +23,13 @@ export default async function Advantages() {
       aria-labelledby="advantages-title"
       className="content-shell section-space border-t border-border"
     >
-      <h2 id="advantages-title" className="section-title mb-8">Why choose us<span className="title-mark">.</span></h2>
+      <h2 id="advantages-title" className="section-title mb-8 sm:mb-10">Why choose us</h2>
 
       <ul className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4 lg:gap-x-8">
         {facts.map(({ prefix, value, label, href }) => (
           <li key={href}>
             <Link href={href} className="group flex flex-col gap-2 border-t-2 border-foreground pt-4">
-              <span className="page-title tabular-nums text-brand">
+              <span className="page-title tabular-nums">
                 {prefix && <span className="mr-1 text-[0.35em] tracking-normal">{prefix} </span>}
                 {value}
               </span>

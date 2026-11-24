@@ -39,9 +39,10 @@ export default function ProductPhoto({ src, alt, sizes, inset, preload, onError,
   const { w, h, x0, x1, y1, k, kc, darken } = placement;
   // A tinted backdrop needs a different gain per colour channel; an SVG colour filter does that.
   const filterId = `tone-${surface}-${src.replace(/[^a-z0-9]/gi, "")}`;
-  // The measured gains aim at the card colour (244, 244, 242); on white (255) they are raised to match.
-  const toWhite = surface === "white" ? [255 / 244, 255 / 244, 255 / 242] : [1, 1, 1];
-  const gain = kc ? kc.map((v, i) => +(v * toWhite[i]).toFixed(4)) : null;
+  // The measured gains land on (244, 244, 242). Raise them to the colour behind the photo, the card
+  // (--surface, #f5f5f3) or white, so the toned backdrop matches it exactly and never shows as a box.
+  const toSurface = surface === "white" ? [255 / 244, 255 / 244, 255 / 242] : [245 / 244, 245 / 244, 243 / 242];
+  const gain = kc ? kc.map((v, i) => +(v * toSurface[i]).toFixed(4)) : null;
   const scale = TARGET.width / (x1 - x0); // photo width as a share of the box
   const height = scale * (h / w); // photo height as a share of the box
   const left = 0.5 - scale * ((x0 + x1) / 2);
@@ -77,7 +78,7 @@ export default function ProductPhoto({ src, alt, sizes, inset, preload, onError,
           top: pct(top),
           width: pct(scale),
           height: "auto",
-          filter: kc ? `url(#${filterId})` : `brightness(${+(k * toWhite[0] * (darken ? 1.035 : 1)).toFixed(4)})`,
+          filter: kc ? `url(#${filterId})` : `brightness(${+(k * toSurface[0] * (darken ? 1.035 : 1)).toFixed(4)})`,
           maskImage: fade,
           WebkitMaskImage: fade,
           mixBlendMode: darken ? "darken" : undefined,

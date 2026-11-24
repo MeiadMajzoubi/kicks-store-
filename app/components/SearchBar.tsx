@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ArrowUpRight, Clock, Search, X } from "lucide-react";
+import { ArrowUpRight, Clock, Search, X } from "lucide-react";
 import type { SearchProduct } from "@/lib/products";
 import { searchProducts, suggest } from "@/lib/search";
 import Price from "./Price";
@@ -395,7 +395,6 @@ export default function SearchBar({ products, onOpen }: SearchBarProps) {
                             className="text-link"
                           >
                             View all
-                            <ArrowRight aria-hidden="true" className="size-4" />
                           </Link>
                         </div>
 

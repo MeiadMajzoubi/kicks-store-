@@ -233,7 +233,7 @@ function SortMenu({ value, onChange }: { value: SortKey; onChange: (value: SortK
       <DropdownMenuContent
         align="end"
         sideOffset={6}
-        className="w-60 rounded-xl p-1.5 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.22)] ring-border duration-150"
+        className="w-60 rounded-lg p-1.5 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.22)] ring-border duration-150"
       >
         <DropdownMenuRadioGroup value={value} onValueChange={(next) => onChange(next as SortKey)}>
           {SORT_OPTIONS.map((option) => (

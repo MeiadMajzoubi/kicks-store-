@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowRight,
   Heart,
   ShoppingBag,
   User,
@@ -367,7 +366,6 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                         className="text-link"
                       >
                         See all brands
-                        <ArrowRight aria-hidden="true" className="size-4" />
                       </Link>
                     </li>
                   </ul>
@@ -387,9 +385,8 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                     href="/brands"
                     onClick={closePanel}
                     className="text-link"
-                      >
-                        See all brands
-                        <ArrowRight aria-hidden="true" className="size-4" />
+                  >
+                    See all brands
                   </Link>
                 </div>
 

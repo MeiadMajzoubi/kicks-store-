@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ImageOff } from "lucide-react";
+import { ImageOff } from "lucide-react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product } from "@/lib/products";
@@ -58,15 +58,15 @@ export default function TrendingProducts({ products }: { products: Product[] }) 
 
   return (
     // The title sits on the page like the other home sections; the grey panel holds the pill and the shoes.
-    <section id="trending" aria-labelledby="trending-title" className="content-shell mb-4">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
+    <section id="trending" aria-labelledby="trending-title" className="content-shell section-space">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 sm:mb-10">
         <h2 id="trending-title" className="section-title">Trending now</h2>
         <Link href="/shop" className="text-link">
-          Shop all <ArrowRight aria-hidden="true" className="size-4" />
+          Shop all
         </Link>
       </div>
 
-      <div className="rounded-3xl bg-surface px-4 py-7 sm:p-8 lg:px-10 lg:py-10">
+      <div className="rounded-[7.5px] bg-surface px-4 py-7 sm:p-8 lg:px-10 lg:py-10">
         {/* Switching is one smooth move: the black pill glides to the new tab (600ms on the calm in-out easing, transform only,
             so it can be interrupted mid-way), while the two lists, both already loaded, crossfade in the same spot. The
             leaving list fades quicker than the new one arrives. */}

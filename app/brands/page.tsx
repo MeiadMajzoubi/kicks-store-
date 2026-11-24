@@ -58,7 +58,7 @@ export default function BrandsPage() {
                   <Link
                     href={`/brands/${brand.slug}`}
                     prefetch={false}
-                    className="group flex min-h-24 items-center gap-5 rounded-2xl border border-transparent bg-surface px-5 py-4 transition-colors duration-200 hover:border-border hover:bg-background motion-reduce:transition-none"
+                    className="group flex min-h-24 items-center gap-5 rounded-[7.5px] border border-transparent bg-surface px-5 py-4 transition-colors duration-200 hover:border-border hover:bg-background motion-reduce:transition-none"
                   >
                     <div className="flex h-12 w-20 shrink-0 items-center justify-center">
                       <Image

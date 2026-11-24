@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import {
   Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi,
 } from "@/components/ui/carousel";
@@ -29,15 +28,15 @@ export default function ShopByBrands() {
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4 sm:mb-10">
         <h2 id="shop-brands-title" className="section-title">Shop top brands</h2>
         <Link href="/brands" className="text-link">
-          All brands <ArrowRight aria-hidden="true" className="size-4" />
+          All brands
         </Link>
       </div>
       <Carousel setApi={setApi} opts={{ align: "start", duration: reducedMotion ? 0 : 30 }} aria-label="Shop top brands" className="w-full">
         <CarouselContent className="-ml-4 sm:-ml-5">
           {brands.map((brand) => (
             <CarouselItem key={brand.name} className="basis-[82%] pl-4 sm:basis-1/2 sm:pl-5 md:basis-1/3 lg:basis-1/4">
-              <Link href={brand.href} aria-label={`Shop ${brand.name}`} className="group block rounded-2xl">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-surface">
+              <Link href={brand.href} aria-label={`Shop ${brand.name}`} className="group block rounded-[7.5px]">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[7.5px] bg-surface">
                   <Image
                     src={brand.image}
                     alt=""
