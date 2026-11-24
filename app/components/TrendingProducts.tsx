@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowRight, ImageOff } from "lucide-react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { sortByColor } from "@/lib/catalog";
 import type { Product } from "@/lib/products";
 import Price from "./Price";
 import ProductPhoto from "./ProductPhoto";
@@ -47,12 +46,12 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-// products: the trending shoes, loaded from Postgres by the home page (a server page) and passed down.
+// products: the trending shoes, loaded and already mixed by the home page (a server page) and passed down.
 export default function TrendingProducts({ products }: { products: Product[] }) {
   const [selected, setSelected] = useState("men");
   const collections = [
-    { value: "men", label: "Men", products: sortByColor(products.filter((product) => product.gender === "men")) },
-    { value: "women", label: "Women", products: sortByColor(products.filter((product) => product.gender === "women")) },
+    { value: "men", label: "Men", products: products.filter((product) => product.gender === "men") },
+    { value: "women", label: "Women", products: products.filter((product) => product.gender === "women") },
   ];
 
   return (

@@ -537,6 +537,7 @@ export const productData: ProductData[] = [
     ],
     isNew: true,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314219087104_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -560,6 +561,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314218801604_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -603,6 +605,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314218665504_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   // TODO: sizes are a placeholder range; the Foot Locker page only showed 9, 11 and 11.5.
@@ -651,6 +654,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314218669704_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   // TODO: sizes are a placeholder range; the Foot Locker page only showed 7.5 and 10.5.
@@ -700,6 +704,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314218521004_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -725,6 +730,7 @@ export const productData: ProductData[] = [
     ],
     isNew: true,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314218988104_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -771,6 +777,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314219681104_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -816,6 +823,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/314627140404_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -927,6 +935,7 @@ export const productData: ProductData[] = [
     ],
     isNew: true,
     isFeatured: false,
+    isTrending: true,
   },
 
   // Women: w1–w20
@@ -1200,7 +1209,6 @@ export const productData: ProductData[] = [
     ],
     isNew: true,
     isFeatured: false,
-    isTrending: true,
   },
   {
     id: "w11",
@@ -1334,7 +1342,6 @@ export const productData: ProductData[] = [
     ],
     isNew: true,
     isFeatured: false,
-    isTrending: true,
   },
   {
     id: "w16",
@@ -1478,6 +1485,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315217866102_01?fmt=webp-alpha&bfc=on&wid=500&hei=500  (green)
   // image: https://assets.footlocker.com/is/image/FLDM/315217340702_01?fmt=webp-alpha&bfc=on&wid=500&hei=500  (grey)
@@ -1506,6 +1514,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315216755702_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1527,6 +1536,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315217864602_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1550,6 +1560,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315217344902_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   // TODO: sizes are a placeholder range; the Foot Locker page only showed size 8.
@@ -1595,6 +1606,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315216327502_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1628,6 +1640,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315216746602_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1672,6 +1685,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315553050402_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1715,6 +1729,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315553060302_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1735,6 +1750,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315553048802_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   {
@@ -1806,6 +1822,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // image: https://assets.footlocker.com/is/image/FLDM/315350306502_01?fmt=webp-alpha&bfc=on&wid=500&hei=500
   // Category 'sandals' as requested, but this is a training shoe.
@@ -1830,6 +1847,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // The Boston Shearling is unisex, so the men's one shares both colourways (and photos) with w2.
   {
@@ -1882,6 +1900,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // The women's Dn Roam: the white. The men's one (m14) is the green.
   {
@@ -1928,6 +1947,7 @@ export const productData: ProductData[] = [
     ],
     isNew: false,
     isFeatured: false,
+    isTrending: true,
   },
   // The men's Pegasus Premium is the black one. The women's (w9) is red, white and purple.
   {

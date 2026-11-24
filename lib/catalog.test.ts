@@ -9,6 +9,8 @@ import {
   facetOptions,
   filtersToQuery,
   mixProducts,
+  TRENDING_PER_TAB,
+  trendingOrder,
   parseFilters,
   type CatalogFilters,
 } from "@/lib/catalog";
@@ -126,8 +128,14 @@ describe("mixProducts: the Featured order", () => {
     expect(mixed.slice(0, newCount).every((product) => product.isNew)).toBe(true);
   });
 
+  test("Trending mixes new styles in with the rest", () => {
+    const trending = men.filter((product) => product.isTrending);
+    const firstCards = new Set([1, 2, 3, 4, 5, 6].map((day) => mixProducts(trending, day, { newFirst: false })[0].id));
+    expect(firstCards.size).toBeGreaterThan(1);
+  });
+
   test("no two neighbours share a brand", () => {
-    for (const list of [men, women]) {
+    for (const list of [men, women, men.filter((product) => product.isTrending)]) {
       for (const seed of [1, 2, 3, 20000]) {
         const mixed = mixProducts(list, seed);
         const repeats = mixed.filter((product, i) => i > 0 && product.brand.name === mixed[i - 1].brand.name);
@@ -139,6 +147,64 @@ describe("mixProducts: the Featured order", () => {
   test("Featured mixes the list; search keeps its best-match order", () => {
     expect(ids(applyFilters(men, none))).toEqual(ids(mixProducts(men)));
     expect(ids(applyFilters(men, none, { mix: false }))).toEqual(ids(men));
+  });
+});
+
+describe("trendingOrder: new shoes and a new order every 24 hours", () => {
+  const trending = testProducts.filter((product) => product.isTrending);
+  const HOUR = 60 * 60 * 1000;
+  const start = Date.parse("2026-11-24T00:00:00Z"); // the start of one 24-hour period
+  const order = (time: number) => trendingOrder(trending, time).map((product) => product.id);
+
+  test("stays the same for 24 hours", () => {
+    for (const hours of [1, 6, 12, 18, 23.99]) {
+      expect(order(start + hours * HOUR)).toEqual(order(start));
+    }
+  });
+
+  test("changes after 24 hours", () => {
+    expect(order(start + 24 * HOUR)).not.toEqual(order(start));
+  });
+
+  test("changes again every 24 hours for a week", () => {
+    for (let day = 1; day <= 7; day++) {
+      expect(order(start + day * 24 * HOUR)).not.toEqual(order(start + (day - 1) * 24 * HOUR));
+    }
+  });
+
+  const tab = (gender: string, day: number) =>
+    trendingOrder(trending, start + day * 24 * HOUR).filter((product) => product.gender === gender);
+
+  test("shows 20 per tab, men first, then women", () => {
+    const shoes = trendingOrder(trending, start);
+    expect(shoes.slice(0, TRENDING_PER_TAB).every((product) => product.gender === "men")).toBe(true);
+    expect(shoes.slice(TRENDING_PER_TAB).every((product) => product.gender === "women")).toBe(true);
+    expect(shoes).toHaveLength(2 * TRENDING_PER_TAB);
+    expect(new Set(shoes.map((product) => product.id)).size).toBe(shoes.length);
+  });
+
+  test("the shoes themselves change, not just their places", () => {
+    for (const gender of ["men", "women"]) {
+      const today = new Set(tab(gender, 0).map((product) => product.id));
+      expect(tab(gender, 1).some((product) => !today.has(product.id))).toBe(true);
+    }
+  });
+
+  test("every trending shoe gets shown within a week", () => {
+    for (const gender of ["men", "women"]) {
+      const seen = new Set([0, 1, 2, 3, 4, 5, 6].flatMap((day) => tab(gender, day).map((product) => product.id)));
+      expect(seen.size).toBe(trending.filter((product) => product.gender === gender).length);
+    }
+  });
+
+  test("each brand keeps its share, so no two neighbours share a brand", () => {
+    for (const gender of ["men", "women"]) {
+      for (let day = 0; day < 30; day++) {
+        const shoes = tab(gender, day);
+        const repeats = shoes.filter((product, i) => i > 0 && product.brand.name === shoes[i - 1].brand.name);
+        expect(repeats).toEqual([]);
+      }
+    }
   });
 });
 

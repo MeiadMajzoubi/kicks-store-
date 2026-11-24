@@ -162,16 +162,13 @@ function inStockInSize(product: Product, sizes: number[]) {
   );
 }
 
-/** Sort by the default colourway's first colour (white first, multi last), without changing the input. */
-export function sortByColor<T extends { variants: { colors: string[] }[] }>(products: readonly T[]): T[] {
-  const rank = (product: T) => {
-    const index = COLOR_ORDER.indexOf(product.variants[0]?.colors[0] as ProductColor);
-    return index === -1 ? COLOR_ORDER.length : index;
-  };
-  return [...products].sort((a, b) => rank(a) - rank(b));
-}
-
-type Mixable = { id: string; isNew: boolean; brand: { name: string }; variants: { colors: string[] }[] };
+type Mixable = {
+  id: string;
+  isNew: boolean;
+  category: string;
+  brand: { name: string };
+  variants: { colors: string[] }[];
+};
 
 /** Numbers that look random but are always the same for the same seed (mulberry32). */
 function seededRandom(seed: number) {
@@ -196,28 +193,46 @@ function spread<T extends Mixable>(items: readonly T[], random: () => number, be
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
 
-  // Each brand is spaced evenly down the list: a brand with 4 shoes lands about every quarter.
-  const byBrand = new Map<string, T[]>();
-  for (const item of shuffled) byBrand.set(item.brand.name, [...(byBrand.get(item.brand.name) ?? []), item]);
-  const planned = [...byBrand.values()]
-    .flatMap((group) => {
+  // Each brand and each colour is spaced evenly down the list: a brand with 4 shoes lands about every
+  // quarter. A shoe's planned spot is halfway between where its brand and its colour want it.
+  const evenSpots = (key: (item: T) => string | undefined) => {
+    const groups = new Map<string | undefined, T[]>();
+    for (const item of shuffled) groups.set(key(item), [...(groups.get(key(item)) ?? []), item]);
+    const spots = new Map<T, number>();
+    for (const group of groups.values()) {
       const offset = random();
-      return group.map((item, k) => ({ item, at: (k + offset) / group.length }));
-    })
-    .sort((a, b) => a.at - b.at)
-    .map(({ item }) => item);
+      group.forEach((item, k) => spots.set(item, (k + offset) / group.length));
+    }
+    return spots;
+  };
+  const brandSpot = evenSpots((item) => item.brand.name);
+  const colourSpot = evenSpots(mainColour);
+  const planned = [...shuffled].sort(
+    (a, b) => brandSpot.get(a)! + colourSpot.get(a)! - (brandSpot.get(b)! + colourSpot.get(b)!),
+  );
 
   // Then lay the shoes down one by one, following the plan but skipping a shoe that matches the one
-  // before it. A pick is only made if the shoes left can still avoid two of a brand side by side.
+  // before it: a different brand always, and where possible a different colour and type too (colour
+  // counts more). A pick is only made if the shoes left can still avoid two of a brand side by side.
   const result: T[] = [];
   let previous = before;
   while (planned.length) {
     const differs = (item: T) => !previous || item.brand.name !== previous.brand.name;
-    const newColour = (item: T) => !previous || mainColour(item) !== mainColour(previous);
-    const leavesRoom = (index: number) => canSeparateBrands(planned.filter((_, j) => j !== index), planned[index]);
+    const variety = (item: T) =>
+      !previous ? 0 : (mainColour(item) !== mainColour(previous) ? 2 : 0) + (item.category !== previous.category ? 1 : 0);
+    const leavesRoom = (index: number, key: (item: Mixable) => string | undefined) =>
+      canSeparate(planned.filter((_, j) => j !== index), planned[index], key);
+    // Best: the colours left can still be kept apart too. Then a new colour, then a new type.
+    const score = (index: number) => (leavesRoom(index, mainColour) ? 4 : 0) + variety(planned[index]);
 
-    let pick = planned.findIndex((item, i) => differs(item) && newColour(item) && leavesRoom(i));
-    if (pick === -1) pick = planned.findIndex((item, i) => differs(item) && leavesRoom(i));
+    // Only the next few shoes in the plan are considered, so the varied ones aren't all used up early.
+    let pick = -1;
+    let considered = 0;
+    for (let i = 0; i < planned.length && considered < 4; i++) {
+      if (!differs(planned[i]) || !leavesRoom(i, (item) => item.brand.name)) continue;
+      considered++;
+      if (pick === -1 || score(i) > score(pick)) pick = i;
+    }
     if (pick === -1) pick = planned.findIndex(differs);
     if (pick === -1) pick = 0;
 
@@ -227,28 +242,76 @@ function spread<T extends Mixable>(items: readonly T[], random: () => number, be
   return result;
 }
 
-/** Whether `rest` can follow `after` with no brand twice in a row (no brand may outnumber the others plus one). */
-function canSeparateBrands(rest: readonly Mixable[], after: Mixable) {
-  const counts = new Map<string, number>();
-  for (const item of rest) counts.set(item.brand.name, (counts.get(item.brand.name) ?? 0) + 1);
-  for (const [brand, count] of counts) {
+/**
+ * Whether `rest` can follow `after` with no brand (or colour, by `key`) twice in a row: no value may
+ * outnumber all the others plus one.
+ */
+function canSeparate(rest: readonly Mixable[], after: Mixable, key: (item: Mixable) => string | undefined) {
+  const counts = new Map<string | undefined, number>();
+  for (const item of rest) counts.set(key(item), (counts.get(key(item)) ?? 0) + 1);
+  for (const [value, count] of counts) {
     const others = rest.length - count;
-    // A brand can fill every other spot; if it also matched `after`, it couldn't take the first one.
-    if (count > others + (brand === after.brand.name ? 0 : 1)) return false;
+    // A value can fill every other spot; if it also matched `after`, it couldn't take the first one.
+    if (count > others + (value === key(after) ? 0 : 1)) return false;
   }
   return true;
 }
 
 /**
- * The "Featured" order: new styles first, then the rest, each mixed so neighbours differ in brand and
- * colour. The same shoes and seed always give the same order, so a page doesn't jump between visits.
- * A different seed gives a different mix.
+ * The "Featured" order: new styles first, then the rest, each mixed so neighbours differ in brand,
+ * colour and type. The same shoes and seed always give the same order, so a page doesn't jump between
+ * visits. A different seed (Trending now uses the day) gives a different mix. `newFirst: false` mixes
+ * new styles in with the rest.
  */
-export function mixProducts<T extends Mixable>(products: readonly T[], seed = 1): T[] {
+export function mixProducts<T extends Mixable>(products: readonly T[], seed = 1, { newFirst = true } = {}): T[] {
   const random = seededRandom(seed);
+  if (!newFirst) return spread(products, random);
   const fresh = spread(products.filter((product) => product.isNew), random);
   const rest = spread(products.filter((product) => !product.isNew), random, fresh.at(-1));
   return [...fresh, ...rest];
+}
+
+/** Which 24-hour period a time (in milliseconds) falls in. It goes up by one every 24 hours. */
+export const dayNumber = (time: number) => Math.floor(time / 86_400_000);
+
+/** How many shoes each Trending tab shows. The pool is bigger, so the rest take a day off. */
+export const TRENDING_PER_TAB = 20;
+
+/** How far the day's window moves along the circle: about a third of the shoes are new each day. */
+const TRENDING_STEP = 7;
+
+/**
+ * Picks `count` shoes from the pool for one day, as a rotation so every shoe gets the same turns:
+ * the pool is laid out once in a fixed, well-mixed circle, and each day shows a window of `count`
+ * shoes that moves on by TRENDING_STEP places. Because the circle is mixed by brand, any window keeps
+ * each brand's share, so the day's shoes can still be ordered with no brand twice in a row.
+ */
+function pickForDay<T extends Mixable>(pool: readonly T[], count: number, day: number): T[] {
+  if (pool.length <= count) return [...pool];
+  const circle = mixProducts(pool, 1, { newFirst: false });
+  const first = (((day * TRENDING_STEP) % circle.length) + circle.length) % circle.length;
+  return Array.from({ length: count }, (_, k) => circle[(first + k) % circle.length]);
+}
+
+/**
+ * Trending now: for each tab (men, women), a different 20 of its trending shoes every 24 hours, mixed
+ * so neighbours differ. The 24-hour period is the seed, so everyone sees the same shoes in the same
+ * order for 24 hours, then both change. New styles are mixed in, not put first.
+ */
+export function trendingOrder<T extends Mixable & { gender: string }>(
+  products: readonly T[],
+  time: number,
+  perTab = TRENDING_PER_TAB,
+): T[] {
+  const day = dayNumber(time);
+  return (["men", "women"] as const).flatMap((gender) => {
+    const today = pickForDay(
+      products.filter((product) => product.gender === gender),
+      perTab,
+      day,
+    );
+    return mixProducts(today, day, { newFirst: false });
+  });
 }
 
 /** Colour filter: true if any colourway of the product has this colour. */
