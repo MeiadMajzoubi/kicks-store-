@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#000000"/>
+  <rect width="512" height="512" rx="112" fill="#FFFFFF"/>
   <g transform="translate(256 256) scale(1.5) translate(-256 -256)">
-    <text x="256" y="256" text-anchor="middle" dominant-baseline="central" font-family="'Space Grotesk', Arial, Helvetica, sans-serif" font-weight="700" font-size="300" fill="#FF0000" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round" paint-order="stroke">R</text>
+    <text x="256" y="256" text-anchor="middle" dominant-baseline="central" font-family="'Inter', Arial, Helvetica, sans-serif" font-weight="700" font-size="300" fill="#FF0000" stroke="#000000" stroke-width="16" stroke-linejoin="round" paint-order="stroke">R</text>
   </g>
 </svg>
