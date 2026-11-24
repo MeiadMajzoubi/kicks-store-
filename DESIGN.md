@@ -189,7 +189,9 @@ The photo is the product. Treat every image the same so the grid reads as one sh
   no photo backgrounds inside product tiles.
 - **The whole shoe is visible.** Nothing cropped at the toe or heel. Side profile, toe pointing
   left, same angle across a grid.
-- Breathing room: the shoe fills about 70% of the tile (`.product-image` uses 16% padding).
+- Breathing room: Trending tiles are 4:3, the shape of a shoe, with the photo in a square as tall as
+  the tile, so the rows stay short (`.product-image`). Every shoe is the size of a studio photo: about
+  two thirds of the tile's width (cut-outs get `p-[8%]` to look the same size).
 - `next/image` with real `sizes`, `object-contain` for products, `object-cover` only for
   lifestyle/campaign photos (hero, categories).
 - Category and campaign photos show **a complete product in context** — a recognisable shoe,
@@ -212,14 +214,14 @@ Add these to `@theme inline` in `globals.css` and use them instead of raw values
 | Token | Value | Use |
 |---|---|---|
 | `--ease-out` | `cubic-bezier(0.22, 1, 0.36, 1)` | Things arriving: menus, sheets, images. |
-| `--ease-in-out` | `cubic-bezier(0.45, 0, 0.55, 1)` | Things moving between two places: carousel, crossfades. |
-| `--ease-spring` | a `linear()` curve of a critically damped spring (in `globals.css`) | Things that move between two places and should feel physical, 500ms and up: the Trending tab pill and lists, the Trending card hover. It starts gently and settles slowly, so it reads slower than a bezier of the same length. |
+| `--ease-in-out` | `cubic-bezier(0.45, 0, 0.55, 1)` (in `globals.css`) | Things moving between two places: carousel, crossfades, the Trending tab pill and lists, the Trending card hover. Starts gently, moves steadily, lands gently, so 400–600ms feels neither like a jump nor a drag. |
+| `--ease-spring` | a `linear()` curve of a critically damped spring (in `globals.css`) | Things that should arrive and settle softly, 500ms and up: the announcement bar messages. Most of the move happens early and the rest settles slowly, so on a long move the end drags; don't use it where a move should feel balanced. |
 | `--duration-instant` | `100ms` | Press feedback (scale, colour). |
 | `--duration-fast` | `150ms` | Hovers, small fades, icons. |
 | `--duration-base` | `200ms` | Dropdowns, tooltips, card hover. |
 | `--duration-slow` | `300ms` | Sheets, drawers, mega-menu, page-level reveals. |
 
-Nothing in the UI animates longer than 400ms, with these exceptions: the carousel slide and the spring motions of the Trending tabs and cards (500–700ms, see §8.3). Never use `cubic-bezier(0.22, 1, 0.36, 1)`-style curves for a long move: they do most of the work in the first fifth of the time, so a 500ms move feels like a 150ms snap.
+Nothing in the UI animates longer than 400ms, with these exceptions: the carousel slide and the Trending tabs and cards (up to 600ms, see §8.3). Never use `cubic-bezier(0.22, 1, 0.36, 1)`-style curves for a long move: they do most of the work in the first fifth of the time, so a 500ms move feels like a 150ms snap.
 
 ### 8.2 Rules
 
@@ -250,8 +252,8 @@ Reuse these; don't invent new effects per component.
 |---|---|
 | Button press | Scale to 0.97, 100ms. Colour change 150ms. |
 | Listing card hover | Photo scales to 1.03 over 200ms `--ease-out`. No lift, no shadow, no sliding buttons. |
-| Trending card hover | One slow, soft crossfade on `--ease-spring`: the photo fades and settles to 0.96 (500ms) while the name and price rise in (600ms, starting 120ms later). Leaving: text out 250ms, photo back 550ms. |
-| Tab switch (Trending) | The black pill glides to the chosen tab (700ms, `--ease-spring`, transform only, so it can be interrupted). Both lists stay loaded and stacked: the old one fades out (300ms), the new one fades in and rises (600ms, after 150ms). |
+| Trending card hover | One soft crossfade on `--ease-in-out`: the photo fades and settles to 0.96 (450ms) while the name and price rise in (500ms, starting 100ms later). Leaving: text out 250ms, photo back 450ms. |
+| Tab switch (Trending) | The black pill glides to the chosen tab (600ms, `--ease-in-out`, transform only, so it can be interrupted). Both lists stay loaded and stacked: the old one fades out (250ms), the new one fades in and rises (550ms, after 100ms). |
 | Wishlist heart | On add: heart fills red and scales 1 → 1.2 → 1 over 200ms. On remove: just unfills. |
 | Add to bag | Button shows "Added" with a check for ~1.5s; the bag count badge scales 1 → 1.15 → 1. No flying-shoe animation. |
 | Mega-menu | Panel drops open, then after 200ms the links slide down 10px and fade in (`.nav-panel-content`). |
