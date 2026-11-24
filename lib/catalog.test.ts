@@ -8,6 +8,7 @@ import {
   effectivePrice,
   facetOptions,
   filtersToQuery,
+  mixProducts,
   parseFilters,
   type CatalogFilters,
 } from "@/lib/catalog";
@@ -99,6 +100,45 @@ describe("applyFilters", () => {
   test("sorts by price, low to high", () => {
     const prices = applyFilters(testProducts, { ...none, sort: "price-asc" }).map(effectivePrice);
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
+  });
+});
+
+describe("mixProducts: the Featured order", () => {
+  const men = testProducts.filter((product) => product.gender === "men");
+  const women = testProducts.filter((product) => product.gender === "women");
+  const ids = (products: { id: string }[]) => products.map((product) => product.id);
+
+  test("keeps every shoe exactly once", () => {
+    expect(ids(mixProducts(men)).sort()).toEqual(ids(men).sort());
+  });
+
+  test("same shoes give the same order, whatever order the database returns them in", () => {
+    expect(ids(mixProducts([...men].reverse()))).toEqual(ids(mixProducts(men)));
+  });
+
+  test("a different seed gives a different order", () => {
+    expect(ids(mixProducts(men, 2))).not.toEqual(ids(mixProducts(men, 1)));
+  });
+
+  test("new styles come first", () => {
+    const mixed = mixProducts(men);
+    const newCount = men.filter((product) => product.isNew).length;
+    expect(mixed.slice(0, newCount).every((product) => product.isNew)).toBe(true);
+  });
+
+  test("no two neighbours share a brand", () => {
+    for (const list of [men, women]) {
+      for (const seed of [1, 2, 3, 20000]) {
+        const mixed = mixProducts(list, seed);
+        const repeats = mixed.filter((product, i) => i > 0 && product.brand.name === mixed[i - 1].brand.name);
+        expect(repeats).toEqual([]);
+      }
+    }
+  });
+
+  test("Featured mixes the list; search keeps its best-match order", () => {
+    expect(ids(applyFilters(men, none))).toEqual(ids(mixProducts(men)));
+    expect(ids(applyFilters(men, none, { mix: false }))).toEqual(ids(men));
   });
 });
 

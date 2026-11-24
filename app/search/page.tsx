@@ -45,7 +45,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   if (!matches.length) return <NoResults query={q} />;
 
   const filters = parseFilters(params);
-  const results = applyFilters(matches, filters);
+  const results = applyFilters(matches, filters, { mix: false });
 
   return (
     <ProductListing
