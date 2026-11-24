@@ -163,8 +163,9 @@ No 5, 7, 10, 14, 20. No arbitrary values (`mt-[18px]`). Heights and positions (`
 
 - **Buttons and the search field are pills** (`rounded-full`). That's the store's signature
   shape — keep it consistent: every button, chip and filter toggle is a pill, the hero's included.
-- **Image tiles, cards and panels** use `rounded-2xl` (1rem — the trending card value). One
-  radius for every tile in the store; don't mix 1rem and 0.5rem tiles.
+- **Image tiles, cards and panels** use `rounded-[7.5px]`: product tiles, the product photo, bag
+  and checkout thumbnails, brand cards, the Trending panel and its cards. One radius for every tile
+  in the store; a crisp, small corner, never a soft 1rem one.
   - The one exception: the Shop by category cards are several times wider than a trending card,
     and at that size the tile radius reads as a thick, soft corner, so they use `rounded-lg` (the
     base radius). A tile only changes radius because of its size — never for variety.
@@ -281,7 +282,7 @@ Reuse these; don't invent new effects per component.
 
 - Structure: image tile → name → price. Plus the wishlist heart, top-right of the tile,
   always visible (not slid in on hover), `size-11` hit area.
-- Tile: `aspect-square bg-surface rounded-2xl`, `next/image` `object-contain`.
+- Tile: `aspect-square bg-surface rounded-[7.5px]`, `next/image` `object-contain`.
 - No card border, no card shadow, no card padding. The tile is the card.
 - Text: `pt-3 flex flex-col gap-1`. Brand in `text-sm text-muted-foreground`, name in
   `text-sm font-medium`, price in `tabular-nums`.
@@ -353,7 +354,7 @@ Every list and async view has all three:
   - 16px of side padding on phones, 32px on laptops; the button is never clipped or overlapped.
 - Trending, Shop by brand, Shop by category: section title (+ optional intro) then content.
 - **Store facts** (the Advantages section): allowed only with **real numbers from the
-  database** ("73 styles", "6 brands"), set as big Geist numbers with a short label — no icons
+  database** ("73 styles", "6 brands"), set as big Geist numbers in ink (red stays a signal) with a short label — no icons
   in tinted squares, no "10k+ happy customers".
 
 ---
