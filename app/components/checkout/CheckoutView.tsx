@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
 import { Lock, X } from "lucide-react";
@@ -11,7 +11,6 @@ import {
   arrivalDate,
   bagLines,
   bagTotals,
-  currency,
   formatCardNumber,
   formatExpiry,
   isCardNumber,
@@ -21,15 +20,14 @@ import {
   newOrderNumber,
   type Line,
 } from "@/lib/checkout";
+import { currency } from "@/lib/format";
+import { useHasLoaded } from "@/lib/use-has-loaded";
 import type { Product } from "@/lib/products";
 import FastTruckIcon from "../icons/FastTruckIcon";
 import OrderTotals from "../cart/OrderTotals";
 import ProductPhoto from "../ProductPhoto";
 
 // Same as the bag: the server can't see the browser's bag, so wait for the page to load.
-const noop = () => () => {};
-const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
-
 type Fields = {
   email: string;
   firstName: string;

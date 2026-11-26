@@ -10,12 +10,12 @@ import {
 } from "lucide-react";
 import { alphabeticalBrands, getTopBrandsByGender } from "@/data/brands";
 import { useCartCount } from "@/lib/cart";
+import type { Gender } from "@/lib/product-types";
 import { useWishlist } from "@/lib/wishlist";
 import type { SearchProduct } from "@/lib/products";
 import SearchBar from "./SearchBar";
 import CountBadge from "./CountBadge";
 
-type Gender = "women" | "men";
 type Panel = Gender | "brands";
 
 const PANEL_LABELS: Record<Panel, string> = {

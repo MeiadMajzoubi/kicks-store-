@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight, Clock, Search, X } from "lucide-react";
 import type { SearchProduct } from "@/lib/products";
 import { searchProducts, suggest } from "@/lib/search";
+import { useHasLoaded } from "@/lib/use-has-loaded";
 import Price from "./Price";
 import ProductPhoto from "./ProductPhoto";
 
@@ -31,9 +32,6 @@ const POPULAR_SEARCHES = [
 const MAX_RESULTS = 6;
 
 // The overlay stays mounted once the page has loaded, so it can animate shut as well as open.
-const noop = () => () => {};
-const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
-
 // Recent searches live only on this device; storage can be blocked, so every access is guarded.
 const RECENT_KEY = "red-kicks:recent-searches";
 const MAX_RECENT = 5;

@@ -10,8 +10,6 @@ export const FREE_DELIVERY_FROM = 150;
 export const DELIVERY_FEE = 10;
 export const DELIVERY_DAYS = 3;
 
-export const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export type Line = CartItem & { product: Product };
 
 /** Bag items joined to their shoes. Shoes no longer in the catalogue are skipped. */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown } from "lucide-react";
 import {
@@ -13,14 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Product } from "@/lib/products";
 import { addToCart } from "@/lib/cart";
+import { useHasLoaded } from "@/lib/use-has-loaded";
 import { useWishlist } from "@/lib/wishlist";
 import ListingCard from "../listing/ListingCard";
 
 // The wishlist lives in the browser; until the page has loaded we show a quiet placeholder
 // instead of flashing an empty list.
-const noop = () => () => {};
-const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
-
 /**
  * Saved shoes in the same grid and cards as the shop pages, each with one "Select Size"
  * button: picking a size adds that pair to the bag (the pattern big sneaker stores use).

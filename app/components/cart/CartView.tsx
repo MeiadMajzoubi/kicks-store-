@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback, useState, useSyncExternalStore } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MAX_QUANTITY, changeSize, removeFromCart, restoreToCart, setQuantity, useCart, type CartItem } from "@/lib/cart";
 import { categoryLabel, colourName, effectivePrice } from "@/lib/catalog";
-import { bagLines, bagTotals, currency, type Line } from "@/lib/checkout";
+import { bagLines, bagTotals, type Line } from "@/lib/checkout";
+import { currency } from "@/lib/format";
+import { useHasLoaded } from "@/lib/use-has-loaded";
 import type { Product } from "@/lib/products";
 import OrderTotals from "./OrderTotals";
 import UndoToast from "./UndoToast";
@@ -15,9 +17,6 @@ import ProductPhoto from "../ProductPhoto";
 
 // The bag lives in the browser, so the server can't know what's in it. Until the page has
 // loaded we show a quiet placeholder instead of flashing an empty bag.
-const noop = () => () => {};
-const useHasLoaded = () => useSyncExternalStore(noop, () => true, () => false);
-
 // products: every shoe, loaded from Postgres by the page (a server page) and passed down.
 export default function CartView({ products }: { products: Product[] }) {
   const loaded = useHasLoaded();

@@ -5,16 +5,11 @@ import Link from "next/link";
 import { ImageOff } from "lucide-react";
 import type { Product } from "@/lib/products";
 import { categoryLabel, colourName } from "@/lib/catalog";
+import { wholeDollars } from "@/lib/format";
 import Price from "../Price";
 import FavouriteButton from "../FavouriteButton";
 import Ribbon from "../Ribbon";
 import ProductPhoto from "../ProductPhoto";
-
-const saveFormat = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
 
 type ListingCardProps = {
   product: Product;
@@ -40,7 +35,7 @@ export default function ListingCard({ product, priority = false }: ListingCardPr
         <div className="relative aspect-square overflow-hidden rounded-[7.5px] bg-surface">
           {saving > 0 && (
             <Ribbon className="bg-brand" edge="#ff9ca0">
-              Save {saveFormat.format(saving)}
+              Save {wholeDollars.format(saving)}
             </Ribbon>
           )}
           {product.isNew && (

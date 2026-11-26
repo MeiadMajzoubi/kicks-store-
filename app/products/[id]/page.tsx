@@ -3,15 +3,10 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getProduct } from "@/lib/products";
 import { categoryLabel } from "@/lib/catalog";
+import { wholeDollars } from "@/lib/format";
 import Price from "../../components/Price";
 import Ribbon from "../../components/Ribbon";
 import ProductDetail from "../../components/product/ProductDetail";
-
-const saveFormat = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
 
 export async function generateMetadata({ params }: PageProps<"/products/[id]">): Promise<Metadata> {
   const product = await getProduct((await params).id);
@@ -37,7 +32,7 @@ export default async function ProductPage({ params, searchParams }: PageProps<"/
   const badge =
     saving > 0 ? (
       <Ribbon className="bg-brand" edge="#ff9ca0">
-        Save {saveFormat.format(saving)}
+        Save {wholeDollars.format(saving)}
       </Ribbon>
     ) : product.isNew ? (
       <Ribbon className="bg-foreground" edge="#cfcfcf">

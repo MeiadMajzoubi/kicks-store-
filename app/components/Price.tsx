@@ -1,7 +1,4 @@
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
+import { currency } from "@/lib/format";
 
 type PriceProps = {
   /** salePrice is missing or null when the shoe isn't on sale. */

@@ -1,4 +1,5 @@
-import { arrivalDate, currency, type bagTotals } from "@/lib/checkout";
+import { arrivalDate, type bagTotals } from "@/lib/checkout";
+import { currency } from "@/lib/format";
 
 /**
  * The money block for the bag and checkout, laid out the way Apple does it: quiet rows,
