@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Clock, Search, X } from "lucide-react";
 import type { SearchProduct } from "@/lib/products";
+import { addRecentSearch, readRecentSearches, saveRecentSearches } from "@/lib/recent-searches";
 import { searchProducts, suggest } from "@/lib/search";
 import { useHasLoaded } from "@/lib/use-has-loaded";
 import Price from "./Price";
@@ -32,28 +33,6 @@ const POPULAR_SEARCHES = [
 const MAX_RESULTS = 6;
 
 // The overlay stays mounted once the page has loaded, so it can animate shut as well as open.
-// Recent searches live only on this device; storage can be blocked, so every access is guarded.
-const RECENT_KEY = "red-kicks:recent-searches";
-const MAX_RECENT = 5;
-
-function readRecent(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const saved = JSON.parse(window.localStorage.getItem(RECENT_KEY) ?? "[]");
-    return Array.isArray(saved) ? saved.filter((item) => typeof item === "string").slice(0, MAX_RECENT) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeRecent(terms: string[]) {
-  try {
-    if (terms.length) window.localStorage.setItem(RECENT_KEY, JSON.stringify(terms));
-    else window.localStorage.removeItem(RECENT_KEY);
-  } catch {
-    // Storage unavailable (private mode, blocked): recent searches just aren't kept.
-  }
-}
 
 export default function SearchBar({ products, onOpen }: SearchBarProps) {
   const router = useRouter();
@@ -61,7 +40,7 @@ export default function SearchBar({ products, onOpen }: SearchBarProps) {
   const loaded = useHasLoaded();
   const [query, setQuery] = useState("");
   // Only shown inside the overlay, which never renders on the server, so no hydration mismatch.
-  const [recent, setRecent] = useState<string[]>(readRecent);
+  const [recent, setRecent] = useState<string[]>(readRecentSearches);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -73,16 +52,15 @@ export default function SearchBar({ products, onOpen }: SearchBarProps) {
   const suggestions = useMemo(() => suggest(products, trimmed), [products, trimmed]);
   const searchHref = `/search?q=${encodeURIComponent(trimmed)}`;
 
-  // Newest first, no duplicates (ignoring case), at most five.
   const remember = (term: string) => {
-    const next = [term, ...recent.filter((item) => item.toLowerCase() !== term.toLowerCase())].slice(0, MAX_RECENT);
+    const next = addRecentSearch(recent, term);
     setRecent(next);
-    writeRecent(next);
+    saveRecentSearches(next);
   };
 
   const clearRecent = () => {
     setRecent([]);
-    writeRecent([]);
+    saveRecentSearches([]);
     inputRef.current?.focus();
   };
 
