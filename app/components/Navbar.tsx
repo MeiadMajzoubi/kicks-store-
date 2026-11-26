@@ -8,7 +8,7 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { alphabeticalBrands, getBrandsByGender } from "@/data/brands";
+import { alphabeticalBrands, getTopBrandsByGender } from "@/data/brands";
 import { useCartCount } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import type { SearchProduct } from "@/lib/products";
@@ -64,8 +64,8 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
   // The panel last opened: its content stays in place while the panel slides shut.
   const [lastPanel, setLastPanel] = useState<Panel>("women");
   const shownPanel = activePanel ?? lastPanel;
-  // Brands that have shoes for men / for women, worked out from the shoes in the database.
-  const brandsByGender = getBrandsByGender(searchProducts);
+  // The 5 brands with the most shoes for men / for women, worked out from the shoes in the database.
+  const brandsByGender = getTopBrandsByGender(searchProducts);
   const isPanelOpen = activePanel !== null;
   const bagCount = useCartCount();
   const savedCount = useWishlist().length;
@@ -128,13 +128,15 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
       >
         {/* The bar is glass: the page shows through, blurred. It is its own layer (not the header itself),
             so the menu panel below can blur the page behind it too. */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-background/75 backdrop-blur-xl backdrop-saturate-150" />
-        <div className="content-shell grid grid-cols-[auto_1fr] items-center gap-x-2 pt-5 lg:min-h-24 lg:grid-cols-[1fr_auto_1fr] lg:gap-x-6 lg:py-5">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-background lg:bg-background/75 lg:backdrop-blur-xl lg:backdrop-saturate-150" />
+        {/* Phones and tablets: logo and icons, then a full-width search field, then the menu as pills.
+            Large screens: logo, menu in the middle, search and bag on the right. */}
+        <div className="content-shell flex flex-wrap items-center gap-y-3 pt-4 pb-3 lg:grid lg:min-h-24 lg:grid-cols-[1fr_auto_1fr] lg:gap-x-6 lg:py-5">
           <nav
             aria-label="Main navigation"
-            className="col-span-2 row-start-2 mt-2 w-full lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:mt-0"
+            className="order-4 -mx-4 w-[calc(100%+2rem)] overflow-x-auto px-4 [scrollbar-width:none] sm:-mx-8 sm:w-[calc(100%+4rem)] sm:px-8 lg:order-none lg:col-start-2 lg:row-start-1 lg:mx-0 lg:w-full lg:overflow-visible lg:px-0"
           >
-            <ul className="flex items-center justify-center gap-7 text-[15px] font-semibold lg:gap-8">
+            <ul className="flex items-center gap-2 text-[15px] font-semibold lg:justify-center lg:gap-8">
               {(["women", "men", "brands"] as const).map((panel) => {
                 const isOpen = activePanel === panel;
 
@@ -172,7 +174,9 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                             ?.focus();
                         });
                       }}
-                      className={`relative inline-flex min-h-11 items-center rounded-sm after:absolute after:bottom-1.5 after:left-0 after:h-0.5 after:w-full after:bg-foreground after:opacity-0 hover:after:opacity-100`}
+                      className={`relative inline-flex h-10 shrink-0 items-center rounded-full border px-5 text-sm transition-colors duration-150 after:absolute after:bottom-1.5 after:left-0 after:hidden after:h-0.5 after:w-full after:bg-foreground after:opacity-0 hover:after:opacity-100 lg:h-auto lg:min-h-11 lg:rounded-sm lg:border-0 lg:px-0 lg:text-[15px] lg:after:block ${
+                        isOpen ? "border-foreground bg-foreground text-background lg:bg-transparent lg:text-foreground" : "border-border"
+                      }`}
                     >
                       {PANEL_LABELS[panel]}
                     </button>
@@ -187,7 +191,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                   onPointerEnter={(event) => {
                     if (event.pointerType === "mouse") closePanel();
                   }}
-                  className="relative inline-flex min-h-11 items-center rounded-sm text-brand after:absolute after:bottom-1.5 after:left-0 after:h-0.5 after:w-full after:bg-brand after:opacity-0 hover:after:opacity-100"
+                  className="relative inline-flex h-10 shrink-0 items-center rounded-full border border-border px-5 text-sm text-brand after:absolute after:bottom-1.5 after:left-0 after:hidden after:h-0.5 after:w-full after:bg-brand after:opacity-0 hover:after:opacity-100 lg:h-auto lg:min-h-11 lg:rounded-sm lg:border-0 lg:px-0 lg:text-[15px] lg:after:block"
                 >
                   Sale
                 </Link>
@@ -199,7 +203,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
             href="/"
             aria-label="Red Kicks home"
             onClick={closePanel}
-            className="col-start-1 row-start-1 w-fit rounded-sm lg:justify-self-start"
+            className="order-1 w-fit rounded-sm lg:order-none lg:col-start-1 lg:row-start-1 lg:justify-self-start"
           >
             <Image
               src="/text_kicks_black.svg"
@@ -211,13 +215,15 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
             />
           </Link>
 
-          <div className="col-start-2 row-start-1 flex items-center justify-end gap-0 sm:gap-1 lg:col-start-3">
-            <SearchBar products={searchProducts} onOpen={closePanel} />
+          <div className="contents lg:col-start-3 lg:row-start-1 lg:flex lg:items-center lg:justify-end lg:gap-1">
+            <div className="order-3 w-full lg:order-none lg:w-auto">
+              <SearchBar products={searchProducts} onOpen={closePanel} />
+            </div>
             <Link
               href="/wishlist"
               onClick={closePanel}
               aria-label={savedCount ? `Wishlist, ${savedCount} saved` : "Wishlist"}
-              className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:hidden"
+              className="relative order-2 ml-auto flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:hidden"
             >
               <Heart aria-hidden="true" className="size-5" strokeWidth={1.75} />
               {savedCount > 0 && <CountBadge count={savedCount} />}
@@ -226,7 +232,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
               type="button"
               aria-label="Account"
               onClick={closePanel}
-              className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:hidden"
+              className="order-2 flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:hidden"
             >
               <User aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
@@ -234,7 +240,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
               href="/cart"
               onClick={closePanel}
               aria-label={bagCount ? `Bag, ${bagCount} ${bagCount === 1 ? "item" : "items"}` : "Bag"}
-              className="relative flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand"
+              className="relative order-2 flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:order-none"
             >
               <ShoppingBag aria-hidden="true" className="size-5" strokeWidth={1.75} />
               {bagCount > 0 && <CountBadge count={bagCount} />}
@@ -254,7 +260,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
             isPanelOpen ? "visible max-h-[calc(100dvh-8rem)]" : "invisible max-h-0 delay-[0ms,250ms]"
           }`}
         >
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-background/80 backdrop-blur-xl backdrop-saturate-150" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-background lg:bg-background/80 lg:backdrop-blur-xl lg:backdrop-saturate-150" />
           {/* Links slide in after the panel opens (Nike's 200ms pause), keyed so switching
               between Women, Men and Brands replays it; on close they vanish quickly. */}
           <div
@@ -265,7 +271,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
           >
           {(shownPanel === "women" || shownPanel === "men") && (
             <div className="content-shell py-7 sm:py-9">
-              <div className="grid gap-x-10 gap-y-9 md:grid-cols-2 lg:grid-cols-[minmax(180px,0.9fr)_220px_minmax(0,1.8fr)]">
+              <div className="grid gap-x-10 gap-y-7 md:grid-cols-2 lg:grid-cols-[minmax(180px,0.9fr)_220px_minmax(0,1.8fr)] lg:gap-y-9">
                 <section aria-labelledby={`navbar-${shownPanel}-shoes`}>
                   <h2
                     id={`navbar-${shownPanel}-shoes`}
@@ -274,13 +280,13 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                     Shoes
                   </h2>
 
-                  <ul>
+                  <ul className="flex flex-wrap gap-2 lg:block">
                     <li>
                       <Link
                         href={`/${shownPanel}`}
                         prefetch={false}
                         onClick={closePanel}
-                        className="inline-flex min-h-11 items-center text-[15px] font-medium transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
+                        className="inline-flex h-10 items-center rounded-full border border-foreground px-4 text-sm font-medium transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none lg:h-auto lg:min-h-11 lg:rounded-none lg:border-0 lg:px-0 lg:text-[15px]"
                       >
                         All Shoes
                       </Link>
@@ -291,7 +297,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                           href={`/${shownPanel}?category=${category.slug}`}
                           prefetch={false}
                           onClick={closePanel}
-                          className="inline-flex min-h-11 items-center text-[15px] leading-snug text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
+                          className="inline-flex h-10 items-center rounded-full border border-border px-4 text-sm leading-snug transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none lg:h-auto lg:min-h-11 lg:rounded-none lg:border-0 lg:px-0 lg:text-[15px] lg:text-muted-foreground"
                         >
                           {category.name}
                         </Link>
@@ -308,7 +314,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                     Shoes by Size
                   </h2>
 
-                  <ul className="grid w-full max-w-[220px] grid-cols-3 gap-2">
+                  <ul className="grid w-full grid-cols-5 gap-2 lg:max-w-[220px] lg:grid-cols-3">
                     {SHOE_SIZES[shownPanel].map((size) => (
                       <li key={size}>
                         <Link
@@ -316,7 +322,7 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
                           prefetch={false}
                           aria-label={`Browse ${PANEL_LABELS[shownPanel].toLowerCase()}'s shoes in size ${size}`}
                           onClick={closePanel}
-                          className="flex min-h-12 items-center justify-center rounded-lg border border-border bg-background px-2 text-sm font-semibold transition-colors duration-150 hover:border-foreground hover:bg-foreground hover:text-white focus-visible:border-foreground focus-visible:bg-foreground focus-visible:text-white motion-reduce:transition-none"
+                          className="flex min-h-11 items-center justify-center rounded-lg border border-border bg-background px-2 text-sm font-semibold transition-colors duration-150 hover:border-foreground lg:min-h-12 hover:bg-foreground hover:text-white focus-visible:border-foreground focus-visible:bg-foreground focus-visible:text-white motion-reduce:transition-none"
                         >
                           {size}
                         </Link>

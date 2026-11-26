@@ -305,6 +305,17 @@
     color: var(--muted-foreground);
     font-size: 0.6875rem;
   }
+  /* Phones: Trending is a swipeable row of square tiles, with the name and price left-aligned under each. */
+  @media (max-width: 639.98px) {
+    .product-image {
+      aspect-ratio: 1;
+    }
+    .product-details {
+      align-items: flex-start;
+      padding-top: 0.75rem;
+      text-align: left;
+    }
+  }
   @media (min-width: 640px) {
     .content-shell {
       width: min(100% - 4rem, 100rem);

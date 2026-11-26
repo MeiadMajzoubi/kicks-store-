@@ -164,9 +164,9 @@ export default function SearchBar({ products, onOpen }: SearchBarProps) {
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={openSearch}
-        className="flex size-11 items-center justify-center rounded-full transition-colors duration-200 hover:text-brand lg:w-56 lg:justify-between lg:border lg:border-border lg:px-4 lg:hover:border-foreground lg:hover:text-foreground"
+        className="flex h-11 w-full items-center justify-between rounded-full border border-border px-4 transition-colors duration-200 hover:border-foreground lg:w-56"
       >
-        <span aria-hidden="true" className="hidden text-[15px] text-muted-foreground lg:inline">Search</span>
+        <span aria-hidden="true" className="text-[15px] text-muted-foreground">Search</span>
         <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />
       </button>
 

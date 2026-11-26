@@ -53,3 +53,25 @@ export function getBrandsByGender(products: readonly { gender: Gender; brand: { 
     }),
   ) as Record<Gender, StoreBrand[]>;
 }
+
+/**
+ * The few brands the Men and Women menus list: the same ones in both, so the two menus match. They are the
+ * brands that sell both men's and women's shoes (a link must never open an empty page), taken by most shoes
+ * in total (at most `limit`, 5 by default), shown A–Z. The full list is on the Brands page.
+ */
+export function getTopBrandsByGender(products: readonly { gender: Gender; brand: { name: string } }[], limit = 5) {
+  const all = getBrandsByGender(products);
+  const counts = new Map<string, number>();
+  for (const product of products) counts.set(product.brand.name, (counts.get(product.brand.name) ?? 0) + 1);
+  const top = new Set(
+    all.men
+      .filter((brand) => all.women.some((other) => other.name === brand.name))
+      .sort((a, b) => counts.get(b.name)! - counts.get(a.name)! || a.name.localeCompare(b.name))
+      .slice(0, limit)
+      .map((brand) => brand.name),
+  );
+  return {
+    men: all.men.filter((brand) => top.has(brand.name)),
+    women: all.women.filter((brand) => top.has(brand.name)),
+  } as Record<Gender, StoreBrand[]>;
+}

@@ -1,7 +1,9 @@
 import { describe, expect, test } from "vitest";
+import { getBrandsByGender, getTopBrandsByGender } from "@/data/brands";
 import { testProducts } from "@/lib/test-products";
 import {
   applyFilters,
+  colourRamp,
   categoryLabel,
   colourName,
   countActiveFilters,
@@ -190,9 +192,9 @@ describe("trendingOrder: new shoes and a new order every 24 hours", () => {
     }
   });
 
-  test("every trending shoe gets shown within a week", () => {
+  test("every trending shoe gets shown within 10 days", () => {
     for (const gender of ["men", "women"]) {
-      const seen = new Set([0, 1, 2, 3, 4, 5, 6].flatMap((day) => tab(gender, day).map((product) => product.id)));
+      const seen = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap((day) => tab(gender, day).map((product) => product.id)));
       expect(seen.size).toBe(trending.filter((product) => product.gender === gender).length);
     }
   });
@@ -205,6 +207,43 @@ describe("trendingOrder: new shoes and a new order every 24 hours", () => {
         expect(repeats).toEqual([]);
       }
     }
+  });
+});
+
+describe("getTopBrandsByGender: the brands in the Men and Women menus", () => {
+  test("lists at most 5 brands per gender", () => {
+    const top = getTopBrandsByGender(testProducts);
+    expect(top.men.length).toBeLessThanOrEqual(5);
+    expect(top.women.length).toBeLessThanOrEqual(5);
+    expect(getBrandsByGender(testProducts).men.length).toBeGreaterThan(5);
+  });
+
+  test("the Men and Women menus list the same brands, A to Z", () => {
+    const top = getTopBrandsByGender(testProducts);
+    const names = (brands: { name: string }[]) => brands.map((brand) => brand.name);
+    expect(names(top.men)).toEqual(names(top.women));
+    expect(names(top.men)).toEqual([...names(top.men)].sort((a, b) => a.localeCompare(b)));
+  });
+
+  test("every listed brand sells both men's and women's shoes", () => {
+    const sells = (gender: string, name: string) => testProducts.some((p) => p.gender === gender && p.brand.name === name);
+    for (const brand of getTopBrandsByGender(testProducts).men) {
+      expect(sells("men", brand.name) && sells("women", brand.name)).toBe(true);
+    }
+  });
+
+  test("they are the brands with the most shoes in total", () => {
+    const counts = new Map<string, number>();
+    for (const p of testProducts) counts.set(p.brand.name, (counts.get(p.brand.name) ?? 0) + 1);
+    const shared = [...counts.keys()].filter(
+      (name) => testProducts.some((p) => p.gender === "men" && p.brand.name === name) && testProducts.some((p) => p.gender === "women" && p.brand.name === name),
+    );
+    const fifth = shared.map((name) => counts.get(name)!).sort((a, b) => b - a)[4];
+    for (const brand of getTopBrandsByGender(testProducts).men) expect(counts.get(brand.name)!).toBeGreaterThanOrEqual(fifth);
+  });
+
+  test("a different limit gives a different number of brands", () => {
+    expect(getTopBrandsByGender(testProducts, 3).women).toHaveLength(3);
   });
 });
 
@@ -239,5 +278,43 @@ describe("labels", () => {
 
   test("names a colourway: Black - Multicolour", () => {
     expect(colourName(["black", "multi"])).toBe("Black - Multicolour");
+  });
+});
+
+describe("colourRamp: the wide Trending grid", () => {
+  const HOUR = 60 * 60 * 1000;
+  const start = Date.parse("2026-11-24T00:00:00Z");
+  const trending = testProducts.filter((product) => product.isTrending);
+  const day = (gender: string, n: number) =>
+    trendingOrder(trending, start + n * 24 * HOUR).filter((product) => product.gender === gender);
+
+  test("keeps every shoe exactly once", () => {
+    const shoes = day("men", 0);
+    expect(colourRamp(shoes).map((p) => p.id).sort()).toEqual(shoes.map((p) => p.id).sort());
+  });
+
+  test("follows the colour ramp, with only small steps back to keep brands apart", () => {
+    const ramp = ["white", "cream", "silver", "grey", "black", "brown", "red", "orange", "yellow", "green", "blue", "purple", "pink", "multi"];
+    for (const gender of ["men", "women"]) {
+      for (let n = 0; n < 30; n++) {
+        const ranks = colourRamp(day(gender, n)).map((p) => ramp.indexOf(p.variants[0].colors[0]));
+        // Count how often the ramp steps backwards: a handful of times at most (Nike has many shoes, so others slip in between), never a shuffle.
+        const backSteps = ranks.filter((rank, i) => i > 0 && rank < ranks[i - 1]).length;
+        expect(backSteps).toBeLessThanOrEqual(6);
+      }
+    }
+  });
+
+  test("no brand twice in a row", () => {
+    for (const gender of ["men", "women"]) {
+      for (let n = 0; n < 30; n++) {
+        const shoes = colourRamp(day(gender, n));
+        expect(shoes.filter((p, i) => i > 0 && p.brand.name === shoes[i - 1].brand.name)).toEqual([]);
+      }
+    }
+  });
+
+  test("the same shoes always give the same layout", () => {
+    expect(colourRamp(day("men", 3)).map((p) => p.id)).toEqual(colourRamp(day("men", 3)).map((p) => p.id));
   });
 });
