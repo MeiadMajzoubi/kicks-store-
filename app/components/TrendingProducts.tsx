@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ImageOff } from "lucide-react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { colourRamp, TRENDING_PER_TAB_PHONE } from "@/lib/catalog";
+import { colourRamp, TRENDING_PER_TAB_PHONE } from "@/lib/mix";
 import type { Product } from "@/lib/products";
 import Price from "./Price";
 import ProductPhoto from "./ProductPhoto";

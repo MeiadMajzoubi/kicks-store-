@@ -3,19 +3,16 @@ import { getBrandsByGender, getTopBrandsByGender } from "@/data/brands";
 import { testProducts } from "@/lib/test-products";
 import {
   applyFilters,
-  colourRamp,
   categoryLabel,
   colourName,
   countActiveFilters,
   effectivePrice,
   facetOptions,
   filtersToQuery,
-  mixProducts,
-  TRENDING_PER_TAB,
-  trendingOrder,
   parseFilters,
   type CatalogFilters,
 } from "@/lib/catalog";
+import { colourRamp, mixProducts, TRENDING_PER_TAB, trendingOrder } from "@/lib/mix";
 
 /** No filters at all, like a fresh /shop page. */
 const none: CatalogFilters = {

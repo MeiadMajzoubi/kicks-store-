@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { getProducts } from "@/lib/products";
-import { trendingOrder } from "@/lib/catalog";
+import { trendingOrder } from "@/lib/mix";
 import HeroCarousel from "./components/HeroCarousel";
 import TrendingProducts from "./components/TrendingProducts";
 import ShopByBrands from "./components/ShopByBrands";
