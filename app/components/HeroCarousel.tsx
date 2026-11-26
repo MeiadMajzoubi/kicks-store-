@@ -1,31 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay";
-import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 import { useCarouselState } from "@/lib/use-carousel-state";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
-/** Each slide takes one calm colour from its photo for its big slogan. The button is always white. */
-type ThemeName = "silver" | "tan" | "sage" | "rust" | "volt";
+/** Each slide takes one calm colour from its photo for its big slogan. The button is frosted glass on every slide. */
+type ThemeName = "silver" | "tan" | "sage" | "rust" | "volt" | "white";
 
 type Slide = {
   src: string;
   alt: string;
   theme: ThemeName;
+  /** Phones only: another slogan colour, when the slide's own can't be read on its photo's empty corner. */
+  phoneTheme?: ThemeName;
   /** The slogan: big, short, set in uppercase. */
   title: string;
   /** One short line about the shoe. */
-  copy: string;
   /** Where the one button goes: the shoe itself (a search), or its category. */
   href: string;
+  /** The button's label: a verb that names what it opens ("Shop Speedcat"), never a generic "Shop now". */
+  cta: string;
   /** Where the text sits from tablets up: in the empty part of this photo. Phones always centre it low. */
   place: { x: "left" | "center" | "right"; y: "top" | "center" | "lower" | "bottom" };
   /** Width of the text column. Narrower on tablets where the photo is crowded; defaults to max-w-xl. */
   box?: string;
+  /** Phones: where the slogan and the button under it sit in this photo, in an empty corner (and which
+   *  gradients to lay under them). Different on every slide. The photo's `focus` keeps the subject clear. */
+  phone: { title: string; scrim: "top" | "bottom" | "both" };
   /** Slogan size, when a slide needs a smaller one than the default. */
   titleSize?: string;
   /** Photos that are already at their pixel limit get 100, so the optimizer adds no loss. Default 90. */
@@ -38,7 +44,7 @@ type Slide = {
 };
 
 // The banner's shape at each breakpoint (matches the aspect classes on the slide below).
-const BOX = { phone: 4 / 5, tablet: 16 / 9, laptop: 22 / 9 };
+const BOX = { phone: 4 / 3, tablet: 16 / 9, laptop: 22 / 9 };
 
 /** `sizes` for a photo of this ratio. A photo wider than its box is scaled up to fill the height, so it
  *  is drawn wider than the screen; asking for just `100vw` makes the browser fetch a file that is too
@@ -59,8 +65,13 @@ const slides: Slide[] = [
     alt: "Runner resting on a floodlit track at night",
     theme: "silver",
     title: "Ten minutes to the gun",
-    copy: "Breathe. Check your laces. On Cloud keeps the rest quiet.",
     href: "/search?q=on+cloud",
+    cta: "Shop On",
+    focus: "object-[55%_50%] sm:object-[50%_50%]",
+    phone: {
+      title: "max-sm:top-5 max-sm:left-4 max-sm:max-w-[13rem] max-sm:items-start max-sm:text-left",
+      scrim: "both",
+    },
     place: { x: "left", y: "center" },
     box: "max-w-xl sm:max-w-56 md:max-w-xs lg:max-w-xl",
   },
@@ -70,8 +81,13 @@ const slides: Slide[] = [
     alt: "Pair of brown suede Puma Speedcat sneakers on a brown backdrop",
     theme: "tan",
     title: "Unlock every style",
-    copy: "With Speedcats and Dropset 4, win the inner war.",
     href: "/search?q=speedcat",
+    cta: "Shop Speedcat",
+    focus: "object-[92%_50%] sm:object-[50%_50%]",
+    phone: {
+      title: "max-sm:top-5 max-sm:right-4 max-sm:max-w-[8rem] max-sm:items-end max-sm:text-right",
+      scrim: "both",
+    },
     place: { x: "left", y: "lower" },
     box: "max-w-xl sm:max-w-72 md:max-w-md lg:max-w-lg xl:max-w-xl",
     quality: 100,
@@ -80,41 +96,53 @@ const slides: Slide[] = [
     src: "/hero/trail-moor.jpg",
     ratio: 3840 / 1066,
     // Phones show only the middle third of this wide photo, laptops about two thirds of it.
-    focus: "object-[42%_50%] sm:object-[30%_50%] lg:object-[10%_50%]",
+    focus: "object-[35%_50%] sm:object-[30%_50%] lg:object-[10%_50%]",
     alt: "Trail runner in a black jacket striding across misty moorland",
     theme: "sage",
     title: "Leave the road",
-    copy: "Outdoor shoes with the grip for mud, rock and mist.",
     href: "/shop?category=outdoor",
+    cta: "Shop outdoor",
+    phone: {
+      title: "max-sm:top-5 max-sm:left-4 max-sm:max-w-[8rem] max-sm:items-start max-sm:text-left",
+      scrim: "both",
+    },
     // The empty misty slope at the top left; the grass below is too busy for words. One line, smaller
     // than the others, so the whole block stays above the grass.
     place: { x: "left", y: "top" },
     box: "max-w-2xl",
-    titleSize: "text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl",
+    titleSize: "text-4xl lg:text-5xl xl:text-6xl",
   },
   {
     src: "/hero/dropset-4.webp",
     ratio: 2640 / 1080,
     // Phones show only the middle third of this wide canvas: slide it over to the shoe.
-    focus: "object-[32%_50%] sm:object-[50%_50%]",
+    focus: "object-[25%_50%] sm:object-[50%_50%]",
     alt: "Black and orange adidas Dropset 4 training shoe floating in grey smoke",
     theme: "rust",
+    phoneTheme: "white",
     title: "Do the work",
-    copy: "Dropset 4 keeps heels planted for the lift, jump and sprint.",
     href: "/search?q=dropset",
+    cta: "Shop Dropset",
+    phone: {
+      title: "max-sm:top-5 max-sm:left-4 max-sm:max-w-[8rem] max-sm:items-start max-sm:text-left",
+      scrim: "both",
+    },
     place: { x: "right", y: "lower" },
     box: "max-w-xl sm:max-w-60 md:max-w-sm lg:max-w-md xl:max-w-xl",
   },
   {
     src: "/hero/vaporfly.webp",
     ratio: 2640 / 1080,
-    // Phones show only the middle third of this wide canvas: slide it over to the shoe.
-    focus: "object-[66%_50%] sm:object-[50%_50%]",
     alt: "Red and volt Nike ZoomX Vaporfly racing shoe lit by streaks of colour on black",
     theme: "volt",
     title: "Fast enough?",
-    copy: "Carbon plate. ZoomX foam. Nothing between you and the line.",
     href: "/search?q=vaporfly",
+    cta: "Shop Vaporfly",
+    focus: "object-[40%_50%] sm:object-[50%_50%]",
+    phone: {
+      title: "max-sm:top-5 max-sm:left-4 max-sm:max-w-[9rem] max-sm:items-start max-sm:text-left",
+      scrim: "both",
+    },
     place: { x: "left", y: "top" },
     quality: 100,
   },
@@ -135,6 +163,12 @@ const PLACE_X = {
     scrim: "sm:bg-[linear-gradient(to_left,rgba(0,0,0,0.3),transparent_60%)]",
   },
 };
+// Phones only (tablets up use PLACE_X and PLACE_Y). The soft gradient sits on the side the text is on.
+const PHONE_SCRIM = {
+  top: "max-sm:bg-linear-to-b max-sm:from-black/45 max-sm:via-black/10 max-sm:to-transparent",
+  bottom: "max-sm:bg-linear-to-t max-sm:from-black/50 max-sm:via-black/15 max-sm:to-transparent",
+  both: "max-sm:bg-[linear-gradient(to_bottom,rgba(0,0,0,0.4),transparent_38%,transparent_62%,rgba(0,0,0,0.45))]",
+};
 const PLACE_Y = {
   // Tablets have a small banner, so they sit closer to the top edge than laptops do.
   top: "sm:items-start sm:pt-8 sm:pb-0 lg:pt-16",
@@ -145,16 +179,17 @@ const PLACE_Y = {
 };
 
 /** The slogan's default size. Anton is condensed, so it can be big; it steps down on small laptops and tablets. */
-const TITLE_SIZE = "text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl";
+const TITLE_SIZE = "text-4xl md:text-5xl lg:text-6xl xl:text-7xl";
 
 /** One solid colour per slide, taken from its photo and kept calm (nothing neon). Only the slogan wears
- *  it; the button is plain white on every slide. Flat on purpose: no gradient, transparency or glow. */
+ *  it; the button is frosted glass on every slide. No gradient text or glow. */
 const THEMES: Record<ThemeName, string> = {
   silver: "#e4eaf1", // black-and-white track
   tan: "#d8b48f", // brown suede: a light brown, not gold
   sage: "#c9e0a8", // misty hillside
   rust: "#d4663a", // the Dropset's sole, deeper than the sole itself
   volt: "#b8ff2c", // the Vaporfly's neon
+  white: "#ffffff", // only where a slide's own colour is lost on its photo (see `phoneTheme`)
 };
 
 /** The home page's top banner. Runs in the browser because it autoplays and reacts to its controls. */
@@ -207,38 +242,37 @@ export default function HeroCarousel() {
       <CarouselContent className="ml-0">
         {slides.map((slide, index) => (
           <CarouselItem key={slide.src} className="relative basis-full pl-0" aria-label={`${index + 1} of ${slides.length}`}>
-            <div className="relative aspect-[4/5] w-full sm:aspect-[16/9] lg:aspect-[22/9]">
+            <div className="relative aspect-[4/3] w-full sm:aspect-[16/9] lg:aspect-[22/9]">
               {/* `sizes` comes from the photo's shape (see heroSizes), so the browser fetches enough pixels
                   for the cropped, scaled-up picture. Quality 90, not the default 75: 75 re-compresses an
                   already-compressed photo, which shows as mush in flat areas like a studio backdrop. */}
               <Image src={slide.src} alt={slide.alt} fill sizes={heroSizes(slide.ratio)} quality={slide.quality ?? 90} preload={index === 0} className={`object-cover ${slide.focus ?? ""}`} />
             </div>
-            {/* Phones: centred low, above the dots. Tablets up: in the empty part of the photo, lined up
-                with the logo. Same layout on every slide: big slogan, one short line, one button. Only
-                the colour changes. A soft gradient behind the text keeps it readable. */}
-            <div className={`hero-text absolute inset-0 flex items-end pb-16 text-white sm:pb-20 ${PLACE_Y[slide.place.y]}`}>
+            {/* Over the empty part of each photo: on phones at the top or the bottom (see `phone`), from tablets
+                up where `place` says, lined up with the logo. Same layout on every slide: big slogan and one
+                button. Only the colour changes. A soft gradient behind the text keeps it readable. */}
+            <div className={`hero-text absolute inset-0 flex pb-16 text-white sm:pb-20 ${PLACE_Y[slide.place.y]}`}>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 max-sm:bg-linear-to-t max-sm:from-black/50 max-sm:via-black/15 max-sm:to-transparent ${PLACE_X[slide.place.x].scrim}`}
+                className={`pointer-events-none absolute inset-0 ${PHONE_SCRIM[slide.phone.scrim]} ${PLACE_X[slide.place.x].scrim}`}
               />
-              <div className={`content-shell relative flex justify-center text-center ${PLACE_X[slide.place.x].row}`}>
-                <div className={`flex ${slide.box ?? "max-w-xl"} min-w-0 flex-col items-center gap-5 ${PLACE_X[slide.place.x].column}`}>
+              {/* From tablets up the slogan and button are one column. On phones the outer wrapper vanishes (contents)
+                    and this column is placed in a corner of the photo, the button always right under the slogan, as on larger screens. */}
+              <div className={`content-shell relative flex justify-center text-center max-sm:contents ${PLACE_X[slide.place.x].row}`}>
+                <div className={`flex ${slide.box ?? "max-w-xl"} min-w-0 flex-col items-center gap-5 max-sm:absolute max-sm:gap-3 ${slide.phone.title} ${PLACE_X[slide.place.x].column}`}>
                   <div className={`flex flex-col items-center gap-3 ${PLACE_X[slide.place.x].column}`}>
                     <p
-                      className={`font-display leading-[0.9] tracking-tight text-balance uppercase ${slide.titleSize ?? TITLE_SIZE}`}
-                      style={{ color: THEMES[slide.theme] }}
+                      className={`font-display leading-[0.9] tracking-tight text-balance text-(--ink-phone) uppercase sm:text-(--ink) ${slide.titleSize ?? TITLE_SIZE}`}
+                      style={{ "--ink": THEMES[slide.theme], "--ink-phone": THEMES[slide.phoneTheme ?? slide.theme] } as CSSProperties}
                     >
                       {slide.title}
                     </p>
-                    <p className="max-w-md text-base font-medium text-balance sm:text-sm md:text-base lg:text-lg">{slide.copy}</p>
                   </div>
                   <Link
                     href={slide.href}
-                    aria-label={`Shop now: ${slide.title}`}
-                    className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-background px-6 text-base font-medium text-foreground shadow-sm transition-[background-color,transform] duration-150 ease-out hover:bg-surface-hover focus-visible:outline-white active:scale-[0.97]"
+                    className={`inline-flex min-h-8 items-center justify-center rounded-full border border-white/35 bg-black/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.26),rgba(255,255,255,0.03))] px-6 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(255,255,255,0.1)] backdrop-blur-xl backdrop-saturate-200 transition-[background-color,border-color,color,transform] duration-200 ease-out hover:border-brand hover:bg-brand focus-visible:outline-white active:scale-[0.97] max-sm:relative max-sm:px-3.5 max-sm:text-xs max-sm:whitespace-nowrap max-sm:before:absolute max-sm:before:-inset-2 max-sm:before:content-[''] sm:min-h-11 lg:min-h-12 lg:text-base`}
                   >
-                    Shop now
-                    <ArrowRight aria-hidden="true" className="size-4 transition-transform duration-150 ease-out group-hover:translate-x-0.5" />
+                    {slide.cta}
                   </Link>
                 </div>
               </div>
