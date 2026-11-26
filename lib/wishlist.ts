@@ -81,7 +81,3 @@ export function toggleWishlist(productId: string, variant = 0) {
   const saved = items.some((item) => item.productId === productId);
   save(saved ? items.filter((item) => item.productId !== productId) : [{ productId, variant }, ...items]);
 }
-
-export function removeFromWishlist(productId: string) {
-  save(items.filter((item) => item.productId !== productId));
-}
