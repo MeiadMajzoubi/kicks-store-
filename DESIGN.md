@@ -106,7 +106,7 @@ as its own task (ink background, `--surface` becomes `#222`, red stays `#d71920`
 
 | Role | Class | Notes |
 |---|---|---|
-| Hero / campaign | `font-display text-6xl sm:text-7xl lg:text-8xl leading-[0.9] tracking-tight` | Anton, uppercase. A slogan, not a product name. |
+| Hero / campaign | `font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.9] tracking-tight` (36px on phones, 72px on wide screens); no line of text under it; the button as in §9.1 | Anton, uppercase. A slogan, not a product name. |
 | Page title | `.page-title` | Geist 700, tight tracking, ends with `.title-mark` red full stop. |
 | Section title | `.section-title` | Geist 700, tight tracking. |
 | Section intro | `.section-intro` | One sentence, muted, max 32rem. |
@@ -309,7 +309,9 @@ Reuse these; don't invent new effects per component.
 ### 9.5 Announcement bar and navbar
 
 - **Announcement bar** (`AnnouncementBar.tsx`): an ink strip, `min-h-11`. In the middle, one short promise at a time (delivery time, free delivery, sale) with previous and next arrows and a pause button; the message rises in on `--ease-spring`. It stops while the pointer or keyboard is on it and never moves by itself with reduced motion. Messages are short, sentence case, real promises the store keeps. On large screens the shopper's own links sit on the right: Help, wishlist, account. On phones only the messages show.
+- **Men and Women menus** list at most **5 brands**, the **same five in both** (brands that sell men's and women's shoes, taken by most shoes in total, A–Z) and a "See all brands" link; the full list lives on the Brands page. Below `lg` the bars and menu are solid (no glass), the shoe types are pills and the sizes fill the width, 5 a row.
 - **Navbar**: solid `bg-background`, `border-b`. Logo left, links centred (Women, Men, Brands, then Sale in `text-brand`), then a pill search field and the bag on the right. The search field opens the search panel. On phones: logo left, search, wishlist, account and bag icons right, links on a second row.
+- **Phones and tablets** (below `lg`), in three rows like Foot Locker's: logo left with wishlist, account and bag on the right; a full-width pill search field; then Women, Men, Brands and Sale as outlined pills, left-aligned, that scroll sideways if the screen is too narrow. The open menu's pill turns ink (`bg-foreground text-background`).
 - Wishlist and account live in the announcement bar from `lg` up, and in the navbar below it. The bag count badge is the shared `CountBadge`.
 - Mega-menu: glass panel (§6), plain link columns, the motion from §8.3.
 - **Checkout:** the announcement bar, navbar and full footer are swapped for a slim header (logo, "Back to bag") and a slim footer (Delivery, Support), so nothing pulls the shopper away mid-order. `SiteChrome` does the swap by route.
@@ -342,17 +344,19 @@ Every list and async view has all three:
 
 ### 9.9 Home sections
 
-- Hero: the same layout on every slide, the way Nike and Foot Locker do it: a **big slogan**, **one
-  short line**, **one button**. Only the **slogan's colour** changes, one solid, calm colour taken
-  from the photo (silver, tan, sage, rust, volt in `HeroCarousel.tsx`). The button is **plain
-  white** on every slide, like Nike's: never orange, green or any photo colour. No glass: no
-  gradient text, transparency, `backdrop-blur`, glow or tinted shadow.
-  - One face (Anton), one button shape (the pill), one label ("Shop now →"). Don't give a slide its
-    own font, shape or extra button: that reads as a template trying to look custom.
+- Hero: the same layout on every slide, the way Nike and Foot Locker do it: a **big slogan** and **one button**, with no
+  line of description between them. Only the **slogan's colour** changes, one solid, calm colour taken
+  from the photo (silver, tan, sage, rust, volt in `HeroCarousel.tsx`). The button is **glass** on every slide: never orange, green or any photo colour. The photo shows through it, and it turns brand red on hover. No gradient text, glow or tinted shadow.
+  - One face (Anton), one button shape (the pill). The hero button is a glass pill (`border border-white/35 bg-black/20 text-white backdrop-blur-xl backdrop-saturate-200`, a white-to-clear gradient from top to bottom and a 1px inner top highlight, so it reads as a lit pane of glass; the only glass besides the navbar), on phones and wide screens alike. A dark tint keeps the white label readable on light photos too. On hover it fills `bg-brand` with a `border-brand` edge (200ms); white would blur into pale photos and black vanishes on the dark ones. Size as in §9.1 from `sm` up (`min-h-11 px-6 text-sm font-semibold`); **on phones it is small** (`min-h-8 px-3.5 text-xs`, about 32px tall and 110px wide, with an invisible 8px of extra tap area around it) so it never crowds the shoe or the dots. No arrow, no drop shadow, press scale 0.97. Its label
+    is a verb naming what it opens ("Shop Speedcat", "Shop outdoor"), never a generic "Shop now". Don't
+    give a slide its own font, shape or extra button: that reads as a template trying to look custom.
   - The text sits in the quiet part of each photo (empty sky, backdrop, floor), never over the
     shoe, the athlete or busy grass. A soft gradient behind it, not a dark layer over the photo.
+  - **On phones** (below `sm`) the banner is 4:3, so the whole runner or shoe fits (a taller frame cut a wide photo down to a sliver). The slogan (36px, clearly bigger than the 12px button) sits in an empty corner of the photo, and the button sits **right under it, 12px below, lined up with it**, exactly as on larger screens. The corner differs from slide to slide (`phone` in `HeroCarousel.tsx`). Each photo's `focus` keeps the subject clear of both, and the dots and pause keep the bottom row. Where a slide's own slogan colour is lost on its photo (orange on grey mist) the phone slogan is white (`phoneTheme`).
   - 16px of side padding on phones, 32px on laptops; the button is never clipped or overlapped.
 - Trending, Shop by brand, Shop by category: section title (+ optional intro) then content.
+- **Trending on phones** (below `sm`), like Foot Locker's product rows: no grey panel; one row you swipe sideways, about two and a half cards in view, each snapping into place, with square grey photo tiles and the brand, name and price left-aligned underneath. A thin line under the row shows how much of it is in view and how far it has been swiped. Only the first 8 shoes of each tab show on phones. From `sm` up nothing changes from before: the grey panel with the full grid (3 columns, 5 from `lg`) of all 20 shoes, 4:3 tiles.
+- **What Trending shows:** 20 shoes per tab, picked from a pool of about 30 tagged `isTrending`. About a third are swapped for new ones every 24 hours, so every shoe gets its turn, and no brand gets more than its share. Phones show the first 8 of the **mixed** order (brand, colour and type vary shoe to shoe). From `sm` up the same 20 are laid out along a **colour ramp** (`colourRamp` in `lib/catalog.ts`: white, cream, silver, grey, black, brown, red, orange, yellow, green, blue, purple, pink), so the wide grid reads like a palette instead of a jumble. A brand still never sits next to itself, and where possible not directly above itself. Nike has many shoes, so other brands slip in between and the ramp steps back a few times; that is deliberate.
 - **Store facts** (the Advantages section): allowed only with **real numbers from the
   database** ("73 styles", "6 brands"), set as big Geist numbers in ink (red stays a signal) with a short label — no icons
   in tinted squares, no "10k+ happy customers".
@@ -376,7 +380,7 @@ Every list and async view has all three:
 If it looks like it could be on any startup's landing page, it doesn't belong here.
 
 - Gradients on text, buttons, backgrounds or borders. (The `multi` colour swatch is data, not decoration.)
-- Glassmorphism, `backdrop-blur`, glow, coloured or large shadows (the navbar in §6 is the only glass).
+- Glassmorphism, `backdrop-blur`, glow, coloured or large shadows (the navbar in §6 and the hero button in §9.9 are the only glass).
 - Three (or four) feature cards with an icon in a tinted rounded square.
 - Stats rows with made-up numbers, fake testimonials, star ratings without reviews, logo clouds.
 - Pill badges above the hero headline ("✨ New collection").
