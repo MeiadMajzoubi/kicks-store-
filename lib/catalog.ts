@@ -426,3 +426,6 @@ export function facetOptions(products: readonly Product[]) {
 
   return { sizes, colors, brands, newCount, saleCount, menCount, womenCount };
 }
+
+/** What facetOptions returns: the filter choices a listing page shows. */
+export type Facets = ReturnType<typeof facetOptions>;
