@@ -8,13 +8,14 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { alphabeticalBrands, getTopBrandsByGender } from "@/data/brands";
+import { getTopBrandsByGender } from "@/data/brands";
 import { useCartCount } from "@/lib/cart";
 import type { Gender } from "@/lib/product-types";
 import { useWishlist } from "@/lib/wishlist";
 import type { SearchProduct } from "@/lib/products";
 import SearchBar from "./SearchBar";
 import CountBadge from "./CountBadge";
+import { BrandsPanel, GenderPanel } from "./NavbarPanels";
 
 type Panel = Gender | "brands";
 
@@ -23,41 +24,6 @@ const PANEL_LABELS: Record<Panel, string> = {
   men: "Men",
   brands: "Brands",
 };
-
-const SHOE_CATEGORIES = [
-  { name: "Running", slug: "running" },
-  { name: "Training", slug: "training" },
-  { name: "Lifestyle", slug: "lifestyle" },
-  { name: "Outdoor", slug: "outdoor" },
-  { name: "Sandals", slug: "sandals" },
-];
-
-// Reference size filters, not verified stock or a confirmed UK/US size system.
-// Replace each department's values with its real catalogue sizes when available.
-const REFERENCE_SIZES = [
-  "6",
-  "6.5",
-  "7",
-  "7.5",
-  "8",
-  "8.5",
-  "9",
-  "9.5",
-  "10",
-  "10.5",
-  "11",
-  "11.5",
-  "12",
-  "12.5",
-  "13",
-];
-
-const SHOE_SIZES: Record<Gender, readonly string[]> = {
-  women: REFERENCE_SIZES,
-  men: REFERENCE_SIZES,
-};
-
-
 
 export default function Navbar({ searchProducts }: { searchProducts: SearchProduct[] }) {
   const [activePanel, setActivePanel] = useState<Panel | null>(null);
@@ -270,158 +236,10 @@ export default function Navbar({ searchProducts }: { searchProducts: SearchProdu
             }`}
           >
           {(shownPanel === "women" || shownPanel === "men") && (
-            <div className="content-shell py-7 sm:py-9">
-              <div className="grid gap-x-10 gap-y-7 md:grid-cols-2 lg:grid-cols-[minmax(180px,0.9fr)_220px_minmax(0,1.8fr)] lg:gap-y-9">
-                <section aria-labelledby={`navbar-${shownPanel}-shoes`}>
-                  <h2
-                    id={`navbar-${shownPanel}-shoes`}
-                    className="panel-title"
-                  >
-                    Shoes
-                  </h2>
-
-                  <ul className="flex flex-wrap gap-2 lg:block">
-                    <li>
-                      <Link
-                        href={`/${shownPanel}`}
-                        prefetch={false}
-                        onClick={closePanel}
-                        className="inline-flex h-10 items-center rounded-full border border-foreground px-4 text-sm font-medium transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none lg:h-auto lg:min-h-11 lg:rounded-none lg:border-0 lg:px-0 lg:text-[15px]"
-                      >
-                        All Shoes
-                      </Link>
-                    </li>
-                    {SHOE_CATEGORIES.map((category) => (
-                      <li key={category.slug}>
-                        <Link
-                          href={`/${shownPanel}?category=${category.slug}`}
-                          prefetch={false}
-                          onClick={closePanel}
-                          className="inline-flex h-10 items-center rounded-full border border-border px-4 text-sm leading-snug transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none lg:h-auto lg:min-h-11 lg:rounded-none lg:border-0 lg:px-0 lg:text-[15px] lg:text-muted-foreground"
-                        >
-                          {category.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section aria-labelledby={`navbar-${shownPanel}-sizes`}>
-                  <h2
-                    id={`navbar-${shownPanel}-sizes`}
-                    className="panel-title"
-                  >
-                    Shoes by Size
-                  </h2>
-
-                  <ul className="grid w-full grid-cols-5 gap-2 lg:max-w-[220px] lg:grid-cols-3">
-                    {SHOE_SIZES[shownPanel].map((size) => (
-                      <li key={size}>
-                        <Link
-                          href={`/${shownPanel}?size=${encodeURIComponent(size)}`}
-                          prefetch={false}
-                          aria-label={`Browse ${PANEL_LABELS[shownPanel].toLowerCase()}'s shoes in size ${size}`}
-                          onClick={closePanel}
-                          className="flex min-h-11 items-center justify-center rounded-lg border border-border bg-background px-2 text-sm font-semibold transition-colors duration-150 hover:border-foreground lg:min-h-12 hover:bg-foreground hover:text-white focus-visible:border-foreground focus-visible:bg-foreground focus-visible:text-white motion-reduce:transition-none"
-                        >
-                          {size}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section
-                  aria-labelledby={`navbar-${shownPanel}-brands`}
-                  className="md:col-span-2 lg:col-span-1 lg:border-l lg:border-border lg:pl-8"
-                >
-                  <h2
-                    id={`navbar-${shownPanel}-brands`}
-                    className="panel-title"
-                  >
-                    Brands
-                  </h2>
-
-                  <ul className="grid grid-cols-2 gap-x-5 sm:gap-x-8">
-                    {brandsByGender[shownPanel].map((brand) => (
-                      <li key={brand.slug}>
-                        <Link
-                          href={`/${shownPanel}?brand=${encodeURIComponent(brand.name)}`}
-                          prefetch={false}
-                          onClick={closePanel}
-                          className="group flex min-h-12 items-center gap-3 border-b border-border text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
-                        >
-                          <Image
-                            src={brand.logo}
-                            alt=""
-                            width={56}
-                            height={28}
-                            className="h-7 w-14 shrink-0 object-contain brightness-0"
-                          />
-                          <span className="text-[13px] font-medium leading-snug sm:text-sm">
-                            {brand.name}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-
-                    <li>
-                      <Link
-                        href="/brands"
-                        onClick={closePanel}
-                        className="text-link"
-                      >
-                        See all brands
-                      </Link>
-                    </li>
-                  </ul>
-                </section>
-              </div>
-            </div>
+            <GenderPanel gender={shownPanel} brands={brandsByGender[shownPanel]} onNavigate={closePanel} />
           )}
 
-          {shownPanel === "brands" && (
-            <div className="content-shell py-7 sm:py-9">
-              <div>
-                <div className="mb-6 flex items-center justify-between gap-5">
-                  <h2 className="panel-title mb-0">
-                    Brands
-                  </h2>
-                  <Link
-                    href="/brands"
-                    onClick={closePanel}
-                    className="text-link"
-                  >
-                    See all brands
-                  </Link>
-                </div>
-
-                <ul className="grid grid-cols-2 gap-x-7 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-10">
-                  {alphabeticalBrands.map((brand) => (
-                    <li key={brand.slug}>
-                      <Link
-                        href={`/brands/${brand.slug}`}
-                        prefetch={false}
-                        onClick={closePanel}
-                        className="flex min-h-20 items-center gap-4 border-b border-border text-muted-foreground transition-colors duration-150 hover:text-brand focus-visible:text-brand motion-reduce:transition-none"
-                      >
-                        <Image
-                          src={brand.logo}
-                          alt=""
-                          width={88}
-                          height={40}
-                          className="h-10 w-16 shrink-0 object-contain brightness-0 sm:w-[88px]"
-                        />
-                        <span className="text-sm font-medium leading-snug">
-                          {brand.name}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
+          {shownPanel === "brands" && <BrandsPanel onNavigate={closePanel} />}
           </div>
         </nav>
       </header>
